@@ -162,7 +162,7 @@
 </ul>
 <p><code>System Trace</code>这个Instrumentor，记录了所有的系统调用，以及每次调用的等待时间。如果你在System Trace里面发现了CPU Time很低，但Wait Time很高的调用，说明在主线程处理I/O已经严重损害了app的性能。</p>
 <p>保证主线程的低CPU占用，将I/O移至其它线程，可以大大地提高主线程对交互事件的处理能力。我建议开发者朋友们写代码的时候，除非是以前遇到过的问题，都没有必要假设问题存在。<code>80%的优化都是不必要的。</code></p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 
     
 	</div>

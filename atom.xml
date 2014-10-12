@@ -4,7 +4,7 @@
   <subtitle><![CDATA[Indie iOS developer & Designer]]></subtitle>
   <link href="http://www.iwangke.me/atom.xml" rel="self"/>
   <link href="http://www.iwangke.me"/>
-  <updated>2014-10-12T07:39:03.277Z</updated>
+  <updated>2014-10-12T07:50:18.074Z</updated>
   <id>http://www.iwangke.me/</id>
   <author>
     <name><![CDATA[iWangKe.me]]></name>
@@ -16,7 +16,7 @@
     <link href="http://www.iwangke.me/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/"/>
     <id>http://www.iwangke.me/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/</id>
     <published>2014-10-06T15:34:56.000Z</published>
-    <updated>2014-10-08T06:23:26.000Z</updated>
+    <updated>2014-10-12T07:50:02.000Z</updated>
     <content type="html"><![CDATA[<p>KTV歌词视图，只要去过KTV的的朋友一定不会陌生。我们先来看一下最终的效果，再一步步说明唱吧歌词视图的演进。想把事件事情说得清清楚楚的确很难，有很多tricky的地方；另外毕竟不是open source的，只能给大家挑重点分享一下实现的过程和思路。</p>
 <p><img src="/img/lyrics_changba_6.png" alt="唱吧6.0歌词视图"></p>
 <h3 id="歌词视图剖析">歌词视图剖析</h3>
@@ -80,7 +80,7 @@
 <p>至此我们完成了基于Core Animation的歌词焦点行染色动画。</p>
 <h3 id="写在后面">写在后面</h3>
 <p>很抱歉我提供的code snippet不是production ready，歌词动画是一个非常复杂的系统，很难单独抽离出来介绍给大家，所以只能管窥一豹地介绍下。</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/tags/iOS/" term="iOS"/>
   </entry>
@@ -125,7 +125,7 @@
     <link href="http://www.iwangke.me/2014/09/04/fuck-your-ios-teamates/"/>
     <id>http://www.iwangke.me/2014/09/04/fuck-your-ios-teamates/</id>
     <published>2014-09-04T15:50:24.000Z</published>
-    <updated>2014-10-08T06:23:21.000Z</updated>
+    <updated>2014-10-12T07:50:02.000Z</updated>
     <content type="html"><![CDATA[<p>之前做Indie Dev都是自己坑自己，两三年也没坑出来多少花样深感惭愧。最近功力大增但不敢独享，给大家带来天下码农之《iOS应用开发之十大坑队友》。博主最近不太会说人话，找到点《大腕》中疯人院的状态。小朋友请在家长指导下选择性观看，看完了别忘记微博at我分享心得。</p>
 <p><script type="text/javascript" src="http://www.xiami.com/widget/player-single?uid=7307607&sid=1769297967&mode=js"></script><br>PS: 建议播放音乐以达到最佳阅读效果。</p>
 <h3 id="第十名：SCM_Attack">第十名：SCM Attack</h3>
@@ -158,7 +158,7 @@
 <h3 id="第一名：Cross_Demension_Attack">第一名：Cross Demension Attack</h3>
 <p>最能坑你的永远不是队友这种同一维度的生物，你懂的</p>
 <p>难度指数：???          杀伤指数：???          综合评定：???</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/tags/iOS/" term="iOS"/>
   </entry>
@@ -167,7 +167,7 @@
     <link href="http://www.iwangke.me/2014/06/07/wwdc-2014-download-script/"/>
     <id>http://www.iwangke.me/2014/06/07/wwdc-2014-download-script/</id>
     <published>2014-06-07T11:38:17.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:02.000Z</updated>
     <content type="html"><![CDATA[<p>Long time no C. 今天为大家带来WWDC 2014 sessoin PDFs &amp; Videos的下载脚本。</p>
 <p>多线程下载请安装axel (<code>brew install axel</code>)</p>
 <p>PDFs: </p>
@@ -176,7 +176,7 @@
 <p><code>curl https://developer.apple.com/videos/wwdc/2014/ | grep -ioI &#39;http.*._hd_.*dl=1&quot;&gt;HD&#39; | sed -e &#39;s/\?dl=1&quot;&gt;HD//g&#39;| xargs -n1 axel -a -n 8</code></p>
 <p>单线程下载请替换最后的piping section为 <code>xargs -n1 curl --remote-name</code></p>
 <p>Enjoy:)</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
   </entry>
   <entry>
@@ -184,7 +184,7 @@
     <link href="http://www.iwangke.me/2014/01/01/three-years-in-app-store-as-indie-developer/"/>
     <id>http://www.iwangke.me/2014/01/01/three-years-in-app-store-as-indie-developer/</id>
     <published>2014-01-01T06:27:38.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:02.000Z</updated>
     <content type="html"><![CDATA[<p>2011.4.20，风和日丽的一天。两个年轻人蹲在海淀黄庄地铁站外，决定以独立开发者的形式去App Store淘金。我指着中关村大厦对Yan说“等咱有了钱…”“把这楼买下来？”“在北京买套房子…”“OK开搞…”</p>
 <p>一晃小三年过去了，买房、结婚，我也有了小孩。合作关系结束了，我们也实现了当时的目标。但对于北漂来说，只是个好的开始。我跟他说过“少个合伙人，多个朋友，不亏”，希望Yan和他的家人都好。</p>
 <p>算下来一共三十个月，共获得了1750万下载量，App Store给全世界的开发者提供了一个前所未有的舞台。跟同年龄的朋友比，我们是幸运的。在这个过程中，得到了很多朋友的帮助。可能你们根本不认识我们，或者素未谋面。我读你们的博客，学习你们的代码，甚至冒昧的直接发邮件或者打电话过去。没有你们的帮助，我们不可能做到这些。</p>
@@ -193,7 +193,7 @@
 <p>Yan去做了新的事情，IndieBros Studio变成了我的one man show。IndieBros Studio还会继续存在，但我会只拿出5%的精力来打理它。下个月就回京了，不知道北京的雾霾怎么样了？质量好的话，我就省掉了烟钱:)</p>
 <p>最近一直在思考新一年的职业规划。顺便问一下？需要小二么？</p>
 <p><img src="/img/beibei.jpg" alt="快乐的小二"></p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/tags/Misc/" term="Misc"/>
   </entry>
@@ -202,7 +202,7 @@
     <link href="http://www.iwangke.me/2013/11/14/ios-7-multitask-in-a-nut-shell/"/>
     <id>http://www.iwangke.me/2013/11/14/ios-7-multitask-in-a-nut-shell/</id>
     <published>2013-11-14T15:52:42.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:02.000Z</updated>
     <content type="html"><![CDATA[<h3 id="产品经理版本">产品经理版本</h3>
 <h4 id="后台获取">后台获取</h4>
 <ul>
@@ -257,7 +257,7 @@
 <li><a href="http://www.objc.io/issue-5/multitasking.html" target="_blank" rel="external">Multitasking in iOS 7</a></li>
 <li><a href="http://mobile.tutsplus.com/tutorials/iphone/ios-7-sdk-mutlitasking-enhancements/" target="_blank" rel="external">iOS 7 SDK: Multitasking Enhancements</a></li>
 </ul>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/tags/iOS-7/" term="iOS 7"/>
   </entry>
@@ -266,7 +266,7 @@
     <link href="http://www.iwangke.me/2013/10/15/the-future-of-cocoa-networking-nsurlsession/"/>
     <id>http://www.iwangke.me/2013/10/15/the-future-of-cocoa-networking-nsurlsession/</id>
     <published>2013-10-15T06:57:46.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:02.000Z</updated>
     <content type="html"><![CDATA[<p>NSURLConnection大概有10年的历史了，很多api的设计都比较陈旧，否则<a href="https://github.com/AFNetworking/AFNetworking" target="_blank" rel="external">AFNetworking</a>不会这么火。好在苹果在iOS 7/Mavericks 引入了新的网络类NSURLSession，用以替代NSURLConnection。</p>
 <p>新的网络框架设计中，原有的NSURL/NSURLRequest/NSURLResponse这些类及相关概念都得以沿用；除了支持iOS 7的一新新特性(background download/upload)，与AFNetworking 1.x很多api设计非常相似。</p>
 <h3 id="NSURLSession">NSURLSession</h3>
@@ -310,7 +310,7 @@
 <li><a href="http://www.shinobicontrols.com/blog/posts/2013/09/20/ios7-day-by-day-day-1-nsurlsession/" target="_blank" rel="external">iOS7 Day-by-Day :: Day 1 :: NSURLSession</a></li>
 <li><a href="http://nshipster.com/afnetworking-2/" target="_blank" rel="external">AFNetworking 2.0</a></li>
 </ul>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/tags/iOS/" term="iOS"/>
   </entry>
@@ -319,7 +319,7 @@
     <link href="http://www.iwangke.me/2013/10/09/delta-update-difference-between-ios-6-and-ios-7/"/>
     <id>http://www.iwangke.me/2013/10/09/delta-update-difference-between-ios-6-and-ios-7/</id>
     <published>2013-10-09T07:57:24.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:02.000Z</updated>
     <content type="html"><![CDATA[<p><img src="http://d.pr/i/OXoB+" alt="iOS 7 installing &amp; updating apps"></p>
 <p>从iOS 6开始，App Store就支持增量更新。增量更新只支持App Store，对企业开发者的Adhoc更新无效。增量更新对于开发者以及用户都是透明的。但我们需要理解其中的机制。iOS 6与iOS 7的机制又有所不同。</p>
 <p>感谢<a href="http://weibo.com/goudou" target="_blank" rel="external">@洪亮狗豆_车内逃脱</a>的总结：iOS 6是rysnc机制，iOS 7是diff机制；后面都是我的啰嗦文字，不看也罢= =</p>
@@ -333,7 +333,7 @@
 </ul>
 <p>iOS 7的好处是最大化地降低了更新包的大小，但会增加安装的时间。</p>
 <p>Reference: <a href="https://developer.apple.com/library/ios/qa/qa1779/_index.html?utm_source=iOS+Dev+Weekly&amp;utm_campaign=iOS_Dev_Weekly_Issue_114&amp;utm_medium=email" target="_blank" rel="external">QA1779</a></p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/tags/iOS/" term="iOS"/>
   </entry>
@@ -342,7 +342,7 @@
     <link href="http://www.iwangke.me/2013/09/21/the-change-of-uitableviewcell-for-ios-7/"/>
     <id>http://www.iwangke.me/2013/09/21/the-change-of-uitableviewcell-for-ios-7/</id>
     <published>2013-09-21T14:46:57.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:02.000Z</updated>
     <content type="html"><![CDATA[<p>iOS 7的UITableViewCell内部与iOS 6有些不同，cell与contentView之间多了一层<code>UITableViewCellScrollView</code>。</p>
 <p>估计很多人的代码要作些修改了，下面简单作个比较：</p>
 <h3 id="iOS_6中UITableViewCell的View层级">iOS 6中UITableViewCell的View层级</h3>
@@ -352,7 +352,7 @@
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(lldb) po [cell recursiveDescription]</div><div class="line">&lt;UITableViewCell: <span class="number">0</span>xd984fc0; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xd982750&gt;&gt;</div><div class="line">   | &lt;UITableViewCellScrollView: <span class="number">0</span>xcca9790; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">clipsToBounds =</span> YES; <span class="variable">autoresize =</span> W+H; <span class="variable">gestureRecognizers =</span> &lt;NSArray: <span class="number">0</span>xcc54ec0&gt;; <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xccac430&gt;; contentOffset: {<span class="number">0</span>, <span class="number">0</span>}&gt;</div><div class="line">   |    | &lt;UITableViewCellContentView: <span class="number">0</span>xdb582a0; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">gestureRecognizers =</span> &lt;NSArray: <span class="number">0</span>xdb49c40&gt;; <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xdb54050&gt;&gt;</div></pre></td></tr></table></figure>
 
 <p>大家遇到了哪些问题？如何解决的？欢迎留言讨论。</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/tags/iOS-7/" term="iOS 7"/>
     <category scheme="http://www.iwangke.me/categories/Tutorial/" term="Tutorial"/>
@@ -362,7 +362,7 @@
     <link href="http://www.iwangke.me/2013/09/09/clean-xcode-to-free-up-disk-space/"/>
     <id>http://www.iwangke.me/2013/09/09/clean-xcode-to-free-up-disk-space/</id>
     <published>2013-09-09T05:22:00.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:02.000Z</updated>
     <content type="html"><![CDATA[<p>我的设备是Macbook Air 13’ Mid 2011，128G SSD。最近开始有些存储压力了，用Clean My Mac清理一部分旧文件后，决定对Xcode动手。</p>
 <h3 id="移除对旧设备的支持">移除对旧设备的支持</h3>
 <p>影响：可重新生成；再连接旧设备调试时，会重新自动生成。我移除了4.3.2, 5.0, 5.1等版本的设备支持。</p>
@@ -394,7 +394,7 @@
 <p>释放空间：2GB</p>
 <h3 id="友情提示">友情提示</h3>
 <p>我一共释放出了30GB左右的磁盘空间，这对128 GB的SSD来说可是不小的数字。如果你的磁盘空间不紧张，或者使用HDD，我建议不要进行这些操作。使用SSD的朋友酌情清理吧。</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/categories/Tips/" term="Tips"/>
   </entry>
@@ -403,10 +403,10 @@
     <link href="http://www.iwangke.me/2013/04/28/free-apps-and-free-games/"/>
     <id>http://www.iwangke.me/2013/04/28/free-apps-and-free-games/</id>
     <published>2013-04-28T12:34:00.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:02.000Z</updated>
     <content type="html"><![CDATA[<p>这回谈<a href="/pages/app-store-essentials-for-chinese-developers.html#freeapps">免费应用</a>和<a href="/pages/app-store-essentials-for-chinese-developers.html#freegames">免费游戏</a>，抱歉跳票了这么久。</p>
 <p>感觉很多东西都没有必要说，如果朋友们有什么想交流的，直接留言吧:)</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/categories/App-Store-Essentials/" term="App Store Essentials"/>
   </entry>
@@ -415,7 +415,7 @@
     <link href="http://www.iwangke.me/2013/04/18/advanced-cocoapods/"/>
     <id>http://www.iwangke.me/2013/04/18/advanced-cocoapods/</id>
     <published>2013-04-18T07:30:00.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:01.000Z</updated>
     <content type="html"><![CDATA[<p>粉笔网的iOS工程师<a href="http://weibo.com/tangqiaoboy" target="_blank" rel="external">唐巧</a>曾经写过一篇blog<a href="http://blog.devtang.com/blog/2012/12/02/use-cocoapod-to-manage-ios-lib-dependency/" target="_blank" rel="external">《使用CocoaPods来做iOS程序的包依赖管理》</a>介绍了基本的CocoaPods使用方法。本文将另外谈一谈如何使用CocoaPods进行本地的包管理。建议没有接触过CococaPods的朋友先阅读一下唐巧的blog。</p>
 <h3 id="为什么要进行本地的包管理">为什么要进行本地的包管理</h3>
 <ul>
@@ -461,7 +461,7 @@
 <p>希望这个blog对大家使用CocoaPods有所帮助。</p>
 <p>赶个时髦，祝大家<em>一帆风顺</em>。</p>
 <p><img src="https://pbs.twimg.com/media/BIGmipnCMAAt7gZ.jpg" alt="一帆风顺"></p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/categories/iOS/" term="iOS"/>
   </entry>
@@ -470,14 +470,14 @@
     <link href="http://www.iwangke.me/2013/04/17/fuck-you-weibo/"/>
     <id>http://www.iwangke.me/2013/04/17/fuck-you-weibo/</id>
     <published>2013-04-17T12:18:00.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:01.000Z</updated>
     <content type="html"><![CDATA[<p>今天老婆帮助岳父注册了一个新浪微博账号，遇到林林总总的反人类的体验。</p>
 <p>先打开iPad客户端注册，注册要邮箱。OK输入没问题，接着要邮箱验证。验证完可以登录了吧？不行，要求通过互联网登录，账号异常。</p>
 <p>脑补了一下，终于明白什么是“互联网”。好吧，打开Safari Mobile，要求填各种资料，学校信息都是必填的，忍了填之，接着要验证手机号。收到一条短信，6位验证码填之。填完了后，终于可以登录了。</p>
 <p>登录后，粉了老婆和我。评论了一条微博，结果我们没有收到粉丝信息。查找岳父账号找不到，刚刚发出的评论被屏蔽。</p>
 <p>接着Safari Mobile登录，说用户异常。App登录，说用户不存在，接着一直crash。再用Safari Mobile登录，说要重新验证，又收到短信，6位验证码，这回终于OK了。</p>
 <p>岳父早就不耐烦了，老婆也崩溃了，我正好也敲完了这点文字。</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/categories/Misc/" term="Misc"/>
   </entry>
@@ -486,7 +486,7 @@
     <link href="http://www.iwangke.me/2013/04/01/two-news/"/>
     <id>http://www.iwangke.me/2013/04/01/two-news/</id>
     <published>2013-04-01T11:42:00.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:01.000Z</updated>
     <content type="html"><![CDATA[<h3 id="告别IndieBros_Studio">告别IndieBros Studio</h3>
 <p>做独立开发者23个月了，IndieBros Studio一共在全球得到1200W+用户的支持，十分欣慰。</p>
 <p>But it’s time to change.</p>
@@ -507,7 +507,7 @@
 </ul>
 <p>有需要的朋友可以在<a href="http://www.lowendbox.com/blog/nukevps-%E2%82%A97-32mb-virtuzzo-vps-in-pyongyang-north-korea-for-now/#comment-108101" target="_blank" rel="external">这里</a>订购。科学上网，从我做起。</p>
 <p>最后祝朋友们节日快乐。</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/categories/Misc/" term="Misc"/>
   </entry>
@@ -516,7 +516,7 @@
     <link href="http://www.iwangke.me/2013/03/16/keep-your-faith-and-judgment/"/>
     <id>http://www.iwangke.me/2013/03/16/keep-your-faith-and-judgment/</id>
     <published>2013-03-15T16:41:00.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:01.000Z</updated>
     <content type="html"><![CDATA[<p>当时针和分针脱下大裤衩，将双腿分开成这个角度，一场没有小JJ的闹剧就开始了。</p>
 <h3 id="八点二十发">八点二十发</h3>
 <p>3.15晚会是一场全球1/5消费者的狂欢。何润东微博最末尾一句的“八点二十发”在不到短短一个小时占领了整个微博。针对苹果一场有预谋的公关在8点20消然开始，可惜从一开始就露了馅。我相信820这事儿，很多人一辈子都不知道，但对苹果的坏印象会一直保留下来。不可这么一闹，Galaxy 4算是白发布了，巧合、巧合还是巧合？脑残公关还是一箭双雕这就不得而知了。</p>
@@ -538,7 +538,7 @@
 <p>这个时代不需要大字报了，谁也不希望被代表。既然那么恨苹果，就不要拿iPhone/iPad客户端发微博。抵制苹果，从我做起，从一点一滴的小事做起…举手之劳，我们能做的还有很多，入戏了…网易也中招了，现在还在”自黑”。一直对网易的印象不错，用他们自己的话说“有态度”。高德2年前的客户端被搞了…额，小学数学不及格，长大永远不能当会计。花钱消灾，学学百度。</p>
 <p>这就是我为什么需要Google Reader。我只想看我想看的，不管它是对的还是错的。不要塞给我32版其中24版老中医广告其它8版主旋律的xx晚报。</p>
 <p><strong>8点20了，取了报纸洗洗睡了。</strong> 最后还是那句话：想做人，就不能不要脸；想做品牌，就不能没底线。我这人就是土没办法，想想文化人姜文是怎么说的。</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/categories/Misc/" term="Misc"/>
   </entry>
@@ -547,12 +547,12 @@
     <link href="http://www.iwangke.me/2013/03/03/xcode-ios-project-missing-destination/"/>
     <id>http://www.iwangke.me/2013/03/03/xcode-ios-project-missing-destination/</id>
     <published>2013-03-03T08:53:00.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:01.000Z</updated>
     <content type="html"><![CDATA[<p>有的时候，我的iOS proj会出现Scheme Destination丢失的现象，Destination只显示My Mac 64-bit，如图：</p>
 <p><img src="http://d.pr/i/Gcbe+" alt="Scheme Destination"></p>
 <p>一般我们清除Derived Data并重启Xcode就会正常，如果实在不行，需要手动设置Executable为Destination:</p>
 <p><img src="http://d.pr/i/lsQL+" alt="Setup Scheme Destination Manully"></p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/categories/Tips/" term="Tips"/>
   </entry>
@@ -561,7 +561,7 @@
     <link href="http://www.iwangke.me/2013/03/02/chinese-developers-have-some-bugs/"/>
     <id>http://www.iwangke.me/2013/03/02/chinese-developers-have-some-bugs/</id>
     <published>2013-03-02T12:51:00.000Z</published>
-    <updated>2014-10-08T06:21:46.000Z</updated>
+    <updated>2014-10-12T07:50:01.000Z</updated>
     <content type="html"><![CDATA[<p>最近一些文章被转载了，谢谢各位编辑。有些同行看到我的blog，也过来找我聊了聊。真的让我获得了一些有价值的想法，同时也有很多重复的问题，不吐不快。可能以前我在别人眼中也是这样，可能你以前或者现在也是这样，所以今天聊一聊，咱想到哪说到哪。</p>
 <h3 id="不会问问题">不会问问题</h3>
 <p>小事问SO，大事问Google。别围着同事问来问去。问问题之前，要先准备好，术语都说不出来，怎么沟通？功课是一定要做的，keyword都不知道怎么行？我也遇到过这种情况，真的一无所知，不知道从哪下手。索性我就说“真的一点不了解，给我一个keyword”吧，至少表明我还是愿意自己先把一些事情搞清楚的。不要做伸手党。</p>
@@ -587,7 +587,7 @@
 <p>这条最可怕。每天无忧无虑心宽体胖，今天不会明天不会明年还不会。从四线城市奔到北上广一个月税后就剩3k还整天妹纸Dota星巴克，咱别这么折腾行么？有钱有势的赶快回老家混个村长当，没钱没势的赶快多赚点钱娶个媳妇指望下一代逆袭才是王道。穷则思变。</p>
 <p>写字的时候有点怒，加上最近手哥微博看多了有点入戏，请见谅。扯了这么多，其实大家都是这样过来的。与君共勉。</p>
 <p>PS：以后blog都会全文输出RSS，不会添加“继续阅读”的链接。抱歉以前浪费了大家时间和一次额外点击。</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/categories/Misc/" term="Misc"/>
   </entry>
@@ -596,10 +596,10 @@
     <link href="http://www.iwangke.me/2013/02/27/selling-apps/"/>
     <id>http://www.iwangke.me/2013/02/27/selling-apps/</id>
     <published>2013-02-27T10:44:00.000Z</published>
-    <updated>2014-10-08T06:21:45.000Z</updated>
+    <updated>2014-10-12T07:50:01.000Z</updated>
     <content type="html"><![CDATA[<p>这回谈<a href="/pages/app-store-essentials-for-chinese-developers.html#sales">销售App</a>。</p>
 <p>更新得比较慢，内容也比较水，各位凑合看吧。</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/categories/App-Store-Essentials/" term="App Store Essentials"/>
   </entry>
@@ -608,10 +608,10 @@
     <link href="http://www.iwangke.me/2013/02/20/hig-and-objc/"/>
     <id>http://www.iwangke.me/2013/02/20/hig-and-objc/</id>
     <published>2013-02-20T12:31:00.000Z</published>
-    <updated>2014-10-08T06:21:45.000Z</updated>
+    <updated>2014-10-12T07:50:01.000Z</updated>
     <content type="html"><![CDATA[<p>谈谈<a href="/pages/app-store-essentials-for-chinese-developers.html#hig">HIG</a>和<a href="/pages/app-store-essentials-for-chinese-developers.html#objc">Objective-C</a>。春节过了，最近开始忙了，更新会缓慢一些，但还是争取每周写一些。</p>
 <p>后面的小节实际的东西比较多，看热闹的人可能越来越少了，总不能一直讲段子吧。</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/categories/App-Store-Essentials/" term="App Store Essentials"/>
   </entry>
@@ -620,7 +620,7 @@
     <link href="http://www.iwangke.me/2013/02/18/get-itunes-raw-response-with-mitmproxy/"/>
     <id>http://www.iwangke.me/2013/02/18/get-itunes-raw-response-with-mitmproxy/</id>
     <published>2013-02-18T08:38:00.000Z</published>
-    <updated>2014-10-08T06:21:45.000Z</updated>
+    <updated>2014-10-12T07:50:01.000Z</updated>
     <content type="html"><![CDATA[<p>去年写了一个<a href="https://github.com/ewangke/CustomersAlsoReviewed-AppStore" target="_blank" rel="external">App Store用户评论相关性的分析脚本</a>。当时的iTunes 10还没有使用HTTPs协议，使用<a href="https://github.com/ewangke/CustomersAlsoReviewed-AppStore#-1" target="_blank" rel="external">tcpdump的方法</a>还可以获得iTunes的请求和响应。随着iTuens 11的发布，苹果对iTunes里App Store的一些页面进行了重新设计与制作。原来的脚本和方法都失效了。今天有个朋友发邮件来问我，于是有了这篇blog。</p>
 <h3 id="mitmproxy">mitmproxy</h3>
 <p><a href="http://mitmproxy.org/" target="_blank" rel="external">mitmproxy</a>全称是指Man-In-The-Middle Proxy。利用它可以替换掉HTTPs请求的证书，之后所有的请求都变成“透明”的了。之后可以Reply request，也可以修改request。去年玩Clash of Clans很入迷，于是把Game Center的自己都改满了，不要BS我- -!</p>
@@ -635,7 +635,7 @@
 <p><img src="http://d.pr/i/UOjG+" alt="实际的response"></p>
 <h3 id="关于评论相关性分析脚本">关于评论相关性分析脚本</h3>
 <p>最近没有精力维护了，有兴趣的朋友可以用上述方法，把response搞出来parse一下。记得给我发pull request，不胜感激。</p>
-<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，推荐成功即奖励6000元现金或iPhone 6一部，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
 ]]></content>
     <category scheme="http://www.iwangke.me/categories/Tutorial/" term="Tutorial"/>
   </entry>
