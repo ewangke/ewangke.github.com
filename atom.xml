@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[iWangKe.me]]></title>
+  <subtitle><![CDATA[Indie iOS developer & Designer]]></subtitle>
+  <link href="http://www.iwangke.me/atom.xml" rel="self"/>
+  <link href="http://www.iwangke.me"/>
+  <updated>2014-10-12T07:39:03.277Z</updated>
+  <id>http://www.iwangke.me/</id>
+  <author>
+    <name><![CDATA[iWangKe.me]]></name>
+    <email><![CDATA[ewangke@gmail.com]]></email>
+  </author>
+  <generator uri="http://zespia.tw/hexo">Hexo</generator>
+  <entry>
+    <title type="html"><![CDATA[基于Core Animation的KTV歌词视图的平滑实现]]></title>
+    <link href="http://www.iwangke.me/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/"/>
+    <id>http://www.iwangke.me/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/</id>
+    <published>2014-10-06T15:34:56.000Z</published>
+    <updated>2014-10-08T06:23:26.000Z</updated>
+    <content type="html"><![CDATA[<p>KTV歌词视图，只要去过KTV的的朋友一定不会陌生。我们先来看一下最终的效果，再一步步说明唱吧歌词视图的演进。想把事件事情说得清清楚楚的确很难，有很多tricky的地方；另外毕竟不是open source的，只能给大家挑重点分享一下实现的过程和思路。</p>
+<p><img src="/img/lyrics_changba_6.png" alt="唱吧6.0歌词视图"></p>
+<h3 id="歌词视图剖析">歌词视图剖析</h3>
+<p>一个体验良好的歌词视图，由以下方面组成，这也是我们的设计目标：</p>
+<ul>
+<li>有倒计时功能，歌者可以提前作演唱的准备</li>
+<li>根据场景的不同，支持多行或者双行显示，为歌者提供演唱的上下文</li>
+<li>歌者清晰的了解当前在唱哪一句歌词，我称之为焦点行</li>
+<li>焦点行需要染色，并需要精准地作逐字渲染</li>
+<li>两句之前使用适当的动画换行过渡</li>
+<li>歌词动画平滑不突兀，适应不同节奏的歌曲</li>
+<li>根据产品和设计师的要求，灵活地对歌词视图进行字体、颜色调整（1/3/5是绿色，2/4/6是红色，阴历节日是黄色，I’m serious and it’s safe to forget Sunday! Cheers!）</li>
+</ul>
+<p>此外我们还需要了解一下歌词信息的结构，大致如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Line</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSArray</span> *words;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *text;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> start;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> length;</div><div class="line"><span class="keyword">@end</span></div><div class="line">    </div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Word</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *text;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> start;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> length;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+
+<ul>
+<li>一首歌的歌词我们称之为Lyrics</li>
+<li>Lyrics包含多行，每行我们称之为Line; Line有它的start及length，分别代表时间戳以及长度</li>
+<li>Line包含多个字，每个字我们称之为Word; Word也有它的start以及length，分别代表时间戳以及长度</li>
+</ul>
+<p>了解完这些我们看看如何来渲染焦点行歌词，先看简单直接的方式。</p>
+<h3 id="基于Core_Graphics的实现">基于Core Graphics的实现</h3>
+<p>我们知道歌曲的开始时间，也有歌词数据提供时间支持，那么就可以计算出当前歌词视图的状态。对于歌词的焦点行，有两部分状态：</p>
+<ul>
+<li>歌者已经演唱的部分，渲染成绿色</li>
+<li>歌者待演唱的部分，渲染成白色</li>
+</ul>
+<p>我们省略计算的过程，假设已经得出绿色、白色歌词的rect及point，就可以直接渲染了：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">LyricsView</span></span></div><div class="line">- (<span class="keyword">void</span>)drawRect:(<span class="built_in">CGRect</span>)rect {</div><div class="line">    <span class="comment">// Assume we calcuated them before</span></div><div class="line">    <span class="built_in">CGRect</span> greenRect;</div><div class="line">    <span class="built_in">CGRect</span> whiteRect</div><div class="line">    <span class="built_in">CGPoint</span> greenPoint;</div><div class="line">    <span class="built_in">CGPoint</span> whitePoint;</div><div class="line">    </div><div class="line">    <span class="comment">// We have the focus line and font</span></div><div class="line">    Line *line;</div><div class="line">    <span class="built_in">UIFont</span> *font;</div><div class="line">    </div><div class="line">    <span class="comment">// Render focus line text</span></div><div class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</div><div class="line">    </div><div class="line">    CGContextSaveGState(context);</div><div class="line">    CGContextClipToRect(context, greenRect);</div><div class="line">    [[<span class="built_in">UIColor</span> greenColor] set];</div><div class="line">    [line<span class="variable">.text</span> drawAtPoint:greenPoint withFont:font];</div><div class="line">    CGContextRestoreGState(context);</div><div class="line">    </div><div class="line">    CGContextSaveGState(context);</div><div class="line">    CGContextClipToRect(context, whiteRect);</div><div class="line">    [[<span class="built_in">UIColor</span> whiteColor] set];</div><div class="line">    [line<span class="variable">.text</span> drawAtPoint:whitePoint withFont:font];</div><div class="line">    CGContextRestoreGState(context);</div><div class="line">}</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+
+<p>本质上我们使用了NSString的UIStringDrawing Category搞定了这个事情。既然我们解决了任一时间点的状态，那么把它动起来也很容易：</p>
+<ul>
+<li>将这段code snippet放到LyricsView的drawRect中</li>
+<li>以60 FPS的频率调用[lyricsView setNeedsDisplay]</li>
+</ul>
+<p>一切看起来很直观，但问题来了，这个歌词视图根本跑不到60 FPS（我保证这个效果看起来像癫痫一样儿，v4.9之前就是一直这么癫过来的），即使在目前性能最强的iPhone 5S上。我们来分析一下原因：</p>
+<ul>
+<li>Core Graphics使用CPU作渲染</li>
+<li>这个界面是CPU intensive，需要播放伴奏，还需要录制歌者的声音，甚至需要给声音加“滤镜”</li>
+<li>还有对歌者进行实时打分的task及动画</li>
+<li>回望过去5年iPhone的硬件发展，GPU的提升也远高于CPU，不能指望短期设备升级解决这个问题</li>
+</ul>
+<p>5S上毕竟还可以跑到50FPS，但低端设备的FPS对我来讲是实在是没法接受的。唱吧是线上KTV的应用的用户体验标准，不解决这个问题是说不过去的。既然CPU不给力，那么我们让GPU来做这件事情。</p>
+<h3 id="基于Core_Animation的实现">基于Core Animation的实现</h3>
+<p>14年初的时候，Facebook open source了惊艳的<a href="https://github.com/facebook/Shimmer" target="_blank" rel="external">Shimmer</a>。由于跟我设想的实现机制是相同的，直接拖了几百个shimmer view作了一下profile，在4S上都可以达到完美的60FPS。</p>
+<p>让我们先理一下思路，看看基于Core Animation的焦点行的视图结构：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby"> <span class="constant">GreenLineLabel</span><span class="symbol">:</span> <span class="constant">UILabel</span></span></div><div class="line">-<span class="ruby"> <span class="constant">WhiteLineLabel</span><span class="symbol">:</span> <span class="constant">UILabel</span></span></div></pre></td></tr></table></figure>
+
+<p>没错，就是简单的把绿色的UILabel置于白色的之上，剩下的问题就是如何控制绿色的UILabel按我们的时间控制进行部分渲染。</p>
+<p>部分渲染就是加一个mask，我们来看一下CALayer的mask property:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@<span class="keyword">interface</span> <span class="type">CALayer</span> : <span class="type">NSObject</span> &lt;<span class="type">NSCoding</span>, <span class="type">CAMediaTiming</span>&gt;</div><div class="line">/* A layer whose alpha channel <span class="keyword">is</span> used <span class="keyword">as</span> a mask to select between the</div><div class="line"> * layer's background <span class="keyword">and</span> the <span class="literal">result</span> <span class="keyword">of</span> compositing the layer's</div><div class="line"> * contents <span class="keyword">with</span> its filtered background. <span class="type">Defaults</span> to <span class="keyword">nil</span>. <span class="type">When</span> used <span class="keyword">as</span></div><div class="line"> * a mask the layer's `compositingFilter' <span class="keyword">and</span> `backgroundFilters'</div><div class="line"> * properties are ignored. <span class="type">When</span> setting the mask to a new layer, the</div><div class="line"> * new layer must have a <span class="keyword">nil</span> superlayer, otherwise the behavior <span class="keyword">is</span></div><div class="line"> * undefined. <span class="type">Nested</span> masks (mask layers <span class="keyword">with</span> their own masks) are</div><div class="line"> * unsupported. */</div><div class="line">@property(strong) <span class="type">CALayer</span> *mask;</div><div class="line">@<span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>我们可以知道，mask layer的alpha用来与CALayer的content进行alpha blending，如果alpha为1则content显示，反之不显示。受Shimmer的启发，我们可以对mask作动画，让它从左到右移动到绿色歌词的layer上，并最终与之重合。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">GreenLineLabel</span>: <span class="title">UILabel</span></span></div><div class="line"><span class="keyword">@end</span></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">GreenLineLabel</span> </span>{</div><div class="line">    CALayer *_maskLayer;</div><div class="line">}</div><div class="line">- (instance)initWithFrame:(<span class="built_in">CGRect</span>)frame {</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:frame];</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) {</div><div class="line">        _maskLayer = [CALayer layer];</div><div class="line">        _maskLayer<span class="variable">.backgroundColor</span> = [[<span class="built_in">UIColor</span> whiteColor] CGColor];    <span class="comment">// Any color, only alpha channel matters</span></div><div class="line">        _maskLayer<span class="variable">.anchorPoint</span> = CGPointZero;</div><div class="line">        _maskLayer<span class="variable">.frame</span> = CGRectOffset(<span class="keyword">self</span><span class="variable">.frame</span>, -CGRectGetWidth(<span class="keyword">self</span><span class="variable">.frame</span>), <span class="number">0</span>);</div><div class="line">        <span class="keyword">self</span><span class="variable">.layer</span><span class="variable">.mask</span> = _maskLayer;</div><div class="line">        <span class="keyword">self</span><span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> clearColor];</div><div class="line">    }</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>上面这段代码我们将_maskLayer的anchorPoint设置为CGPointZero，便于后面的动画计算坐标。</p>
+<p>下面我们对_maskLayer的position作CAKeyframeAnimation动画，根据歌词数据我们可以算出每个字渲染的时间(keyTimes)和动画总时长(duration)。假设每个字是等宽的，我们可以算出_maskLayer在每一个keyTime的position，也就是values。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (void)startAnimation {</div><div class="line">    // Assume we calculated keyTimes <span class="constant">and</span> values</div><div class="line">    NSMutableArray *keyTimes;</div><div class="line">    NSMutableArray *values;</div><div class="line">    CGFloat duration;</div><div class="line"></div><div class="line">    CAKeyframeAnimation *<span class="variable">animation =</span> [CAKeyframeAnimation animationWithKeyPath:@<span class="string">"position"</span>];</div><div class="line">    animation.<span class="variable">keyTimes =</span> keyTimes;</div><div class="line">    animation.<span class="variable">values =</span> values;</div><div class="line">    animation.<span class="variable">duration =</span> duration;</div><div class="line">    animation.<span class="variable">calculationMode =</span> kCAAnimationLinear;</div><div class="line">    animation.<span class="variable">fillMode =</span> kCAFillModeForwards;</div><div class="line">    animation.<span class="variable">removedOnCompletion =</span> NO;</div><div class="line">    [_maskLayer addAnimation:animation forKey:@<span class="string">"MaskAnimation"</span>];</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>至此我们完成了基于Core Animation的歌词焦点行染色动画。</p>
+<h3 id="写在后面">写在后面</h3>
+<p>很抱歉我提供的code snippet不是production ready，歌词动画是一个非常复杂的系统，很难单独抽离出来介绍给大家，所以只能管窥一豹地介绍下。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/tags/iOS/" term="iOS"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[唱吧诚聘iOS开发工程师]]></title>
+    <link href="http://www.iwangke.me/2014/10/06/changba-is-hiring/"/>
+    <id>http://www.iwangke.me/2014/10/06/changba-is-hiring/</id>
+    <published>2014-10-06T13:42:42.000Z</published>
+    <updated>2014-10-08T08:49:34.000Z</updated>
+    <content type="html"><![CDATA[<h3 id="公司简介">公司简介</h3>
+<p>唱吧（最淘科技有限公司）由<a href="http://weibo.com/dawnli" target="_blank" rel="external">陈华Tony</a>创立于2011年。在经历数次pivot，终于找准了手机KTV方向，是国内为数不多的用户过亿的移动互联网公司之一。<br>Tony作为互联网老兵(酷迅创始人，前阿里高管，搜索专家)，有丰富的管理、产品和技术经验，公司高管层来自酷迅、BAT、苹果等一流公司。<br>唱吧在2011年曾先后获得蓝驰创投和红杉资本的A、B轮数千万美金风险投资。公司发展迅速，业务稳健，财务健康。</p>
+<p><img src="/img/changba.png" alt="唱吧"></p>
+<h3 id="团队介绍">团队介绍</h3>
+<p>唱吧团队有着浓厚的产品和技术氛围，无996加班文化。<br>作为唱吧员工，每年享受10天带薪病假，5天带薪年假，五险一金齐全。 若有紧急加班可以调休，无考勤，弹性工作制。 自带设备(Macbook)公司给予补贴。<br>公司员工男女比例为1:1，平均年龄不到30岁，富有朝气。 每年至少两次的全体出游，每月一次的小组TB，每周的幸运饭团。 公司有钢琴房和K歌房，午休或者下班后可以去玩，每周有免费瑜伽课程和篮球比赛。<br>公司目前在三元桥第三置业大厦办公，临近地铁交通方便。</p>
+<p><img src="/img/第三置业.png" alt="第三置业"></p>
+<h3 id="由于公司业务拓展、产品研发的需要，诚聘iOS研发人才">由于公司业务拓展、产品研发的需要，诚聘iOS研发人才</h3>
+<ul>
+<li>精通iOS SDK，熟练掌握Xcode/Instrument相关开发工具</li>
+<li>熟悉常用的算法和数据结构，对设计模式有一定理解</li>
+<li>熟练掌握SVN/Git之一的SCM工具</li>
+<li>聪明严谨，有良好的编码风格和工作习惯</li>
+<li>无障碍阅读英文文档，有独立解决未知复杂技术问题的能力</li>
+<li>懂折衷，擅沟通，有团队精神</li>
+</ul>
+<p>加分项：</p>
+<ul>
+<li>技术经验丰富，有服务器/Web开发经验，掌握任意一种脚本语言</li>
+<li>擅长音视频、图形图像处理</li>
+<li>有创业经历或有App Store上架App</li>
+<li>Github开源项目(不局限于Objective-C)</li>
+<li>熟读iOS Human Interface Guideline，有PM/UED等工作经验，或对产品、交互、用户体验有深刻理解</li>
+<li>热爱音乐，喜欢K歌或者会演奏乐器</li>
+</ul>
+<h3 id="薪酬范围">薪酬范围</h3>
+<p>唱吧提供不低于一线互联网公司如BAT的薪酬待遇，根据具体职位面议，诚邀感兴趣的朋友随时来公司坐坐。</p>
+<h3 id="联系方式：">联系方式：</h3>
+<p>请发送PDF/Docx格式简历至ewangke#gmail.com，或者<a href="http://weibo.com/indiebros" target="_blank" rel="external">微博私信我</a>。此招聘长期有效，欢迎推荐及自荐。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[iOS应用开发之十大坑队友]]></title>
+    <link href="http://www.iwangke.me/2014/09/04/fuck-your-ios-teamates/"/>
+    <id>http://www.iwangke.me/2014/09/04/fuck-your-ios-teamates/</id>
+    <published>2014-09-04T15:50:24.000Z</published>
+    <updated>2014-10-08T06:23:21.000Z</updated>
+    <content type="html"><![CDATA[<p>之前做Indie Dev都是自己坑自己，两三年也没坑出来多少花样深感惭愧。最近功力大增但不敢独享，给大家带来天下码农之《iOS应用开发之十大坑队友》。博主最近不太会说人话，找到点《大腕》中疯人院的状态。小朋友请在家长指导下选择性观看，看完了别忘记微博at我分享心得。</p>
+<p><script type="text/javascript" src="http://www.xiami.com/widget/player-single?uid=7307607&sid=1769297967&mode=js"></script><br>PS: 建议播放音乐以达到最佳阅读效果。</p>
+<h3 id="第十名：SCM_Attack">第十名：SCM Attack</h3>
+<p>适用于使用各种类型的SCM，或者干脆不用。以git举例。只提交编译错误的代码，或者保证App一打开就crash，不帮忙改了bug别想绕过去；不正确设置gitignore文件，彰显个性；每个commit至少几十个文件，突显代码量；Log永远是潇洒的bug fix或者fix bug，只可意会不可言传；别人用rebase咱就用merge或者反过来，总之要有自己的特色；喜欢code reivew的速来接招。</p>
+<p>难度指数：6          杀伤指数：6          综合评定：6</p>
+<h3 id="第九名：Coding_Style_Attack">第九名：Coding Style Attack</h3>
+<p>此类型攻击覆盖范围之广，无人出其右。头文件不写注释，保留一堆永远不会完成的TODO/FIXME，再穿插着保留600行间歇注释掉的有模有样儿的代码；咱是.NET背景所有property一律get/set整齐划一；偶尔再来个downloadFile/downloadFile2这样写意的命名，一细看还真的不一样儿；每行代码都写几个magic number除了你没人懂什么意思；代码风格的辨识度高，以至于blame view都是多余的。</p>
+<p>难度指数：6          杀伤指数：7          综合评定：6.5</p>
+<h3 id="第八名：Multi_Threading_Attack">第八名：Multi Threading Attack</h3>
+<p>本着不过度优化的原则将运算塞满主线程，反正负责优化的多数不是自己；各种Mutable对象线程间传来传去，for循环中改改更健康；sleep/dispatch_after活学活用问题搞不定全靠它；单件就有5种写法完爆茴字（老板来壶黄酒）。</p>
+<p>难度指数：6          杀伤指数：8          综合评定：7</p>
+<h3 id="第七名：Header_Attack">第七名：Header Attack</h3>
+<p>Coding Style Attack的进化；500行的header如家常便饭，管它private还是public的直接往这里扔；除了没注释还不提供初始化方法，暴露几十个property，其中的5个要是特定值某个无参方法就没法工作；最后再把一堆有关无关的header都往Prefix.pch里扔，编译时咱就拼硬件。</p>
+<p>难度指数：7          杀伤指数：8          综合评定：7.5</p>
+<h3 id="第六名：OO_Attack">第六名：OO Attack</h3>
+<p>此门技艺博大精深，属无招胜有招的范畴；能继承就不用组合，继承层次小于3层出门不好意思跟人打招呼，基类永远只有一个唯一子类。if/else嵌套个六、七层不嫌多，一对大括号保证你一屏看不完，让鼓吹多态的学院派一边凉快去；调用super咱就随机位置随机call，姿势随心情而定。</p>
+<p>难度指数：7          杀伤指数：9          综合评定：8</p>
+<h3 id="第五名：View_Hierarchy_Attack">第五名：View Hierarchy Attack</h3>
+<p>此类适用于使用自定义的“容器类”那票朋友。甭管View Controller的生命周期，App启动时一并创建并称之为预加载，然后每个VC贴几十上百个视图上去，使用Reveal/Xcode View Debugging时给人一种小朋友看火车的感觉，感叹自己的屏幕不够宽；再对View hierarchy各种深度广度遍历，对第n层某个view来个强制转换。图片一定要拉伸，所有视图全透明，像素一定不能对齐；种种招数保证了iPhone 5S最多跑到30FPS，瞬间充满对iPhone 6的期待。</p>
+<p>难度指数：7          杀伤指数：10          综合评定：8.5</p>
+<h3 id="第四名：Massive_Attack">第四名：Massive Attack</h3>
+<p>此招集六大门派之精华，单一使出来都不够带感。Massive VC打头阵，View Controller 5000行起；基类有什么塞什么，方法的caller count为1最好；再来几十个singleton或者工具类，头文件塞上几百个类方法，最好还都没有参数和返回值；有一种恢弘大气的感觉就对了。</p>
+<p>难度指数：9          杀伤指数：9          综合评定：9</p>
+<h3 id="第三名：Dynamic/Typeless_Attack">第三名：Dynamic/Typeless Attack</h3>
+<p>充分利用Objective-C的动态性，能用id咱就不用具体类型；API response/NSNotification/db里面数以百计的key/value飞来飞去；同一个东西在不同的地方类型和名字一定要有差异；诸如此类我们称之为了解代码熟悉业务，需要挂debugger说明代码不熟或者你太弱了；重构工具就是摆设，因为你根本用不了。</p>
+<p>难度指数：9          杀伤指数：10          综合评定：9.5</p>
+<h3 id="第二名：Runtime_Attack">第二名：Runtime Attack</h3>
+<p>+Load里面各种黑魔法，黑得小伙伴没人敢动；Catetory中搞些同名方法再加诡异的method swizzling。这类招数杀伤力极强，很可能数小时也定位不了问题所在，又能提升逼格，强烈推荐。</p>
+<p>难度指数：10          杀伤指数：10          综合评定：10</p>
+<h3 id="第一名：Cross_Demension_Attack">第一名：Cross Demension Attack</h3>
+<p>最能坑你的永远不是队友这种同一维度的生物，你懂的</p>
+<p>难度指数：???          杀伤指数：???          综合评定：???</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/tags/iOS/" term="iOS"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[WWDC 2014 PDF 及session 视频下载脚本]]></title>
+    <link href="http://www.iwangke.me/2014/06/07/wwdc-2014-download-script/"/>
+    <id>http://www.iwangke.me/2014/06/07/wwdc-2014-download-script/</id>
+    <published>2014-06-07T11:38:17.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p>Long time no C. 今天为大家带来WWDC 2014 sessoin PDFs &amp; Videos的下载脚本。</p>
+<p>多线程下载请安装axel (<code>brew install axel</code>)</p>
+<p>PDFs: </p>
+<p><code>curl https://developer.apple.com/videos/wwdc/2014/ | grep -ioI &#39;http.*pdf?dl=1&#39; | sed &#39;s/\?dl=1//g&#39; | xargs -n1 axel -a -n 4</code></p>
+<p>Videos:</p>
+<p><code>curl https://developer.apple.com/videos/wwdc/2014/ | grep -ioI &#39;http.*._hd_.*dl=1&quot;&gt;HD&#39; | sed -e &#39;s/\?dl=1&quot;&gt;HD//g&#39;| xargs -n1 axel -a -n 8</code></p>
+<p>单线程下载请替换最后的piping section为 <code>xargs -n1 curl --remote-name</code></p>
+<p>Enjoy:)</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[我在App Store这三年]]></title>
+    <link href="http://www.iwangke.me/2014/01/01/three-years-in-app-store-as-indie-developer/"/>
+    <id>http://www.iwangke.me/2014/01/01/three-years-in-app-store-as-indie-developer/</id>
+    <published>2014-01-01T06:27:38.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p>2011.4.20，风和日丽的一天。两个年轻人蹲在海淀黄庄地铁站外，决定以独立开发者的形式去App Store淘金。我指着中关村大厦对Yan说“等咱有了钱…”“把这楼买下来？”“在北京买套房子…”“OK开搞…”</p>
+<p>一晃小三年过去了，买房、结婚，我也有了小孩。合作关系结束了，我们也实现了当时的目标。但对于北漂来说，只是个好的开始。我跟他说过“少个合伙人，多个朋友，不亏”，希望Yan和他的家人都好。</p>
+<p>算下来一共三十个月，共获得了1750万下载量，App Store给全世界的开发者提供了一个前所未有的舞台。跟同年龄的朋友比，我们是幸运的。在这个过程中，得到了很多朋友的帮助。可能你们根本不认识我们，或者素未谋面。我读你们的博客，学习你们的代码，甚至冒昧的直接发邮件或者打电话过去。没有你们的帮助，我们不可能做到这些。</p>
+<p>App Store的独立开发者经历，对我是非常宝贵的。验证了自己的一些想法，也学习了很多Human Nature的东西。对于工程师来讲，世界的运转就是抽象的0和1，其实不(完全)是这样的。技术和积累往往是线性的，但人生的感悟却是阶跃式的。</p>
+<p>这三年来，离职、“创业”；结婚生子、买房装修。感谢老婆，一生有你。最近这十八个月，一直不在北京，在福建的一个五线城市陪伴家人。一个朋友对我说“你错失了移动互联网最黄金的一段时间”。他说的可能是对的，可能不是，但我不后悔。一直以为，我的天花板不够高，这两年就算是一个高原期吧。我相信付出终有回报，只不过在时间点、形式上有所差异吧。</p>
+<p>Yan去做了新的事情，IndieBros Studio变成了我的one man show。IndieBros Studio还会继续存在，但我会只拿出5%的精力来打理它。下个月就回京了，不知道北京的雾霾怎么样了？质量好的话，我就省掉了烟钱:)</p>
+<p>最近一直在思考新一年的职业规划。顺便问一下？需要小二么？</p>
+<p><img src="/img/beibei.jpg" alt="快乐的小二"></p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/tags/Misc/" term="Misc"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[iOS 7多任务概要 - 产品经理/工程师版本]]></title>
+    <link href="http://www.iwangke.me/2013/11/14/ios-7-multitask-in-a-nut-shell/"/>
+    <id>http://www.iwangke.me/2013/11/14/ios-7-multitask-in-a-nut-shell/</id>
+    <published>2013-11-14T15:52:42.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<h3 id="产品经理版本">产品经理版本</h3>
+<h4 id="后台获取">后台获取</h4>
+<ul>
+<li>App进入后台后，可以主动发起获取数据请求，时长30秒</li>
+<li>频率和时机受iOS调度，不能做到完全确定</li>
+<li>常与后台传输服务结合使用</li>
+<li>用例：社交网络应用，每隔一段时间获取最新文本内容、缩略图</li>
+</ul>
+<h4 id="远程(推送)通知">远程(推送)通知</h4>
+<ul>
+<li>由server发起，可以远程唤醒App执行后台任务，时长30秒</li>
+<li>技术上是一种静默的远程推送，用户不知情</li>
+<li>频率受苹果控制，不能滥用</li>
+<li>常与后台传输服务、本地推送结合使用</li>
+<li>用例：服务器向视频、杂志应用订阅用户发送通知，后台静默下载，用户打开应用时即显示最新内容</li>
+</ul>
+<h4 id="后台传输">后台传输</h4>
+<ul>
+<li>常与前两种结合使用，也可单独使用</li>
+<li>传输时机受iOS调度，不能做到完全确定；iOS设备电量较好(高电量或接入电源)，并连接WiFi时运行的可能性较高</li>
+<li>适用大文件传输，没有运行时长限制</li>
+<li>用例：云存储同步、视频订阅后后台下载</li>
+</ul>
+<h3 id="工程师版本">工程师版本</h3>
+<h4 id="Background_Fetch">Background Fetch</h4>
+<ul>
+<li>Info.plist, Required background modes key添加fetch value</li>
+<li>设置最短fetch间隔：默认是<code>UIApplicationBackgroundFetchIntervalNever</code>，如果改变此值将永远不会fetch；<code>UIApplicationBackgroundFetchIntervalMinimum</code>是可以设置的最短间隔；另外可以设置一个NSTimeInterval类型的值。无论作何设置，都只是建议，不作保证，最终的fetch间隔由OS决定。</li>
+<li>实现<code>application:performFetchWithCompletionHandler:</code>。completionHandler需要一个<code>UIBackgroundFetchResult</code>类型的参数，告知OS三种情况：NewData/NoData/Failed。BackgroundFetch的超时限制是30秒，如果需要超出此限制，需要使用<em>Background Transfer Service API</em>。</li>
+<li>两种模拟Background Fetch的方法：一种通过Simulator菜单；另一种通过Xcode-&gt;Scheme，选中<em>Launch due to a background fetch event</em>选项。</li>
+<li>限时30秒</li>
+</ul>
+<h4 id="Remote_Notifications">Remote Notifications</h4>
+<ul>
+<li>Info.plist, Required background modes key添加remote-notification value</li>
+<li>Notification Payload: 添加<code>{content-available: 1}</code>键值对</li>
+<li>实际上是<em>Silent Push Notifications</em>，可以远程唤醒应用来处理远程推送通知，用户并不知情。</li>
+<li>典型的use case: Remote Notifications静默通知app有新的内容，app初始化一个<em>Background Download Task</em>，完成后以<em>Local Notifications</em>的形式通知用户有新的内容。</li>
+<li>与Background Fetch的区别：Background Fetch由客户端主动发起，由OS调度，适合高频率请求；Remote Notifications由server发起，受apns server控制，适合并不频繁的内容更新。</li>
+<li>实现<code>application:didReceiveRemoteNotification:fetchCompletionHandler:</code>。之后的处理与Background Fetch类似。</li>
+<li>限时30秒</li>
+</ul>
+<h4 id="Background_Transfer_Service">Background Transfer Service</h4>
+<ul>
+<li>基于NSURLSession，支持HTTP/HTTPS，由OS调度</li>
+<li>实现<code>application:handleEventsForBackgroundURLSession:completionHandler:</code>方法。</li>
+<li>discretionary/non-discretionary: 如果<code>discretionary==YES</code>，则更可能在设备电量良好且有WiFi连接时被执行，后台运行的NSURLTask此值必须为YES。</li>
+<li>不限传输时长</li>
+</ul>
+<h3 id="Reference">Reference</h3>
+<ul>
+<li><a href="http://www.objc.io/issue-5/multitasking.html" target="_blank" rel="external">Multitasking in iOS 7</a></li>
+<li><a href="http://mobile.tutsplus.com/tutorials/iphone/ios-7-sdk-mutlitasking-enhancements/" target="_blank" rel="external">iOS 7 SDK: Multitasking Enhancements</a></li>
+</ul>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/tags/iOS-7/" term="iOS 7"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Cocoa网络框架的未来:NSURLSession]]></title>
+    <link href="http://www.iwangke.me/2013/10/15/the-future-of-cocoa-networking-nsurlsession/"/>
+    <id>http://www.iwangke.me/2013/10/15/the-future-of-cocoa-networking-nsurlsession/</id>
+    <published>2013-10-15T06:57:46.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p>NSURLConnection大概有10年的历史了，很多api的设计都比较陈旧，否则<a href="https://github.com/AFNetworking/AFNetworking" target="_blank" rel="external">AFNetworking</a>不会这么火。好在苹果在iOS 7/Mavericks 引入了新的网络类NSURLSession，用以替代NSURLConnection。</p>
+<p>新的网络框架设计中，原有的NSURL/NSURLRequest/NSURLResponse这些类及相关概念都得以沿用；除了支持iOS 7的一新新特性(background download/upload)，与AFNetworking 1.x很多api设计非常相似。</p>
+<h3 id="NSURLSession">NSURLSession</h3>
+<ul>
+<li>Foundation中NSURLConnection的替代</li>
+<li>支持后台运行的网络任务</li>
+<li>暂停、停止、重启网络任务，不再需要NSOperation封装</li>
+<li>请求可以使用同样的配置容器中</li>
+<li>不同的session可以使用不同的私有存储</li>
+<li>block和委托可以同时起作用</li>
+<li>直接从文件系统上传下载</li>
+</ul>
+<h3 id="NSURLSessionConfiguration">NSURLSessionConfiguration</h3>
+<ul>
+<li>defaultSessionConfiguration - 缓存、cookie、证书全局非私有；近似于NSURLConnection</li>
+<li>ephemeralSessionConfiguration - 缓存、cookie、证书全局私有但非持久化(in memory)</li>
+<li>backgroundSessionConfiguration - 适合于应用被挂起或收到remote notification</li>
+</ul>
+<h3 id="NSURLSessionConfiguration的一些properties">NSURLSessionConfiguration的一些properties</h3>
+<p>摘录一些常用的：</p>
+<ul>
+<li>HTTPAdditionalHeaders: HTTP协议头部信息</li>
+<li>allowsCellularAccess/discretionary: 前者允许运营商网络/后者对于后台网络任务进行优化(有WiFi/设备电量情况好的时候)</li>
+<li>timeoutIntervalForRequest/timeoutIntervalForResource: 前者每次有新data到达时重置;后者限制了整个资源请求时长，不要搞混了</li>
+<li>HTTPMaximumConnectionsPerHost: 对于一个host的最大并发连接数</li>
+</ul>
+<h3 id="NSURLSessionTask">NSURLSessionTask</h3>
+<p>继承关系如图(image from objc.io)<br><img src="http://d.pr/i/4iJw+" alt="NSURLSessionTask继承关系"></p>
+<ul>
+<li>可以发送cancel/resume/suspend消息</li>
+<li>NSURLSessionDataTask - 返回NSData</li>
+<li>NSURLSesssionDownloadTask - 返回（临时）文件，下载进度可以恢复</li>
+<li>NSURLSessionUploadTask - 上传NSData/File/Stream</li>
+<li>Task默认都是挂起的，记得要向task发resume消息</li>
+</ul>
+<p>最后附上NSURLConnection to NSURLSession delegate methods <a href="https://gist.github.com/dkduck/6870499" target="_blank" rel="external">Mapping Table</a> by <a href="https://twitter.com/mattt" target="_blank" rel="external">Mattt Thompson</a></p>
+<h3 id="Reference:">Reference:</h3>
+<ul>
+<li><a href="http://www.raywenderlich.com/51127/nsurlsession-tutorial" target="_blank" rel="external">NSURLSession Tutorial</a></li>
+<li><a href="http://www.objc.io/issue-5/from-nsurlconnection-to-nsurlsession.html" target="_blank" rel="external">From NSURLConnection to NSURLSession</a></li>
+<li><a href="http://www.shinobicontrols.com/blog/posts/2013/09/20/ios7-day-by-day-day-1-nsurlsession/" target="_blank" rel="external">iOS7 Day-by-Day :: Day 1 :: NSURLSession</a></li>
+<li><a href="http://nshipster.com/afnetworking-2/" target="_blank" rel="external">AFNetworking 2.0</a></li>
+</ul>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/tags/iOS/" term="iOS"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[iOS 6与iOS 7的增量更新的区别]]></title>
+    <link href="http://www.iwangke.me/2013/10/09/delta-update-difference-between-ios-6-and-ios-7/"/>
+    <id>http://www.iwangke.me/2013/10/09/delta-update-difference-between-ios-6-and-ios-7/</id>
+    <published>2013-10-09T07:57:24.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p><img src="http://d.pr/i/OXoB+" alt="iOS 7 installing &amp; updating apps"></p>
+<p>从iOS 6开始，App Store就支持增量更新。增量更新只支持App Store，对企业开发者的Adhoc更新无效。增量更新对于开发者以及用户都是透明的。但我们需要理解其中的机制。iOS 6与iOS 7的机制又有所不同。</p>
+<p>感谢<a href="http://weibo.com/goudou" target="_blank" rel="external">@洪亮狗豆_车内逃脱</a>的总结：iOS 6是rysnc机制，iOS 7是diff机制；后面都是我的啰嗦文字，不看也罢= =</p>
+<h3 id="iOS_6的增量更新">iOS 6的增量更新</h3>
+<p>对于更新app的用户，App Store会提供一个增量安装包。这个增量是文件级别的，如果两个版本中有新加入的文件则增加；有修改的文件则修改；有删除的文件就移除（我用不用说得这么啰嗦）。用diff就可以判断文件是否被修改，并且苹果建议不要依赖于文件的创建时间及修改时间。</p>
+<h3 id="iOS_7的增量更新">iOS 7的增量更新</h3>
+<p>iOS 7的增量更新更智能。假如有一个文件是10MB，只修改了1 bit：</p>
+<ul>
+<li>iOS 6下会更新10MB</li>
+<li>iOS 7下只会更新该文件变化的部分</li>
+</ul>
+<p>iOS 7的好处是最大化地降低了更新包的大小，但会增加安装的时间。</p>
+<p>Reference: <a href="https://developer.apple.com/library/ios/qa/qa1779/_index.html?utm_source=iOS+Dev+Weekly&amp;utm_campaign=iOS_Dev_Weekly_Issue_114&amp;utm_medium=email" target="_blank" rel="external">QA1779</a></p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/tags/iOS/" term="iOS"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[iOS 7中UITableViewCell的变化]]></title>
+    <link href="http://www.iwangke.me/2013/09/21/the-change-of-uitableviewcell-for-ios-7/"/>
+    <id>http://www.iwangke.me/2013/09/21/the-change-of-uitableviewcell-for-ios-7/</id>
+    <published>2013-09-21T14:46:57.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p>iOS 7的UITableViewCell内部与iOS 6有些不同，cell与contentView之间多了一层<code>UITableViewCellScrollView</code>。</p>
+<p>估计很多人的代码要作些修改了，下面简单作个比较：</p>
+<h3 id="iOS_6中UITableViewCell的View层级">iOS 6中UITableViewCell的View层级</h3>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">(lldb) po [cell recursiveDescription]</div><div class="line">&lt;UITableViewCell: <span class="number">0</span>xba72e50; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xba72fd0&gt;&gt;</div><div class="line">   | &lt;UITableViewCellContentView: <span class="number">0</span>xba6f980; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">gestureRecognizers =</span> &lt;NSArray: <span class="number">0</span>xba70960&gt;; <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xba6fb70&gt;&gt;</div></pre></td></tr></table></figure>
+
+<h3 id="iOS_7中UITableViewCell的View层级">iOS 7中UITableViewCell的View层级</h3>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(lldb) po [cell recursiveDescription]</div><div class="line">&lt;UITableViewCell: <span class="number">0</span>xd984fc0; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xd982750&gt;&gt;</div><div class="line">   | &lt;UITableViewCellScrollView: <span class="number">0</span>xcca9790; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">clipsToBounds =</span> YES; <span class="variable">autoresize =</span> W+H; <span class="variable">gestureRecognizers =</span> &lt;NSArray: <span class="number">0</span>xcc54ec0&gt;; <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xccac430&gt;; contentOffset: {<span class="number">0</span>, <span class="number">0</span>}&gt;</div><div class="line">   |    | &lt;UITableViewCellContentView: <span class="number">0</span>xdb582a0; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">gestureRecognizers =</span> &lt;NSArray: <span class="number">0</span>xdb49c40&gt;; <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xdb54050&gt;&gt;</div></pre></td></tr></table></figure>
+
+<p>大家遇到了哪些问题？如何解决的？欢迎留言讨论。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/tags/iOS-7/" term="iOS 7"/>
+    <category scheme="http://www.iwangke.me/categories/Tutorial/" term="Tutorial"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Xcode磁盘空间大清理]]></title>
+    <link href="http://www.iwangke.me/2013/09/09/clean-xcode-to-free-up-disk-space/"/>
+    <id>http://www.iwangke.me/2013/09/09/clean-xcode-to-free-up-disk-space/</id>
+    <published>2013-09-09T05:22:00.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p>我的设备是Macbook Air 13’ Mid 2011，128G SSD。最近开始有些存储压力了，用Clean My Mac清理一部分旧文件后，决定对Xcode动手。</p>
+<h3 id="移除对旧设备的支持">移除对旧设备的支持</h3>
+<p>影响：可重新生成；再连接旧设备调试时，会重新自动生成。我移除了4.3.2, 5.0, 5.1等版本的设备支持。</p>
+<p>路径：<code>~/Library/Developer/Xcode/iOS DeviceSupport</code></p>
+<p>释放空间：3GB</p>
+<h3 id="移除旧版本的模拟器支持">移除旧版本的模拟器支持</h3>
+<p>影响：不可恢复；如果需要旧版本的模拟器，就需要重新下载了。我移除了4.3.2, 5.0, 5.1等旧版本的模拟器。</p>
+<p>路径：<code>~/Library/Application Support/iPhone Simulator</code></p>
+<p>释放空间：3GB</p>
+<h3 id="移除模拟器的临时文件">移除模拟器的临时文件</h3>
+<p>影响：可重新生成；如果需要保留较新版本的模拟器，但tmp文件夹很大。放心删吧，tmp文件夹里的内容是不重要的。在iOS Device中，存储空间不足时，tmp文件夹是可能被清空的。</p>
+<p>路径：<code>~/Library/Application Support/iPhone Simulator/6.1/tmp</code> (以iOS Simulator 6.1为例)</p>
+<p>释放空间：2GB</p>
+<h3 id="移除模拟器中安装的Apps">移除模拟器中安装的Apps</h3>
+<p>影响：不可恢复；对应的模拟器中安装的Apps被清空了，如果不需要就删了吧。</p>
+<p>路径：<code>~/Library/Application Support/iPhone Simulator/6.1/Applications</code> (以iOS Simulator 6.1为例)</p>
+<p>释放空间：1GB</p>
+<h3 id="移除Archives">移除Archives</h3>
+<p>影响：不可恢复；Adhoc或者App Store版本会被删除。建议备份dSYM文件夹</p>
+<p>路径：<code>~/Library/Developer/Xcode/Archives</code></p>
+<p>释放空间：6GB</p>
+<h3 id="移除DerivedData">移除DerivedData</h3>
+<p>影响：可重新生成；会删除build生成的项目索引、build输出以及日志。重新打开项目时会重新生成，大的项目会耗费一些时间。</p>
+<p>路径：<code>~/Library/Developer/Xcode/DerivedData</code></p>
+<p>释放空间：12GB</p>
+<h3 id="移除旧的Docsets">移除旧的Docsets</h3>
+<p>影响：不可恢复；将删除旧的Docsets文档</p>
+<p>路径：<code>~/Library/Developer/Shared/Documentation/DocSets</code></p>
+<p>释放空间：2GB</p>
+<h3 id="友情提示">友情提示</h3>
+<p>我一共释放出了30GB左右的磁盘空间，这对128 GB的SSD来说可是不小的数字。如果你的磁盘空间不紧张，或者使用HDD，我建议不要进行这些操作。使用SSD的朋友酌情清理吧。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/categories/Tips/" term="Tips"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[免费应用和免费游戏]]></title>
+    <link href="http://www.iwangke.me/2013/04/28/free-apps-and-free-games/"/>
+    <id>http://www.iwangke.me/2013/04/28/free-apps-and-free-games/</id>
+    <published>2013-04-28T12:34:00.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p>这回谈<a href="/pages/app-store-essentials-for-chinese-developers.html#freeapps">免费应用</a>和<a href="/pages/app-store-essentials-for-chinese-developers.html#freegames">免费游戏</a>，抱歉跳票了这么久。</p>
+<p>感觉很多东西都没有必要说，如果朋友们有什么想交流的，直接留言吧:)</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/categories/App-Store-Essentials/" term="App Store Essentials"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[CocoaPods进阶：本地包管理]]></title>
+    <link href="http://www.iwangke.me/2013/04/18/advanced-cocoapods/"/>
+    <id>http://www.iwangke.me/2013/04/18/advanced-cocoapods/</id>
+    <published>2013-04-18T07:30:00.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p>粉笔网的iOS工程师<a href="http://weibo.com/tangqiaoboy" target="_blank" rel="external">唐巧</a>曾经写过一篇blog<a href="http://blog.devtang.com/blog/2012/12/02/use-cocoapod-to-manage-ios-lib-dependency/" target="_blank" rel="external">《使用CocoaPods来做iOS程序的包依赖管理》</a>介绍了基本的CocoaPods使用方法。本文将另外谈一谈如何使用CocoaPods进行本地的包管理。建议没有接触过CococaPods的朋友先阅读一下唐巧的blog。</p>
+<h3 id="为什么要进行本地的包管理">为什么要进行本地的包管理</h3>
+<ul>
+<li>有的时候CocoaPods的spec版本过旧，pull request没有及时merge，导致我们无法利用CocoaPods使用较新的代码版本；</li>
+<li>有的时候我们的一些代码不是开源的，或者暂时不想放到Github上。我们更想使用CocoaPods引用本地的代码；</li>
+</ul>
+<h3 id="使用CocoaPods里没有的第三方库新版本">使用CocoaPods里没有的第三方库新版本</h3>
+<p>这里我们以PlayHavenSDK为例介绍一下。我们在<a href="https://github.com/CocoaPods/Specs/tree/master/PlayHavenSDK" target="_blank" rel="external">CocoaPods / Spec</a>这个repository里面可以看到，PlayHavenSDK的版本是1.11.0。而<a href="https://github.com/playhaven/sdk-ios" target="_blank" rel="external">playhaven / sdk-ios</a>里面的tag，已经有了1.12.1这个版本。CocoaPods的Spec repository已经落后了两个版本。这时我们想使用最新版，需要的就是一个更新的spec。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="constant">Pod::Spec</span>.new <span class="keyword">do</span> |s|</div><div class="line">    s.name = <span class="string">'PlayHavenSDK'</span></div><div class="line">    s.version = <span class="string">'1.12.1'</span></div><div class="line">    s.license = <span class="string">'MIT'</span></div><div class="line">    s.summary = <span class="string">'PlayHaven is a real-time mobile game marketing platform to help you take control of the business of your games.'</span></div><div class="line">    s.homepage = <span class="string">'http://playhaven.com'</span></div><div class="line">    s.author = { <span class="string">'Sam Stewart'</span> =&gt; <span class="string">'sam@playhaven.com'</span> }</div><div class="line">    s.source = { <span class="symbol">:git</span> =&gt; <span class="string">'https://github.com/playhaven/sdk-ios.git'</span>, <span class="symbol">:tag</span> =&gt; <span class="string">'1.12.1'</span> }</div><div class="line">    s.description = <span class="string">"PlayHaven is a real-time mobile game marketing platform to help you take control of the business of your games. Acquire, retain, re-engage, and monetize your players with the help of PlayHaven's powerful marketing platform. Integrate once and embrace the flexibility of the web as you build, schedule, deploy, and analyze your in-game promotions and monetization in real-time through PlayHaven's easy-to-use, web-based dashboard. An API token and secret is required to use this SDK. These tokens uniquely identify your app to PlayHaven and prevent others from making requests to the API on your behalf. To get a token and secret, please visit the PlayHaven developer dashboard at https://dashboard.playhaven.com."</span></div><div class="line">    s.platform = <span class="symbol">:ios</span></div><div class="line">    <span class="comment"># PlayHaven includes prefixed versions of SBJson and OpenUDID</span></div><div class="line">    s.source_files = <span class="string">'Cache'</span>, <span class="string">'src'</span>, <span class="string">'WaterWorks'</span>, <span class="string">'JSON'</span>, <span class="string">'OpenUDID'</span></div><div class="line">    s.frameworks = <span class="string">'SystemConfiguration'</span>, <span class="string">'CFNetwork'</span>, <span class="string">'StoreKit'</span>, <span class="string">'CoreGraphics'</span>, <span class="string">'QuartzCore'</span></div><div class="line">    s.weak_frameworks = <span class="string">'AdSupport'</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>这里我们注意到s.source这一行配置，指向了playhaven/sdk-ios.git仓库的1.12.1这个tag，表示这个spec将使用这个tag的代码。我们将它保存到本地的一个目录中，如<code>~/Desktop/PlayHavenSDK/PlayHavenSDK.podspec</code>。</p>
+<p>我们回到Xcode project目录中，打开Podfile，添加<code>pod &#39;PlayHavenSDK&#39;, :podspec =&gt; &#39;~/Desktop/PlayHavenSDK/PlayHavenSDK.podspec&#39;</code>，接着运行<code>pod update</code>即可。</p>
+<p>PS: 当然这个podspec也可以不放在本地，比如放在gist上。</p>
+<h3 id="使用CocoaPods管理本地代码">使用CocoaPods管理本地代码</h3>
+<p>这种情况稍微复杂一步，除了指定podspec，还需要准备一个本地要使用的git repository。我们以Chartboost为例来进行说明。</p>
+<p>首先我们新建一个名为<code>~/Desktop/ChartboostSDK/</code>的目录，然后执行<code>git init</code>初始化这个git repository。</p>
+<p>接着我们去Chartboost官方网站下载最早新的SDK。将它放进这个目录中，然后执行<code>git add . &amp;&amp; git commit -m&quot;Add new SDK&quot;</code>。</p>
+<p>这样我们这个目录已经成为一个git repository，里面是最新的Chartboost SDK。</p>
+<p>这时我们仍然需要一个podspec文件，来说明我们从哪个仓库来获取代码：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="constant">Pod::Spec</span>.new <span class="keyword">do</span> |s|</div><div class="line">	s.name = <span class="string">'ChartboostSDK'</span></div><div class="line">	s.version = <span class="string">'3.1.1'</span></div><div class="line">	s.license = <span class="string">'Commercial'</span></div><div class="line">	s.summary = <span class="string">'ChartboostSDK for showing ads and more apps pages, and tracking analytics and in-app purchase revenue.'</span></div><div class="line">	s.homepage = <span class="string">'https://chartboost.com/'</span></div><div class="line">	s.author = { <span class="string">'Chartboost'</span> =&gt; <span class="string">'https://chartboost.com/'</span> }</div><div class="line">	s.source = { <span class="symbol">:git</span> =&gt; <span class="string">'~/Desktop/ChartboostSDK'</span> }</div><div class="line">	s.platform = <span class="symbol">:ios</span></div><div class="line">	s.source_files = <span class="string">'**/*.h'</span></div><div class="line">	s.preserve_paths = <span class="string">'**/*.a'</span></div><div class="line">	s.library = <span class="string">'Chartboost'</span></div><div class="line">	s.xcconfig = { <span class="string">'LIBRARY_SEARCH_PATHS'</span> =&gt; <span class="string">'"$(PODS_ROOT)/ChartboostSDK/Chartboost"'</span> }</div><div class="line">	s.weak_frameworks = <span class="string">'AdSupport'</span>, <span class="string">'StoreKit'</span></div><div class="line">	s.frameworks = <span class="string">'QuartzCore'</span>, <span class="string">'SystemConfiguration'</span>, <span class="string">'CoreGraphics'</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>我们运行<code>ls -lh | awk &#39;{print $9}&#39;</code>，ChartboostSDK目录的结构显示如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">CBAnalytics.h</div><div class="line">Chartboost.h</div><div class="line">ChartboostSDK.podspec</div><div class="line">libChartboost.<span class="operator">a</span></div></pre></td></tr></table></figure>
+
+<p>除了两个.h，一个.a，还有一个podspec文件。</p>
+<p>接着我们回到Xcode proj所在的文件夹中，编辑Podfile，添加<code>pod &#39;ChartboostSDK&#39;, :local =&gt; &#39;~/Desktop/ChartboostSDK&#39;</code>。这里的local表明从本地的git仓库里获取代码。</p>
+<p>最后我们运行<code>pod update</code>，大功告成。</p>
+<h3 id="CocoaPods小结">CocoaPods小结</h3>
+<p>上面的两种情况，简单来说：</p>
+<ul>
+<li>需要使用最新的开源代码/库，但没最新的spec</li>
+<li>需要使用私有代码/库，需要对应的私有的spec</li>
+</ul>
+<p>对于第一种情况，建议大家可以给<a href="https://github.com/CocoaPods/Specs" target="_blank" rel="external">CocoaPods / Specs</a>提交一个pull request。</p>
+<p>使用CocoaPods只需要知道两件事情：</p>
+<ul>
+<li>podspec：一个pod的配置是什么，pod的代码放在哪里</li>
+<li>Podfile：项目依赖哪个pod，以何种方式依赖，它的podspec放在哪里</li>
+</ul>
+<p>这里podspec和git repository都非常灵活，可以放在本地，也可以放到github/gist上。代码仓库甚至可以不使用git而直接使用一个zip压缩包。</p>
+<p>使用CocoaPods可以把多们从繁重的配置和代码管理中解脱出来，而且可以少犯错误。比如Deployment Target设置为5.0，但App中需要使用AdSupport.framework，如果忘记设置为optional则所有5.x的设备运行时都会crash。对于这种情况CocoaPods在spec提供了<code>weak_frameworks</code>的配置选项。同时CocoaPods能够保证库的依赖关系，而不会出现几个项目依赖版本不一致的情况。</p>
+<p>PS: 最近为了UDID更新的同学们可别犯AdSupport.framework这个错误，后果很严重。</p>
+<p>希望这个blog对大家使用CocoaPods有所帮助。</p>
+<p>赶个时髦，祝大家<em>一帆风顺</em>。</p>
+<p><img src="https://pbs.twimg.com/media/BIGmipnCMAAt7gZ.jpg" alt="一帆风顺"></p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/categories/iOS/" term="iOS"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[新浪微博的反人类注册体验]]></title>
+    <link href="http://www.iwangke.me/2013/04/17/fuck-you-weibo/"/>
+    <id>http://www.iwangke.me/2013/04/17/fuck-you-weibo/</id>
+    <published>2013-04-17T12:18:00.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p>今天老婆帮助岳父注册了一个新浪微博账号，遇到林林总总的反人类的体验。</p>
+<p>先打开iPad客户端注册，注册要邮箱。OK输入没问题，接着要邮箱验证。验证完可以登录了吧？不行，要求通过互联网登录，账号异常。</p>
+<p>脑补了一下，终于明白什么是“互联网”。好吧，打开Safari Mobile，要求填各种资料，学校信息都是必填的，忍了填之，接着要验证手机号。收到一条短信，6位验证码填之。填完了后，终于可以登录了。</p>
+<p>登录后，粉了老婆和我。评论了一条微博，结果我们没有收到粉丝信息。查找岳父账号找不到，刚刚发出的评论被屏蔽。</p>
+<p>接着Safari Mobile登录，说用户异常。App登录，说用户不存在，接着一直crash。再用Safari Mobile登录，说要重新验证，又收到短信，6位验证码，这回终于OK了。</p>
+<p>岳父早就不耐烦了，老婆也崩溃了，我正好也敲完了这点文字。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/categories/Misc/" term="Misc"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[两则消息]]></title>
+    <link href="http://www.iwangke.me/2013/04/01/two-news/"/>
+    <id>http://www.iwangke.me/2013/04/01/two-news/</id>
+    <published>2013-04-01T11:42:00.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<h3 id="告别IndieBros_Studio">告别IndieBros Studio</h3>
+<p>做独立开发者23个月了，IndieBros Studio一共在全球得到1200W+用户的支持，十分欣慰。</p>
+<p>But it’s time to change.</p>
+<p>就在不久前，IndieBros Studio及其旗下所有产品被国内某知名互联网公司收购。我也告别了独立开发者时代。</p>
+<p>变成自由人了，最近在看工作机会。请朋友们多多关照。</p>
+<h3 id="位于朝鲜的NuKeVPS推出32MB_VPS">位于朝鲜的NuKeVPS推出32MB VPS</h3>
+<p>根据今天<a href="http://www.lowendbox.com/" target="_blank" rel="external">LEB</a>的最新消息，朝鲜的NuKeVPS正式推出32MB VPS，具体配置如下：</p>
+<ul>
+<li>250MB SSD DiskSpace</li>
+<li>32MB ‘Mad’ Memory</li>
+<li>4 Nuclear Cores</li>
+<li>50GB Satellite Bandwidth</li>
+<li>100Kbps Port Speed</li>
+<li>/24 of IPv4 Addresses</li>
+<li>Virtuozzo/Cracked SolusVM</li>
+<li>Coupon: I&lt;3SUPREMELEADERCHIEF</li>
+<li>₩7/Until detonation | Order Link</li>
+</ul>
+<p>有需要的朋友可以在<a href="http://www.lowendbox.com/blog/nukevps-%E2%82%A97-32mb-virtuzzo-vps-in-pyongyang-north-korea-for-now/#comment-108101" target="_blank" rel="external">这里</a>订购。科学上网，从我做起。</p>
+<p>最后祝朋友们节日快乐。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/categories/Misc/" term="Misc"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[八点二十发]]></title>
+    <link href="http://www.iwangke.me/2013/03/16/keep-your-faith-and-judgment/"/>
+    <id>http://www.iwangke.me/2013/03/16/keep-your-faith-and-judgment/</id>
+    <published>2013-03-15T16:41:00.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p>当时针和分针脱下大裤衩，将双腿分开成这个角度，一场没有小JJ的闹剧就开始了。</p>
+<h3 id="八点二十发">八点二十发</h3>
+<p>3.15晚会是一场全球1/5消费者的狂欢。何润东微博最末尾一句的“八点二十发”在不到短短一个小时占领了整个微博。针对苹果一场有预谋的公关在8点20消然开始，可惜从一开始就露了馅。我相信820这事儿，很多人一辈子都不知道，但对苹果的坏印象会一直保留下来。不可这么一闹，Galaxy 4算是白发布了，巧合、巧合还是巧合？脑残公关还是一箭双雕这就不得而知了。</p>
+<h3 id="赊账与信用">赊账与信用</h3>
+<p>90年北京亚运会，那时候我不到5岁，不知道运动会具体是干嘛的，就知道熊猫盼盼。我没有钱，但特别想要一个熊猫盼盼的胸针。于是跟一个当时70多岁的老奶奶赊来了。当时父母觉得很不好意思，听我说了之后，带我把钱还了回去。同时他们感到有些自责，是不是把小孩子教坏了？父母都是知识分子，有时生活也会拮据，但这辈子从来没欠别人钱超过一个月。</p>
+<p>这件事情我也一直很纠结，觉得道德上不太对，但又觉得没什么不对的。后来我想通了，赊账和货币一样，本来就是一种信用的表现。建立在诚信、自愿基础上没什么大不了的。</p>
+<p>说了这么多，到底想说啥？<code>现在你去赊个试试</code>。</p>
+<h3 id="信用透支的社会">信用透支的社会</h3>
+<p>我们这代人的特点是质疑一切。因为从小生活在各种谎言中，再也不敢相信任何事情。于是一元的金钱至上价值观又悄然形成。后来发现上面印印钞票，自己不要鼻子不要脸弄来那几张毛爷爷红票到头来P用没有。</p>
+<p>红票也是需要信用的，国际上有主权信用评级。我们还需要自评么？</p>
+<p>我们有3.15。</p>
+<h3 id="3-15">3.15</h3>
+<p>本来我们有消费者权益保护法，有人动用过么？有多少人以此为根据去过法院？得到过满意结果么？（类似的问题：你填过选票么？填的谁你还记得么？那人是男的女的还是不男不女的？你确定不是小强么？）</p>
+<p>我们还有晚会，我们还有微博。谁不孝顺，就打谁PP。</p>
+<p>有人说你这小子好偏激啊，整天看阴暗面，3.15有啥不好，不是曝光了好多大企业么？曝光了有P用，百度当年被曝光了，现在虚假医药广告还少么?百度就是贴满了淋病梅毒老中医一针包治百病的电线杆子罢了。</p>
+<p>改了再犯，犯了再改，改完再犯…原来爷爷需要孝敬，孝敬了就没事了。没人想真的搞你，无怨无仇地无非想弄两张红票花花。</p>
+<p>有红票没有办不了的事，我们这个民族挺讲究实用的。有奶便是娘的道理谁都懂。“给你一个你不能拒绝的请求”，太容易了。</p>
+<h3 id="不需要大字报的时代">不需要大字报的时代</h3>
+<p>这个时代不需要大字报了，谁也不希望被代表。既然那么恨苹果，就不要拿iPhone/iPad客户端发微博。抵制苹果，从我做起，从一点一滴的小事做起…举手之劳，我们能做的还有很多，入戏了…网易也中招了，现在还在”自黑”。一直对网易的印象不错，用他们自己的话说“有态度”。高德2年前的客户端被搞了…额，小学数学不及格，长大永远不能当会计。花钱消灾，学学百度。</p>
+<p>这就是我为什么需要Google Reader。我只想看我想看的，不管它是对的还是错的。不要塞给我32版其中24版老中医广告其它8版主旋律的xx晚报。</p>
+<p><strong>8点20了，取了报纸洗洗睡了。</strong> 最后还是那句话：想做人，就不能不要脸；想做品牌，就不能没底线。我这人就是土没办法，想想文化人姜文是怎么说的。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/categories/Misc/" term="Misc"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Xcode iOS Scheme Missing Destination]]></title>
+    <link href="http://www.iwangke.me/2013/03/03/xcode-ios-project-missing-destination/"/>
+    <id>http://www.iwangke.me/2013/03/03/xcode-ios-project-missing-destination/</id>
+    <published>2013-03-03T08:53:00.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p>有的时候，我的iOS proj会出现Scheme Destination丢失的现象，Destination只显示My Mac 64-bit，如图：</p>
+<p><img src="http://d.pr/i/Gcbe+" alt="Scheme Destination"></p>
+<p>一般我们清除Derived Data并重启Xcode就会正常，如果实在不行，需要手动设置Executable为Destination:</p>
+<p><img src="http://d.pr/i/lsQL+" alt="Setup Scheme Destination Manully"></p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/categories/Tips/" term="Tips"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[我遇到的一些国内开发者的毛病]]></title>
+    <link href="http://www.iwangke.me/2013/03/02/chinese-developers-have-some-bugs/"/>
+    <id>http://www.iwangke.me/2013/03/02/chinese-developers-have-some-bugs/</id>
+    <published>2013-03-02T12:51:00.000Z</published>
+    <updated>2014-10-08T06:21:46.000Z</updated>
+    <content type="html"><![CDATA[<p>最近一些文章被转载了，谢谢各位编辑。有些同行看到我的blog，也过来找我聊了聊。真的让我获得了一些有价值的想法，同时也有很多重复的问题，不吐不快。可能以前我在别人眼中也是这样，可能你以前或者现在也是这样，所以今天聊一聊，咱想到哪说到哪。</p>
+<h3 id="不会问问题">不会问问题</h3>
+<p>小事问SO，大事问Google。别围着同事问来问去。问问题之前，要先准备好，术语都说不出来，怎么沟通？功课是一定要做的，keyword都不知道怎么行？我也遇到过这种情况，真的一无所知，不知道从哪下手。索性我就说“真的一点不了解，给我一个keyword”吧，至少表明我还是愿意自己先把一些事情搞清楚的。不要做伸手党。</p>
+<h3 id="缺失获取信息的能力">缺失获取信息的能力</h3>
+<p>外行看热闹，内行看门道。既然吃这口饭，就得专业点。“我应该看看哪些技术文章？”这话就根本不应该问。Web 2.0大家人肉总会吧？去微博，搜iOS/App Store，排在前面的人，点进去看他个人资料，挖博客订阅Feed。除些之外，去Linkedin/Douban/CocoaChina/CSDN这些地方人肉他，主要网络ID在一定时间段内往往是一致的。把你欣赏的技术牛人挖出来，看得精光。</p>
+<p>看到一个产品，觉得牛逼。去看他们主页，whois查一下看看注册多久了，谁注册的，公司叫啥名。接着去Google一下前10页，看看都有什么新闻。人肉域名的注册人，把他扒光。甚至给他投资人打个电话说你是某某的朋友套套话。或者直接给他写邮件。社会工程不难吧？</p>
+<p>偷偷说下，国内社会工程最牛逼的黑客就是“民企老板”，尤其是传统行业。只调情，不上床，难啊。</p>
+<h3 id="缺乏知识体系">缺乏知识体系</h3>
+<p>很多人过于依赖Google，这不是坏事。但有时也反应了一个问题：缺乏对技术的系统性了解。两种原因，没意识或是懒惰，都很可怕。赶快努力吧，过两年连印度阿三的外包都抢不到了。</p>
+<h3 id="盲目跟风">盲目跟风</h3>
+<p>你创业了，没点子没钱没人没产品没目标没方向。创哪门子业？前天团购，昨天呕吐呕，今天移动游戏明天虚拟现实啥的。赶快回家洗洗睡吧。保持冷静。</p>
+<h3 id="缺乏责任感">缺乏责任感</h3>
+<p>项目没做完就辞职了；两年换了六份工作；创业忽悠老子老婆一帮兄弟盲目瞎搞最后人财两空，都是不负责任。跳出去再跳回来薪水翻了一番，觉得牛逼吧。过了用人难的阶段第一个开的就是你。</p>
+<h3 id="不独立思考">不独立思考</h3>
+<p>我应该学什么？我适合做什么？我应该怎么做？肯问这些问题说明很有潜力，是想进步的。别问别人，问自己。被问问题的人会很苦的，会被你搞得一头雾水。还是自己多想想，毕竟自己最了解自己。多逗逗上帝老爷子开心，以后上去了路好走。不思则惘。</p>
+<h3 id="不切实际">不切实际</h3>
+<p>整天谈性能优化(日PV1000的网站往往是典型)，vim/emacs哪个好(其实哪个也不会)。亲，去当销售吧，别干这行。这行用代码说话的，不是用嘴。要么你就是拖延症加选择综合症，赶快治。行胜于言。</p>
+<h3 id="不阅读">不阅读</h3>
+<p>喜欢逛论坛，喜欢泡微信，喜欢泡妹纸。整天扯东扯西，有生产力么？订几个Feed回去读吧，从本博开始赶紧地:) （无耻啊，无耻）开卷有益。</p>
+<h3 id="太把技术当回事">太把技术当回事</h3>
+<p>多数人不会自己当老板，是为别人工作获得薪水。你技术强，一个顶5个觉得自己不可一世了。看不起销售看不起设计看不起财务看不起人事，觉得别人说得都是错的。代码能卖钱么？代码能改变世界么？断了电你啥都没有。多站在整个团队、整个产品的角度想一想吧。几行简单的代码的提升可能比你苦逼写了半年的框架实际地多。摆正心态。</p>
+<h3 id="不思进取">不思进取</h3>
+<p>这条最可怕。每天无忧无虑心宽体胖，今天不会明天不会明年还不会。从四线城市奔到北上广一个月税后就剩3k还整天妹纸Dota星巴克，咱别这么折腾行么？有钱有势的赶快回老家混个村长当，没钱没势的赶快多赚点钱娶个媳妇指望下一代逆袭才是王道。穷则思变。</p>
+<p>写字的时候有点怒，加上最近手哥微博看多了有点入戏，请见谅。扯了这么多，其实大家都是这样过来的。与君共勉。</p>
+<p>PS：以后blog都会全文输出RSS，不会添加“继续阅读”的链接。抱歉以前浪费了大家时间和一次额外点击。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/categories/Misc/" term="Misc"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[Selling apps]]></title>
+    <link href="http://www.iwangke.me/2013/02/27/selling-apps/"/>
+    <id>http://www.iwangke.me/2013/02/27/selling-apps/</id>
+    <published>2013-02-27T10:44:00.000Z</published>
+    <updated>2014-10-08T06:21:45.000Z</updated>
+    <content type="html"><![CDATA[<p>这回谈<a href="/pages/app-store-essentials-for-chinese-developers.html#sales">销售App</a>。</p>
+<p>更新得比较慢，内容也比较水，各位凑合看吧。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/categories/App-Store-Essentials/" term="App Store Essentials"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[HIG和Objective-C]]></title>
+    <link href="http://www.iwangke.me/2013/02/20/hig-and-objc/"/>
+    <id>http://www.iwangke.me/2013/02/20/hig-and-objc/</id>
+    <published>2013-02-20T12:31:00.000Z</published>
+    <updated>2014-10-08T06:21:45.000Z</updated>
+    <content type="html"><![CDATA[<p>谈谈<a href="/pages/app-store-essentials-for-chinese-developers.html#hig">HIG</a>和<a href="/pages/app-store-essentials-for-chinese-developers.html#objc">Objective-C</a>。春节过了，最近开始忙了，更新会缓慢一些，但还是争取每周写一些。</p>
+<p>后面的小节实际的东西比较多，看热闹的人可能越来越少了，总不能一直讲段子吧。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/categories/App-Store-Essentials/" term="App Store Essentials"/>
+  </entry>
+  <entry>
+    <title type="html"><![CDATA[使用mitmproxy获取iTunes 11的Raw HTTPs  Response]]></title>
+    <link href="http://www.iwangke.me/2013/02/18/get-itunes-raw-response-with-mitmproxy/"/>
+    <id>http://www.iwangke.me/2013/02/18/get-itunes-raw-response-with-mitmproxy/</id>
+    <published>2013-02-18T08:38:00.000Z</published>
+    <updated>2014-10-08T06:21:45.000Z</updated>
+    <content type="html"><![CDATA[<p>去年写了一个<a href="https://github.com/ewangke/CustomersAlsoReviewed-AppStore" target="_blank" rel="external">App Store用户评论相关性的分析脚本</a>。当时的iTunes 10还没有使用HTTPs协议，使用<a href="https://github.com/ewangke/CustomersAlsoReviewed-AppStore#-1" target="_blank" rel="external">tcpdump的方法</a>还可以获得iTunes的请求和响应。随着iTuens 11的发布，苹果对iTunes里App Store的一些页面进行了重新设计与制作。原来的脚本和方法都失效了。今天有个朋友发邮件来问我，于是有了这篇blog。</p>
+<h3 id="mitmproxy">mitmproxy</h3>
+<p><a href="http://mitmproxy.org/" target="_blank" rel="external">mitmproxy</a>全称是指Man-In-The-Middle Proxy。利用它可以替换掉HTTPs请求的证书，之后所有的请求都变成“透明”的了。之后可以Reply request，也可以修改request。去年玩Clash of Clans很入迷，于是把Game Center的自己都改满了，不要BS我- -!</p>
+<p>先参照<a href="http://mitmproxy.org/doc/install.html" target="_blank" rel="external">官方文档</a>安装一下。</p>
+<p>我用的是MBA，所以先参照<a href="http://mitmproxy.org/doc/certinstall/osx.html" target="_blank" rel="external">这个doc</a>安装一下mitmproxy的证书。</p>
+<p>接着如图设置HTTPs代理。</p>
+<p><img src="http://d.pr/i/bBXG+" alt="设置mitmproxy为HTTPs代理"></p>
+<p>接着打开Terminal，启动mitmproxy：输入<code>mitmproxy</code>即可。</p>
+<p>打开iTunes 11，导航到需要查看的页面：</p>
+<p><img src="http://d.pr/i/7aWB+" alt="某用户的所有评论"></p>
+<p>最后在mitmproxy中可以查看到对应的response：</p>
+<p><img src="http://d.pr/i/UOjG+" alt="实际的response"></p>
+<h3 id="关于评论相关性分析脚本">关于评论相关性分析脚本</h3>
+<p>最近没有精力维护了，有兴趣的朋友可以用上述方法，把response搞出来parse一下。记得给我发pull request，不胜感激。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+]]></content>
+    <category scheme="http://www.iwangke.me/categories/Tutorial/" term="Tutorial"/>
+  </entry>
+</feed>

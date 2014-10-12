@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>基于Core Animation的KTV歌词视图的平滑实现 | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="KTV歌词视图，只要去过KTV的的朋友一定不会陌生。我们先来看一下最终的效果，再一步步说明唱吧歌词视图的演进。想把事件事情说得清清楚楚的确很难，有很多tricky的地方；另外毕竟不是open source的，只能给大家挑重点分享一下实现的过程和思路。
+
+歌词视图剖析
+一个体验良好的歌词视图，由以下方面组成，这也是我们的设计目标：
+
+有倒计时功能，歌者可以提前作演唱的准备
+根据场景的不同，支持多行或">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Core Animation的KTV歌词视图的平滑实现">
+<meta property="og:url" content="http://www.iwangke.me/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="KTV歌词视图，只要去过KTV的的朋友一定不会陌生。我们先来看一下最终的效果，再一步步说明唱吧歌词视图的演进。想把事件事情说得清清楚楚的确很难，有很多tricky的地方；另外毕竟不是open source的，只能给大家挑重点分享一下实现的过程和思路。
+
+歌词视图剖析
+一个体验良好的歌词视图，由以下方面组成，这也是我们的设计目标：
+
+有倒计时功能，歌者可以提前作演唱的准备
+根据场景的不同，支持多行或">
+<meta property="og:image" content="/img/lyrics_changba_6.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于Core Animation的KTV歌词视图的平滑实现">
+<meta name="twitter:description" content="KTV歌词视图，只要去过KTV的的朋友一定不会陌生。我们先来看一下最终的效果，再一步步说明唱吧歌词视图的演进。想把事件事情说得清清楚楚的确很难，有很多tricky的地方；另外毕竟不是open source的，只能给大家挑重点分享一下实现的过程和思路。
+
+歌词视图剖析
+一个体验良好的歌词视图，由以下方面组成，这也是我们的设计目标：
+
+有倒计时功能，歌者可以提前作演唱的准备
+根据场景的不同，支持多行或">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/" class="article-date">
+  <time datetime="2014-10-06T15:34:56.000Z" itemprop="datePublished">Oct 6 2014</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      基于Core Animation的KTV歌词视图的平滑实现
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>KTV歌词视图，只要去过KTV的的朋友一定不会陌生。我们先来看一下最终的效果，再一步步说明唱吧歌词视图的演进。想把事件事情说得清清楚楚的确很难，有很多tricky的地方；另外毕竟不是open source的，只能给大家挑重点分享一下实现的过程和思路。</p>
+<p><img src="/img/lyrics_changba_6.png" alt="唱吧6.0歌词视图"></p>
+<h3 id="歌词视图剖析">歌词视图剖析</h3>
+<p>一个体验良好的歌词视图，由以下方面组成，这也是我们的设计目标：</p>
+<ul>
+<li>有倒计时功能，歌者可以提前作演唱的准备</li>
+<li>根据场景的不同，支持多行或者双行显示，为歌者提供演唱的上下文</li>
+<li>歌者清晰的了解当前在唱哪一句歌词，我称之为焦点行</li>
+<li>焦点行需要染色，并需要精准地作逐字渲染</li>
+<li>两句之前使用适当的动画换行过渡</li>
+<li>歌词动画平滑不突兀，适应不同节奏的歌曲</li>
+<li>根据产品和设计师的要求，灵活地对歌词视图进行字体、颜色调整（1/3/5是绿色，2/4/6是红色，阴历节日是黄色，I’m serious and it’s safe to forget Sunday! Cheers!）</li>
+</ul>
+<p>此外我们还需要了解一下歌词信息的结构，大致如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Line</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSArray</span> *words;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *text;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> start;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> length;</div><div class="line"><span class="keyword">@end</span></div><div class="line">    </div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Word</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *text;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> start;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> length;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+
+<ul>
+<li>一首歌的歌词我们称之为Lyrics</li>
+<li>Lyrics包含多行，每行我们称之为Line; Line有它的start及length，分别代表时间戳以及长度</li>
+<li>Line包含多个字，每个字我们称之为Word; Word也有它的start以及length，分别代表时间戳以及长度</li>
+</ul>
+<p>了解完这些我们看看如何来渲染焦点行歌词，先看简单直接的方式。</p>
+<h3 id="基于Core_Graphics的实现">基于Core Graphics的实现</h3>
+<p>我们知道歌曲的开始时间，也有歌词数据提供时间支持，那么就可以计算出当前歌词视图的状态。对于歌词的焦点行，有两部分状态：</p>
+<ul>
+<li>歌者已经演唱的部分，渲染成绿色</li>
+<li>歌者待演唱的部分，渲染成白色</li>
+</ul>
+<p>我们省略计算的过程，假设已经得出绿色、白色歌词的rect及point，就可以直接渲染了：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">LyricsView</span></span></div><div class="line">- (<span class="keyword">void</span>)drawRect:(<span class="built_in">CGRect</span>)rect {</div><div class="line">    <span class="comment">// Assume we calcuated them before</span></div><div class="line">    <span class="built_in">CGRect</span> greenRect;</div><div class="line">    <span class="built_in">CGRect</span> whiteRect</div><div class="line">    <span class="built_in">CGPoint</span> greenPoint;</div><div class="line">    <span class="built_in">CGPoint</span> whitePoint;</div><div class="line">    </div><div class="line">    <span class="comment">// We have the focus line and font</span></div><div class="line">    Line *line;</div><div class="line">    <span class="built_in">UIFont</span> *font;</div><div class="line">    </div><div class="line">    <span class="comment">// Render focus line text</span></div><div class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</div><div class="line">    </div><div class="line">    CGContextSaveGState(context);</div><div class="line">    CGContextClipToRect(context, greenRect);</div><div class="line">    [[<span class="built_in">UIColor</span> greenColor] set];</div><div class="line">    [line<span class="variable">.text</span> drawAtPoint:greenPoint withFont:font];</div><div class="line">    CGContextRestoreGState(context);</div><div class="line">    </div><div class="line">    CGContextSaveGState(context);</div><div class="line">    CGContextClipToRect(context, whiteRect);</div><div class="line">    [[<span class="built_in">UIColor</span> whiteColor] set];</div><div class="line">    [line<span class="variable">.text</span> drawAtPoint:whitePoint withFont:font];</div><div class="line">    CGContextRestoreGState(context);</div><div class="line">}</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+
+<p>本质上我们使用了NSString的UIStringDrawing Category搞定了这个事情。既然我们解决了任一时间点的状态，那么把它动起来也很容易：</p>
+<ul>
+<li>将这段code snippet放到LyricsView的drawRect中</li>
+<li>以60 FPS的频率调用[lyricsView setNeedsDisplay]</li>
+</ul>
+<p>一切看起来很直观，但问题来了，这个歌词视图根本跑不到60 FPS（我保证这个效果看起来像癫痫一样儿，v4.9之前就是一直这么癫过来的），即使在目前性能最强的iPhone 5S上。我们来分析一下原因：</p>
+<ul>
+<li>Core Graphics使用CPU作渲染</li>
+<li>这个界面是CPU intensive，需要播放伴奏，还需要录制歌者的声音，甚至需要给声音加“滤镜”</li>
+<li>还有对歌者进行实时打分的task及动画</li>
+<li>回望过去5年iPhone的硬件发展，GPU的提升也远高于CPU，不能指望短期设备升级解决这个问题</li>
+</ul>
+<p>5S上毕竟还可以跑到50FPS，但低端设备的FPS对我来讲是实在是没法接受的。唱吧是线上KTV的应用的用户体验标准，不解决这个问题是说不过去的。既然CPU不给力，那么我们让GPU来做这件事情。</p>
+<h3 id="基于Core_Animation的实现">基于Core Animation的实现</h3>
+<p>14年初的时候，Facebook open source了惊艳的<a href="https://github.com/facebook/Shimmer" target="_blank" rel="external">Shimmer</a>。由于跟我设想的实现机制是相同的，直接拖了几百个shimmer view作了一下profile，在4S上都可以达到完美的60FPS。</p>
+<p>让我们先理一下思路，看看基于Core Animation的焦点行的视图结构：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby"> <span class="constant">GreenLineLabel</span><span class="symbol">:</span> <span class="constant">UILabel</span></span></div><div class="line">-<span class="ruby"> <span class="constant">WhiteLineLabel</span><span class="symbol">:</span> <span class="constant">UILabel</span></span></div></pre></td></tr></table></figure>
+
+<p>没错，就是简单的把绿色的UILabel置于白色的之上，剩下的问题就是如何控制绿色的UILabel按我们的时间控制进行部分渲染。</p>
+<p>部分渲染就是加一个mask，我们来看一下CALayer的mask property:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@<span class="keyword">interface</span> <span class="type">CALayer</span> : <span class="type">NSObject</span> &lt;<span class="type">NSCoding</span>, <span class="type">CAMediaTiming</span>&gt;</div><div class="line">/* A layer whose alpha channel <span class="keyword">is</span> used <span class="keyword">as</span> a mask to select between the</div><div class="line"> * layer's background <span class="keyword">and</span> the <span class="literal">result</span> <span class="keyword">of</span> compositing the layer's</div><div class="line"> * contents <span class="keyword">with</span> its filtered background. <span class="type">Defaults</span> to <span class="keyword">nil</span>. <span class="type">When</span> used <span class="keyword">as</span></div><div class="line"> * a mask the layer's `compositingFilter' <span class="keyword">and</span> `backgroundFilters'</div><div class="line"> * properties are ignored. <span class="type">When</span> setting the mask to a new layer, the</div><div class="line"> * new layer must have a <span class="keyword">nil</span> superlayer, otherwise the behavior <span class="keyword">is</span></div><div class="line"> * undefined. <span class="type">Nested</span> masks (mask layers <span class="keyword">with</span> their own masks) are</div><div class="line"> * unsupported. */</div><div class="line">@property(strong) <span class="type">CALayer</span> *mask;</div><div class="line">@<span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>我们可以知道，mask layer的alpha用来与CALayer的content进行alpha blending，如果alpha为1则content显示，反之不显示。受Shimmer的启发，我们可以对mask作动画，让它从左到右移动到绿色歌词的layer上，并最终与之重合。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">GreenLineLabel</span>: <span class="title">UILabel</span></span></div><div class="line"><span class="keyword">@end</span></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">GreenLineLabel</span> </span>{</div><div class="line">    CALayer *_maskLayer;</div><div class="line">}</div><div class="line">- (instance)initWithFrame:(<span class="built_in">CGRect</span>)frame {</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:frame];</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) {</div><div class="line">        _maskLayer = [CALayer layer];</div><div class="line">        _maskLayer<span class="variable">.backgroundColor</span> = [[<span class="built_in">UIColor</span> whiteColor] CGColor];    <span class="comment">// Any color, only alpha channel matters</span></div><div class="line">        _maskLayer<span class="variable">.anchorPoint</span> = CGPointZero;</div><div class="line">        _maskLayer<span class="variable">.frame</span> = CGRectOffset(<span class="keyword">self</span><span class="variable">.frame</span>, -CGRectGetWidth(<span class="keyword">self</span><span class="variable">.frame</span>), <span class="number">0</span>);</div><div class="line">        <span class="keyword">self</span><span class="variable">.layer</span><span class="variable">.mask</span> = _maskLayer;</div><div class="line">        <span class="keyword">self</span><span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> clearColor];</div><div class="line">    }</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>上面这段代码我们将_maskLayer的anchorPoint设置为CGPointZero，便于后面的动画计算坐标。</p>
+<p>下面我们对_maskLayer的position作CAKeyframeAnimation动画，根据歌词数据我们可以算出每个字渲染的时间(keyTimes)和动画总时长(duration)。假设每个字是等宽的，我们可以算出_maskLayer在每一个keyTime的position，也就是values。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (void)startAnimation {</div><div class="line">    // Assume we calculated keyTimes <span class="constant">and</span> values</div><div class="line">    NSMutableArray *keyTimes;</div><div class="line">    NSMutableArray *values;</div><div class="line">    CGFloat duration;</div><div class="line"></div><div class="line">    CAKeyframeAnimation *<span class="variable">animation =</span> [CAKeyframeAnimation animationWithKeyPath:@<span class="string">"position"</span>];</div><div class="line">    animation.<span class="variable">keyTimes =</span> keyTimes;</div><div class="line">    animation.<span class="variable">values =</span> values;</div><div class="line">    animation.<span class="variable">duration =</span> duration;</div><div class="line">    animation.<span class="variable">calculationMode =</span> kCAAnimationLinear;</div><div class="line">    animation.<span class="variable">fillMode =</span> kCAFillModeForwards;</div><div class="line">    animation.<span class="variable">removedOnCompletion =</span> NO;</div><div class="line">    [_maskLayer addAnimation:animation forKey:@<span class="string">"MaskAnimation"</span>];</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>至此我们完成了基于Core Animation的歌词焦点行染色动画。</p>
+<h3 id="写在后面">写在后面</h3>
+<p>很抱歉我提供的code snippet不是production ready，歌词动画是一个非常复杂的系统，很难单独抽离出来介绍给大家，所以只能管窥一豹地介绍下。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2014/10/06/changba-is-hiring/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          唱吧诚聘iOS开发工程师
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

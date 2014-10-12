@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Xcode磁盘空间大清理 | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="我的设备是Macbook Air 13’ Mid 2011，128G SSD。最近开始有些存储压力了，用Clean My Mac清理一部分旧文件后，决定对Xcode动手。
+移除对旧设备的支持
+影响：可重新生成；再连接旧设备调试时，会重新自动生成。我移除了4.3.2, 5.0, 5.1等版本的设备支持。
+路径：~/Library/Developer/Xcode/iOS DeviceSupport
+释">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Xcode磁盘空间大清理">
+<meta property="og:url" content="http://www.iwangke.me/2013/09/09/clean-xcode-to-free-up-disk-space/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="我的设备是Macbook Air 13’ Mid 2011，128G SSD。最近开始有些存储压力了，用Clean My Mac清理一部分旧文件后，决定对Xcode动手。
+移除对旧设备的支持
+影响：可重新生成；再连接旧设备调试时，会重新自动生成。我移除了4.3.2, 5.0, 5.1等版本的设备支持。
+路径：~/Library/Developer/Xcode/iOS DeviceSupport
+释">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Xcode磁盘空间大清理">
+<meta name="twitter:description" content="我的设备是Macbook Air 13’ Mid 2011，128G SSD。最近开始有些存储压力了，用Clean My Mac清理一部分旧文件后，决定对Xcode动手。
+移除对旧设备的支持
+影响：可重新生成；再连接旧设备调试时，会重新自动生成。我移除了4.3.2, 5.0, 5.1等版本的设备支持。
+路径：~/Library/Developer/Xcode/iOS DeviceSupport
+释">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-clean-xcode-to-free-up-disk-space" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2013/09/09/clean-xcode-to-free-up-disk-space/" class="article-date">
+  <time datetime="2013-09-09T05:22:00.000Z" itemprop="datePublished">Sep 9 2013</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2013/09/09/clean-xcode-to-free-up-disk-space/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      Xcode磁盘空间大清理
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>我的设备是Macbook Air 13’ Mid 2011，128G SSD。最近开始有些存储压力了，用Clean My Mac清理一部分旧文件后，决定对Xcode动手。</p>
+<h3 id="移除对旧设备的支持">移除对旧设备的支持</h3>
+<p>影响：可重新生成；再连接旧设备调试时，会重新自动生成。我移除了4.3.2, 5.0, 5.1等版本的设备支持。</p>
+<p>路径：<code>~/Library/Developer/Xcode/iOS DeviceSupport</code></p>
+<p>释放空间：3GB</p>
+<h3 id="移除旧版本的模拟器支持">移除旧版本的模拟器支持</h3>
+<p>影响：不可恢复；如果需要旧版本的模拟器，就需要重新下载了。我移除了4.3.2, 5.0, 5.1等旧版本的模拟器。</p>
+<p>路径：<code>~/Library/Application Support/iPhone Simulator</code></p>
+<p>释放空间：3GB</p>
+<h3 id="移除模拟器的临时文件">移除模拟器的临时文件</h3>
+<p>影响：可重新生成；如果需要保留较新版本的模拟器，但tmp文件夹很大。放心删吧，tmp文件夹里的内容是不重要的。在iOS Device中，存储空间不足时，tmp文件夹是可能被清空的。</p>
+<p>路径：<code>~/Library/Application Support/iPhone Simulator/6.1/tmp</code> (以iOS Simulator 6.1为例)</p>
+<p>释放空间：2GB</p>
+<h3 id="移除模拟器中安装的Apps">移除模拟器中安装的Apps</h3>
+<p>影响：不可恢复；对应的模拟器中安装的Apps被清空了，如果不需要就删了吧。</p>
+<p>路径：<code>~/Library/Application Support/iPhone Simulator/6.1/Applications</code> (以iOS Simulator 6.1为例)</p>
+<p>释放空间：1GB</p>
+<h3 id="移除Archives">移除Archives</h3>
+<p>影响：不可恢复；Adhoc或者App Store版本会被删除。建议备份dSYM文件夹</p>
+<p>路径：<code>~/Library/Developer/Xcode/Archives</code></p>
+<p>释放空间：6GB</p>
+<h3 id="移除DerivedData">移除DerivedData</h3>
+<p>影响：可重新生成；会删除build生成的项目索引、build输出以及日志。重新打开项目时会重新生成，大的项目会耗费一些时间。</p>
+<p>路径：<code>~/Library/Developer/Xcode/DerivedData</code></p>
+<p>释放空间：12GB</p>
+<h3 id="移除旧的Docsets">移除旧的Docsets</h3>
+<p>影响：不可恢复；将删除旧的Docsets文档</p>
+<p>路径：<code>~/Library/Developer/Shared/Documentation/DocSets</code></p>
+<p>释放空间：2GB</p>
+<h3 id="友情提示">友情提示</h3>
+<p>我一共释放出了30GB左右的磁盘空间，这对128 GB的SSD来说可是不小的数字。如果你的磁盘空间不紧张，或者使用HDD，我建议不要进行这些操作。使用SSD的朋友酌情清理吧。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tips/">Tips</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+    <a href="/2013/09/21/the-change-of-uitableviewcell-for-ios-7/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          iOS 7中UITableViewCell的变化
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/04/28/free-apps-and-free-games/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          免费应用和免费游戏
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2013/09/09/clean-xcode-to-free-up-disk-space/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

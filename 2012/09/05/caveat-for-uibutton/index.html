@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>UIButton的一个小陷阱 | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="在使用UIButton的时候，有时需要在运行时动态改变按钮的文字、样式。但iOS SDK的文档说得不是很清楚，使用错误的API经常会产生诡异的结果，如点击UIButton后，text变回默认值。
+这问题我遇到过三回了，每回都要重新google一下才解决。以前觉得这些不起眼的小问题，不值得单独写一篇文章，但往往这些问题现常见。以后会持续把遇到的一些小问题作为Tips的形式分享出来，希望也可以帮助到其">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UIButton的一个小陷阱">
+<meta property="og:url" content="http://www.iwangke.me/2012/09/05/caveat-for-uibutton/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="在使用UIButton的时候，有时需要在运行时动态改变按钮的文字、样式。但iOS SDK的文档说得不是很清楚，使用错误的API经常会产生诡异的结果，如点击UIButton后，text变回默认值。
+这问题我遇到过三回了，每回都要重新google一下才解决。以前觉得这些不起眼的小问题，不值得单独写一篇文章，但往往这些问题现常见。以后会持续把遇到的一些小问题作为Tips的形式分享出来，希望也可以帮助到其">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UIButton的一个小陷阱">
+<meta name="twitter:description" content="在使用UIButton的时候，有时需要在运行时动态改变按钮的文字、样式。但iOS SDK的文档说得不是很清楚，使用错误的API经常会产生诡异的结果，如点击UIButton后，text变回默认值。
+这问题我遇到过三回了，每回都要重新google一下才解决。以前觉得这些不起眼的小问题，不值得单独写一篇文章，但往往这些问题现常见。以后会持续把遇到的一些小问题作为Tips的形式分享出来，希望也可以帮助到其">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-caveat-for-uibutton" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/09/05/caveat-for-uibutton/" class="article-date">
+  <time datetime="2012-09-04T16:00:00.000Z" itemprop="datePublished">Sep 5 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/09/05/caveat-for-uibutton/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      UIButton的一个小陷阱
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>在使用UIButton的时候，有时需要在运行时动态改变按钮的文字、样式。但iOS SDK的文档说得不是很清楚，使用错误的API经常会产生诡异的结果，如点击UIButton后，text变回默认值。</p>
+<p>这问题我遇到过三回了，每回都要重新google一下才解决。以前觉得这些不起眼的小问题，不值得单独写一篇文章，但往往这些问题现常见。以后会持续把遇到的一些小问题作为Tips的形式分享出来，希望也可以帮助到其它的开发者。</p>
+<h3 id="错误的方式">错误的方式</h3>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Wrong way */</span></div><div class="line">yourButton<span class="variable">.titleLabel</span><span class="variable">.text</span> = <span class="string">@"SampleText"</span>;</div></pre></td></tr></table></figure>
+
+<p>这里titleLabel是readonly的，但我们可以改变titleLabel的property。问题出在UIButton是有<code>Default, Highlighted, Selected, Disabled</code>几种状态的。这种方式会改变当前状态的text，但一旦状态改变（如tap一下）,则会变成默认的设置。</p>
+<h3 id="正确的方式">正确的方式</h3>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Right way */</span></div><div class="line">[yourButton setTitle:<span class="string">@"SampleText"</span> forState:UIControlStateNormal];</div></pre></td></tr></table></figure>
+
+<p>如果其它状态没有特别设置的话，设置<code>UIControlStateNormal</code>这个状态，会自动设置其它状态。</p>
+<p>最后附上<a href="http://stackoverflow.com/questions/4910446/ios-uibutton-titlelabel-does-it-do-anything-at-all" target="_blank" rel="external">SO上的关于本话题的讨论</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tips/">Tips</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UIButton/">UIButton</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+    <a href="/2012/09/09/review-for-book-nodejs-developer-instruction/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          书评：深入浅出的《Node.js开发指南》
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/08/20/ios-app-launch-time-optimization/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          iOS性能优化系列二：iOS应用启动速度优化
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2012/09/05/caveat-for-uibutton/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

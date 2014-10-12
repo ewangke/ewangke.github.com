@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS性能优化系列二：iOS应用启动速度优化 | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="很多app的开发者都不重视app的启动速度，这对于碎片化使用情景的用户来说，简直是灾难。
+iOS应用的启动速度
+应用启动时，会播放一个放大的动画。iPhone上是400ms，iPad上是500ms。最理想的启动速度是，在播放完动画后，用户就可以使用。
+如果应用启动过慢，用户就会放弃使用，甚至永远都不再回来。抛开代码不谈，如果抱着PC端游和单机游戏的思维，在游戏启动时强加公司Logo，启动动画，并且">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS性能优化系列二：iOS应用启动速度优化">
+<meta property="og:url" content="http://www.iwangke.me/2012/08/20/ios-app-launch-time-optimization/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="很多app的开发者都不重视app的启动速度，这对于碎片化使用情景的用户来说，简直是灾难。
+iOS应用的启动速度
+应用启动时，会播放一个放大的动画。iPhone上是400ms，iPad上是500ms。最理想的启动速度是，在播放完动画后，用户就可以使用。
+如果应用启动过慢，用户就会放弃使用，甚至永远都不再回来。抛开代码不谈，如果抱着PC端游和单机游戏的思维，在游戏启动时强加公司Logo，启动动画，并且">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS性能优化系列二：iOS应用启动速度优化">
+<meta name="twitter:description" content="很多app的开发者都不重视app的启动速度，这对于碎片化使用情景的用户来说，简直是灾难。
+iOS应用的启动速度
+应用启动时，会播放一个放大的动画。iPhone上是400ms，iPad上是500ms。最理想的启动速度是，在播放完动画后，用户就可以使用。
+如果应用启动过慢，用户就会放弃使用，甚至永远都不再回来。抛开代码不谈，如果抱着PC端游和单机游戏的思维，在游戏启动时强加公司Logo，启动动画，并且">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-ios-app-launch-time-optimization" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/08/20/ios-app-launch-time-optimization/" class="article-date">
+  <time datetime="2012-08-19T16:00:00.000Z" itemprop="datePublished">Aug 20 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/08/20/ios-app-launch-time-optimization/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      iOS性能优化系列二：iOS应用启动速度优化
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>很多app的开发者都不重视app的启动速度，这对于碎片化使用情景的用户来说，简直是灾难。</p>
+<h3 id="iOS应用的启动速度">iOS应用的启动速度</h3>
+<p>应用启动时，会播放一个放大的动画。iPhone上是400ms，iPad上是500ms。最理想的启动速度是，在播放完动画后，用户就可以使用。</p>
+<p>如果应用启动过慢，用户就会放弃使用，甚至永远都不再回来。抛开代码不谈，如果抱着PC端游和单机游戏的思维，在游戏启动时强加公司Logo，启动动画，并且用户不可跳过，也会使用户的成功使用率大大降低。</p>
+<h3 id="iOS系统的“看门狗”">iOS系统的“看门狗”</h3>
+<p>为了防止一个应用占用过多的系统资源，开发iOS的苹果工程师门设计了一个“看门狗”的机制。在不同的场景下，“看门狗”会监测应用的性能。如果超出了该场景所规定的运行时间，“看门狗”就会强制终结这个应用的进程。开发者们在crashlog里面，会看到诸如<code>0x8badf00d</code>这样的错误代码(“看门狗”吃了坏的食物，它很不高兴)。</p>
+<table class="table table-striped table-condensed"><br>    <thead><br>        <th>场景</th><br>        <th>“看门狗”超时时间</th><br>    </thead><br>    <tbody><br>        <tr><br>        <td>启动</td><br>        <td>20秒</td><br>        </tr><br>        <tr><br>            <td>恢复运行</td><br>            <td>10秒</td><br>        </tr><br>        <tr><br>            <td>悬挂进程</td><br>            <td>10秒</td><br>        </tr><br>        <tr><br>            <td>退出应用</td><br>            <td>6秒</td><br>        </tr><br>        <tr><br>            <td>后台运行</td><br>            <td>10分钟</td><br>        </tr><br>    </tbody><br></table>
+
+<p>值得注意的是，Xcode在Debug的时候，会禁止“看门狗”。</p>
+<h3 id="如何测试启动时间">如何测试启动时间</h3>
+<p>两种方法：一种使用NSLog，另外一种使用Time Profiler。</p>
+<ul>
+<li>使用NSLog</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">CFAbsoluteTime StartTime;</div><div class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv) {</div><div class="line">     StartTime = CFAbsoluteTimeGetCurrent();</div><div class="line">     <span class="comment">// ...</span></div><div class="line">}</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)applicationDidFinishLaunching:(<span class="built_in">UIApplication</span> *)app {</div><div class="line">     <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^{</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Launched in %f sec"</span>, CFAbsoluteTimeGetCurrent() - StartTime);</div><div class="line">     });</div><div class="line">     <span class="comment">// ...</span></div><div class="line"> }</div></pre></td></tr></table></figure>
+
+<ul>
+<li>使用Time Profiler<ul>
+<li>Instruments-&gt;Time Profiler</li>
+<li>Profile你的app</li>
+<li>切换到CPU strategy view，找到你的app启动的第一帧</li>
+<li>搜索<code>-[UIApplication _reportAppLaunchFinished]</code></li>
+<li>找到包含<code>-[UIApplication _reportAppLaunchFinished]</code>的最后一帧，即可计算出启动时间</li>
+</ul>
+</li>
+</ul>
+<h3 id="iOS_App启动过程">iOS App启动过程</h3>
+<ul>
+<li>链接并加载Framework和static lib</li>
+<li>UIKit初始化</li>
+<li>应用程序callback</li>
+<li>第一个Core Animation transaction</li>
+</ul>
+<p>链接并加载Framework及static lib时需要注意：</p>
+<ul>
+<li>每个Framework都会增加启动时间和占用的内存</li>
+<li>不必要的Framework，不要链接</li>
+<li>必要的Framework，不要标记为Optional</li>
+<li>只在使用在Deployment Target之后发布的Framework时，才使用Optional（比如你的Deployment Target是iOS 3.0，需要链接StoreKit的时候）</li>
+<li>避免创建全局的C++对象</li>
+</ul>
+<p>初始化UIKit时需要注意：</p>
+<ul>
+<li>字体、状态栏、user defaults、main nib会被初始化</li>
+<li>保持main nib尽可能的小</li>
+<li>User defaults本质上是一个plist文件，保存的数据是同时被反序列化的，不要在user defaults里面保存图片等大数据</li>
+</ul>
+<p>应用程序的回调：</p>
+<ul>
+<li><code>application:willFinishLaunchingWithOptions:</code></li>
+<li>恢复应用程序的状态</li>
+<li><code>application:didFinishLaunchingWithOptions:</code></li>
+</ul>
+<p>我一直认为设计的本质是折衷。当你为了100ms的启动速度优化欢欣不已，而无视那长达10秒的启动动画时，应该想想究竟什么是应该做的。<code>做正确的事情比把事情做好更重要。</code></p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Performance/">Performance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+    <a href="/2012/09/05/caveat-for-uibutton/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          UIButton的一个小陷阱
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/08/20/rescue-the-main-thread-of-ios-app/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          iOS性能优化系列三：事件处理-拯救主线程
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2012/08/20/ios-app-launch-time-optimization/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

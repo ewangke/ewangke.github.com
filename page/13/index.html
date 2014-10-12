@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="iWangKe.me">
+<meta property="og:url" content="http://www.iwangke.me/page/13/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iWangKe.me">
+<meta name="twitter:description">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      
+  
+    <article id="post-install-script-for-pptp-vpn-service-on-ubuntu-xen-vps" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/07/14/install-script-for-pptp-vpn-service-on-ubuntu-xen-vps/" class="article-date">
+  <time datetime="2012-07-13T16:00:00.000Z" itemprop="datePublished">Jul 14 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/07/14/install-script-for-pptp-vpn-service-on-ubuntu-xen-vps/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/07/14/install-script-for-pptp-vpn-service-on-ubuntu-xen-vps/">PPTP一键安装脚本 for Ubuntu Xen VPS</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>最近<a href="http://www.avantehosting.net/" target="_blank" rel="external">avantehosting</a>促销，推出了半年付6刀的Xen 128 VPS。<br>正好手头缺个VPS折腾点小东西，就入手了。</p>
+<p>首先的需求是弄个VPN，于是根据别人的脚本改了个<a href="https://gist.github.com/3110375" target="_blank" rel="external">适合Xen VPS的一键安装脚本</a>。<br>使用方法：</p>
+<pre>
+wget https://gist.github.com/raw/3110375/70544548700d82e527fa716f28319940964c8a30/pptpinstall.sh -O pptpinstall.sh
+chmod +x pptpinstall.sh
+./pptpinstall.sh
+</pre>
+
+<p>多谈一下avantehosting的vps，如果图便宜，可以考虑买一个。<br>机房在佛罗里达，ping值在300左右。62G的月流量不算大，但也够用。<br>开通的时候，遇到些小问题。发ticket后大概12小时解决了。</p>
+<p>附UnixBench跑分结果：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">========================================================================</div><div class="line">   BYTE UNIX Benchmarks (Version <span class="number">5.1</span><span class="number">.3</span>)</div><div class="line"></div><div class="line">   System: GNU/Linux</div><div class="line">   OS: GNU/Linux <span class="comment">-- 3.0.0-12-server -- #20-Ubuntu SMP Fri Oct 7 16:36:30 UTC 2011</span></div><div class="line">   Machine: x86_64 (x86_64)</div><div class="line">   Language: en_US.utf8 (charmap=<span class="string">"UTF-8"</span>, collate=<span class="string">"UTF-8"</span>)</div><div class="line">   CPU <span class="number">0</span>: Intel(R) Xeon(R) CPU E31230 @ <span class="number">3.20</span>GHz (<span class="number">6385.5</span> bogomips)</div><div class="line">          Hyper-Threading, x86-<span class="number">64</span>, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET</div><div class="line">   <span class="number">05</span>:<span class="number">02</span>:<span class="number">08</span> up  <span class="number">1</span>:<span class="number">13</span>,  <span class="number">1</span> user,  load average: <span class="number">0.74</span>, <span class="number">0.39</span>, <span class="number">0.47</span>; runlevel <span class="number">2</span></div><div class="line"></div><div class="line"><span class="comment">------------------------------------------------------------------------</span></div><div class="line">Benchmark Run: Sat Jul <span class="number">14</span> <span class="number">2012</span> <span class="number">05</span>:<span class="number">02</span>:<span class="number">08</span> - <span class="number">05</span>:<span class="number">30</span>:<span class="number">20</span></div><div class="line"><span class="number">1</span> CPU <span class="keyword">in</span> system; running <span class="number">1</span> parallel copy <span class="keyword">of</span> tests</div><div class="line"></div><div class="line">Dhrystone <span class="number">2</span> using <span class="keyword">register</span> variables       <span class="number">23631847.0</span> lps   (<span class="number">10.0</span> s, <span class="number">7</span> samples)</div><div class="line">Double-Precision Whetstone                     <span class="number">2683.8</span> MWIPS (<span class="number">9.9</span> s, <span class="number">7</span> samples)</div><div class="line">Execl Throughput                               <span class="number">1202.5</span> lps   (<span class="number">29.8</span> s, <span class="number">2</span> samples)</div><div class="line"><span class="keyword">File</span> Copy <span class="number">1024</span> bufsize <span class="number">2000</span> maxblocks        <span class="number">264524.8</span> KBps  (<span class="number">30.1</span> s, <span class="number">2</span> samples)</div><div class="line"><span class="keyword">File</span> Copy <span class="number">256</span> bufsize <span class="number">500</span> maxblocks           <span class="number">53671.6</span> KBps  (<span class="number">30.1</span> s, <span class="number">2</span> samples)</div><div class="line"><span class="keyword">File</span> Copy <span class="number">4096</span> bufsize <span class="number">8000</span> maxblocks        <span class="number">908392.9</span> KBps  (<span class="number">30.1</span> s, <span class="number">2</span> samples)</div><div class="line">Pipe Throughput                              <span class="number">455343.1</span> lps   (<span class="number">10.0</span> s, <span class="number">7</span> samples)</div><div class="line">Pipe-based <span class="keyword">Context</span> Switching                  <span class="number">59319.0</span> lps   (<span class="number">10.0</span> s, <span class="number">7</span> samples)</div><div class="line"><span class="keyword">Process</span> Creation                               <span class="number">2945.3</span> lps   (<span class="number">30.0</span> s, <span class="number">2</span> samples)</div><div class="line">Shell Scripts (<span class="number">1</span> concurrent)                   <span class="number">2367.5</span> lpm   (<span class="number">60.0</span> s, <span class="number">2</span> samples)</div><div class="line">Shell Scripts (<span class="number">8</span> concurrent)                    <span class="number">333.9</span> lpm   (<span class="number">60.1</span> s, <span class="number">2</span> samples)</div><div class="line">System Call Overhead                         <span class="number">429520.5</span> lps   (<span class="number">10.0</span> s, <span class="number">7</span> samples)</div><div class="line"></div><div class="line">System Benchmarks Index Values               BASELINE       RESULT    INDEX</div><div class="line">Dhrystone <span class="number">2</span> using <span class="keyword">register</span> variables         <span class="number">116700.0</span>   <span class="number">23631847.0</span>   <span class="number">2025.0</span></div><div class="line">Double-Precision Whetstone                       <span class="number">55.0</span>       <span class="number">2683.8</span>    <span class="number">488.0</span></div><div class="line">Execl Throughput                                 <span class="number">43.0</span>       <span class="number">1202.5</span>    <span class="number">279.6</span></div><div class="line"><span class="keyword">File</span> Copy <span class="number">1024</span> bufsize <span class="number">2000</span> maxblocks          <span class="number">3960.0</span>     <span class="number">264524.8</span>    <span class="number">668.0</span></div><div class="line"><span class="keyword">File</span> Copy <span class="number">256</span> bufsize <span class="number">500</span> maxblocks            <span class="number">1655.0</span>      <span class="number">53671.6</span>    <span class="number">324.3</span></div><div class="line"><span class="keyword">File</span> Copy <span class="number">4096</span> bufsize <span class="number">8000</span> maxblocks          <span class="number">5800.0</span>     <span class="number">908392.9</span>   <span class="number">1566.2</span></div><div class="line">Pipe Throughput                               <span class="number">12440.0</span>     <span class="number">455343.1</span>    <span class="number">366.0</span></div><div class="line">Pipe-based <span class="keyword">Context</span> Switching                   <span class="number">4000.0</span>      <span class="number">59319.0</span>    <span class="number">148.3</span></div><div class="line"><span class="keyword">Process</span> Creation                                <span class="number">126.0</span>       <span class="number">2945.3</span>    <span class="number">233.8</span></div><div class="line">Shell Scripts (<span class="number">1</span> concurrent)                     <span class="number">42.4</span>       <span class="number">2367.5</span>    <span class="number">558.4</span></div><div class="line">Shell Scripts (<span class="number">8</span> concurrent)                      <span class="number">6.0</span>        <span class="number">333.9</span>    <span class="number">556.5</span></div><div class="line">System Call Overhead                          <span class="number">15000.0</span>     <span class="number">429520.5</span>    <span class="number">286.3</span></div><div class="line">                                                                   ========</div><div class="line">System Benchmarks Index Score                                         <span class="number">466.4</span></div></pre></td></tr></table></figure>
+
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PPTP/">PPTP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VPN/">VPN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VPS/">VPS</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-the_new_objc_syntax" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/06/21/the_new_objc_syntax/" class="article-date">
+  <time datetime="2012-06-20T16:00:00.000Z" itemprop="datePublished">Jun 21 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/06/21/the_new_objc_syntax/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/06/21/the_new_objc_syntax/">了解iOS 6开发第一篇：新的Objective-C语法</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p><strong>写在前面：由于iOS Developer Program的NDA的限制，这系列文章会等到iOS 6正式发布时，再push到github上。因此你看到的这些文章，很可能是我两、三个月前学习iOS 6的时候写下的，难免会有不准确的地方，但我持续修改。如果你发现了问题，请在文章下面留言或者发邮件给我。另外我没有看中文文档的习惯，所以翻译术语真的很困难，如果你知道怎么翻译更好，也请告诉我。</strong></p>
+<p>iOS 6是激动人心的，也带来了一些比较大的改变。最近在看<a href="https://developer.apple.com/videos/wwdc/2012/" target="_blank" rel="external">WWDC 2012 Video Session</a>，这一系列的文章，是我在学习iOS 6的一些新特性的时候写的一些笔记，也希望对其它中国开发者有帮助。</p>
+<p>WWDC 2012，介绍了新的Objective-C的语法。这些语法依赖于LLVM 4.0编译器，由Xcode 4.4/4.5提供。主要有三点变化：</p>
+<ul>
+<li>Objective-C Literals &amp; Boxing Expressions (Objective-C字面量 &amp; 表达式装箱)</li>
+<li>Collection Subscription (集合下标)</li>
+<li>Automatic Property Synthesis （自动属性综合，Synthesis怎么翻译？）</li>
+</ul>
+<h3 id="Objective-C_Literals_&amp;_Boxing_Expressions">Objective-C Literals &amp; Boxing Expressions</h3>
+<p>LLVM 4.0之前：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[<span class="built_in">NSNumber</span> numberWithInt:<span class="number">42</span>]</div><div class="line">[<span class="built_in">NSNumber</span> numberWithDouble:<span class="number">10.8</span>]</div><div class="line">[<span class="built_in">NSNumber</span> numberWithBool:<span class="literal">YES</span>]</div><div class="line">[<span class="built_in">NSNumber</span> numberWithInt:<span class="number">6</span> + x * <span class="number">2012</span>]</div></pre></td></tr></table></figure>
+
+<p>LLVM 4.0之后：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@<span class="number">42</span> </div><div class="line">@<span class="number">10.8</span></div><div class="line">@YES</div><div class="line">@(<span class="number">6</span> + x * <span class="number">2012</span>)		<span class="comment">//表达式要用()，这就是Boxing Expressions</span></div></pre></td></tr></table></figure>
+
+<h3 id="Collection_Subscription">Collection Subscription</h3>
+<p>LLVM 4.0之前：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[<span class="built_in">NSArray</span> arrayWithObjects:a, b, c, <span class="literal">nil</span>]</div><div class="line">[array objectAtIndex:i]</div><div class="line">[<span class="built_in">NSDictionary</span> dictionaryWithObjectsAndKeys:v1, k1, v2, k2, <span class="literal">nil</span>]</div><div class="line">[dictionary valueForKey:k]</div></pre></td></tr></table></figure>
+
+<p>LLVM 4.0之后：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@[a,b,c]		<span class="comment">//这里没有nil</span></div><div class="line">array[i]</div><div class="line">@{k1: v1, k2: v2}		<span class="comment">//这里没有nil</span></div><div class="line">dictionary[k]</div></pre></td></tr></table></figure>
+
+<h3 id="Automatic_Property_Synthesis">Automatic Property Synthesis</h3>
+<p>LLVM 4.0之前：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">@synthesize</span> property;</div></pre></td></tr></table></figure>
+
+<p>LLVM 4.0之后：不需要使用@synthesize directive了</p>
+<h3 id="如何将代码转换为Modern_Objective-C">如何将代码转换为Modern Objective-C</h3>
+<p>Xcode 4.4+，Edit-&gt;Refactor-&gt;Convert to Modern Objective-C Syntax</p>
+<p>少写了很多代码，可读性也提高了很多(我被nil哨兵坑了好多次- -!)。<em>Less code, less bug</em>.</p>
+<p>参考资料：</p>
+<ul>
+<li><a href="http://clang.llvm.org/docs/ObjectiveCLiterals.html" target="_blank" rel="external">Objective-C Literals</a></li>
+<li><a href="http://developer.apple.com/devcenter/download.action?path=/wwdc_2012/wwdc_2012_session_pdfs/session_101__wwdc_platforms_kickoff.pdf" target="_blank" rel="external">WWDC 2012 Platforms Kickoff，需要IDP</a></li>
+</ul>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-6/">iOS 6</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-mrc_vs_arc" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/06/21/mrc_vs_arc/" class="article-date">
+  <time datetime="2012-06-20T16:00:00.000Z" itemprop="datePublished">Jun 21 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/06/21/mrc_vs_arc/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/06/21/mrc_vs_arc/">了解iOS 6开发第三篇：内存管理 - 手动引用计数与自动引用计数</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p><em>本文不会举例介绍MRC，如果不了解MRC，最好先简单了解一下，再回来读这篇文章。</em></p>
+<p><strong>从iOS 5开始，iOS开发就可以使用自动引用计数（Automatic Reference Counting）了。一直想写一篇详细的笔记，来整理这方面的信息，但一直拖到现在。这篇文章是<br><a href="http://developer.apple.com/devcenter/download.action?path=/wwdc_2012/wwdc_2012_session_pdfs/session_406__adopting_automatic_reference_counting.pdf" target="_blank" rel="external">WWDC 2012 Session 406 - Adopting Automatic Reference Counting</a>的笔记，如果对LLVM感兴趣，可以去<a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html" target="_blank" rel="external">llvm.org</a>深入了解一下。</strong></p>
+<h4 id="关于自动引用计数(Automatic_Reference_Counting,_aka_ARC)">关于自动引用计数(Automatic Reference Counting, aka ARC)</h4>
+<p>很多工程师都是最近一、两年才开始接触iOS开发的。但大多数工程师都接触过Java/C#这样的静态编译语言，或者python/ruby这样的动态脚本语言。这些“现代”语言的都提供Garbage Collection的机制，由GC来负责内存的回收。我先强调一点：<em>ARC是编译器提供的机制，而不是GC这种运行时提供的机制。</em>要了解ARC，必须明白什么是引用计数，必须从MRC开始。此外，你会遇到很多旧的开源代码和静态库（比如广告平台）。这些很可能不支持ARC，所以还是要理解MRC。</p>
+<h4 id="关于手动引用计数(Manully_Reference_Counting,_aka_MRC)">关于手动引用计数(Manully Reference Counting, aka MRC)</h4>
+<p>Objective-C的MRC，简单来说就是一句话：<em>谁创建，谁释放</em>。复杂一点的解释如下：</p>
+<ul>
+<li>所有由alloc、copy(mutablecopy)、retain、new创建的object，必须手动release(或autorelease)</li>
+<li>反之，则不需要也不可以</li>
+<li>autorelease不是自动释放，是AutoreleasePool的实例，在runloop中被”稍后“释放。</li>
+</ul>
+<h4 id="MRC有什么问题">MRC有什么问题</h4>
+<p>常犯的错误：</p>
+<ul>
+<li>Crash! Reject! 内存管理是导致app crash的最主要原因。也是App Store审核时拒审的最多的原因；</li>
+<li>规则简单，但细节太多，依赖于工程师的清醒头脑和良好习惯，依赖于命名规范</li>
+<li>Dangling Pointer，delegate需要手动设置为nil</li>
+<li>触发NSError、或者有复杂的条件分支逻辑时，忘记释放内存</li>
+</ul>
+<p>需要使用一堆工具，帮助你检测代码：</p>
+<ul>
+<li>Instruments: Allocations, Leaks, Zombies</li>
+<li>Static Analyzer</li>
+<li>Heap</li>
+<li>ObjectAlloc</li>
+<li>vmmap</li>
+<li>Debugger</li>
+</ul>
+<p>工程师需要做的事情：</p>
+<ul>
+<li>理解MRC，写正确的代码</li>
+<li>正确的命名规范</li>
+<li>使用五花八门的辅助工具，来保证代码没问题</li>
+<li>保持清醒的头脑，不犯低级错误</li>
+</ul>
+<p>这不是工程师所擅长的事情，这个工作应该由<em>编译器</em>来做才对—<strong>LLVM 3.1</strong></p>
+<h4 id="什么是ARC">什么是ARC</h4>
+<ul>
+<li>Objective-C对象的自动管理机制</li>
+<li>由LLVM编译器来保证</li>
+<li>与MRC完全兼容</li>
+<li>引入新的运行时特性：弱指针、性能优化</li>
+</ul>
+<h4 id="ARC不是">ARC不是</h4>
+<ul>
+<li>新的运行时模型</li>
+<li>自动malloc/free, CF等等（不负责纯C代码的内存管理）</li>
+<li>不是GC。不扫描堆、不暂停进程运行、没有不确定的内存释放</li>
+</ul>
+<h4 id="ARC如何工作">ARC如何工作</h4>
+<ul>
+<li>编译器在编译期，帮你动态添加retain/release/autorelease</li>
+<li>返回同样结果的不同API，在内存方面，没有区别（把alloc/init模式与convenient method当成一样就可以了）</li>
+</ul>
+<h4 id="ARC有什么好处">ARC有什么好处</h4>
+<ul>
+<li>不用写retain/release/autorelease这样的代码，甚至连dealloc方法都不需要（前提是类不需要管理C指针）</li>
+<li>更好的性能，ARC智能地在”适当“的地方插入retain/release</li>
+<li>Block just work</li>
+<li>Less code, less bug</li>
+<li>少浪费脑细胞和脑时钟周期</li>
+</ul>
+<h4 id="如何打开ARC">如何打开ARC</h4>
+<ul>
+<li>Xcode的Project Setting中，设置Objective-C Automatic Reference Counting为YES</li>
+<li>Xcode 4.2+，新的Project默认为ARC</li>
+</ul>
+<h4 id="为了实现ARC，LLVM编译器必须保证4条规则">为了实现ARC，LLVM编译器必须保证4条规则</h4>
+<ul>
+<li>不能调用或实现跟引用计数相关的方法（retain/release/autorelease/retaincount等），否则产生编译错误</li>
+<li>C的结构体里面，不能有Object指针；如果必须使用，那么可以用Objective-C的类代替</li>
+<li>编译器必须清楚void*是否被retained。引入新的API来转换Objective-C和Core Foundation类型的对象</li>
+<li>编译器必须清楚自动释放的对象，因此AutoreleasePool不能是对象，而只是语义上的符号。@autoreleasepool directive甚至可能在MRC中使用</li>
+</ul>
+<h4 id="如何理解ARC">如何理解ARC</h4>
+<ul>
+<li>从对象的从属关系角度考虑：强引用(retain)保证对象的存在，或没有强引用，则对象被自动销毁</li>
+<li>想清楚程序的对象图</li>
+<li>不要再考虑retain, release, autorelease了</li>
+</ul>
+<h4 id="弱引用(必须在iOS_5中使用)">弱引用(必须在iOS 5中使用)</h4>
+<ul>
+<li>安全的”弱指针“，引用的对象被销毁时，自动变成nil；避免了Dangling Pointer</li>
+<li>在property中使用weak关键字声明，ivar中使用_weak声明</li>
+</ul>
+<h4 id="循环引用">循环引用</h4>
+<ul>
+<li>ARC依然存在循环引用的可能</li>
+<li>手动设置某一个引用为nil，破坏循环引用</li>
+<li>使用弱引用来避免</li>
+</ul>
+<h4 id="性能">性能</h4>
+<ul>
+<li>与MRC没有实质的性能区别，甚至更好（有时候好得多），内存峰值比MRC低</li>
+<li>没有GC的开销；没有延迟的销毁，没有进程暂停，没有不能确定的释放</li>
+</ul>
+<h4 id="ARC的优点">ARC的优点</h4>
+<ul>
+<li>更容易理解</li>
+<li>写更少的代码，更少的bug</li>
+<li>更容易维护，甚至更好的性能</li>
+<li>安全、稳定</li>
+</ul>
+<h4 id="iOS的什么版本才能支持ARC">iOS的什么版本才能支持ARC</h4>
+<ul>
+<li>iOS 6发布后，以iOS 5.0作为Deployment Target完全没问题。所以都可以使用ARC。如果你必须支持5.0以下的设备，那么看后两条。</li>
+<li>ARC由LLVM 3.1保证，LLVM 3.1在安装Xcode 4.2自动安装；也就是说只要Xcode 4.2以上的版本，可以设置的Deployment Target的最低版本，都支持ARC。笔者在4.0+的app中使用ARC。</li>
+<li>弱引用（Weak Reference）必须在iOS 5以上的设备才支持</li>
+</ul>
+<h4 id="总结">总结</h4>
+<p>笔者其实觉得MRC很容易掌握，profile的工具也容易掌握。但ARC实实在在的从安全、可维护性、代码量、性能上有全面的提升。所以除非维护旧的代码，笔者都建议使用ARC。不用担心app依赖第三方的MRC代码，可以通过编译器设置文件的编译属性来混合使用ARC和MRC。</p>
+<p>如果想更多地了解LLVM是如何智能地保证ARC，请阅读文章头部引用的两篇文章，里面有详细的解释和代码例子。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ARC/">ARC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MRC/">MRC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-6/">iOS 6</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-ios_common_design_pitfalls" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/06/21/ios_common_design_pitfalls/" class="article-date">
+  <time datetime="2012-06-20T16:00:00.000Z" itemprop="datePublished">Jun 21 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/06/21/ios_common_design_pitfalls/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/06/21/ios_common_design_pitfalls/">了解iOS 6开发第二篇：iOS常见设计误区</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p><strong>在iOS应用的设计上，存在一些常见的误区。<a href="http://developer.apple.com/devcenter/download.action?path=/wwdc_2012/wwdc_2012_session_pdfs/session_221__ios_user_interface_design.pdf" target="_blank" rel="external">WWDC 2012 Session 221 - iOS User Interface Design</a>，指出了以下十种常见的误区。</strong></p>
+<h4 id="误区一：糟糕的图标设计">误区一：糟糕的图标设计</h4>
+<p>iOS 4添加了文件夹功能，iOS 6的App Store中，用户可以进行批量下载。App Store发展的这四年，已经有了60多万的iPhone应用。制作一个App，周期一般从1个多月到半年、甚至一年不等，做几个、甚至十几个版本的图标，反复推敲，是完全值得的。<em>优秀的图标设计，是每个优秀App的标配，也是每个设计师的必修课。</em></p>
+<p>如何设计优秀的图标呢？苹果给的建议只有两条：美观漂亮；可以一眼识别。第一条是设计师取决于设计师的修养和风格。这里说下第二条。</p>
+<p>如何设计“可以一眼识别的图标”：</p>
+<ul>
+<li>专注于一个独特的轮廓。如Music, iBooks, Instapaper。</li>
+<li>慎重地选择色系及颜色搭配。如Day One, Instagram。</li>
+<li>避免使用照片。</li>
+<li>避免图标上出现一堆文字。比较一下Vimeo、Pinterest、Tumblr的Logo和App图标。</li>
+<li>正确使用材质。如iCal、Notes、Camera应用。</li>
+<li>保持创新。这里要赞一下Evernote Food的图标设计（Sushi放在一个方形的碟子上）。</li>
+<li>在不同色系的主屏壁纸下，测试你的图标是否清晰。</li>
+<li>把App放进文件夹中，测试图标是否清晰。</li>
+</ul>
+<h4 id="误区二：强制用户注册">误区二：强制用户注册</h4>
+<p>一些app是有账号系统的，比如社交网络类型的应用，或者Readability类型的应用。不要强制用户注册才可以使用，至少允许用户在不注册的情况下，使用app的一大部分功能。承受着用户获取成本的提高，这种粗暴的直接把用户拦在门外的做法，越来越不可取。</p>
+<h4 id="误区三：过小的控件">误区三：过小的控件</h4>
+<p>保证每个控件以及任何可点击的区域，不小于44 * 44的尺寸。大概是导航条的高度，也是内置Calculator应用的按钮高度。如果设计上为了突出一些功能，可以把最主要的功能的按钮变大，但要保证其它按钮不能小于最小范围。Instagram就是这样做的，拍照按钮在下方的UITabBar的最小间，但比其它按钮要大一些。</p>
+<h4 id="误区四：难以阅读的文本">误区四：难以阅读的文本</h4>
+<p>正面代表是Mail，在列表界面和邮件正文界面，通过字体的阴影、大小、对齐等变化，达到最佳的阅读体验。</p>
+<p>一些原则：</p>
+<ul>
+<li>使用阴影和字体大小，来区分不同层级的内容</li>
+<li>保证文字的主体清晰，易于阅读</li>
+<li>对齐文本，以便用户快速浏览</li>
+<li>右对齐Label，左对齐文本内容</li>
+<li>在iPhone和iPad上，分别测试你的应用</li>
+</ul>
+<h4 id="误区五：令人摸不着头脑的警告信息">误区五：令人摸不着头脑的警告信息</h4>
+<ul>
+<li>作为程序员和曾经的Windows用户，我只知道Error: 0xc000007b这样的信息可能是内存泄露；而普通用户甚至认为显示屏是PC的运算核心。不要把这些糟糕的提示风格带到Mac和iOS应用中。对用户要“说人话”。</li>
+<li>有歧义的提示：您想要取消交易吗？（OK, Cancel）两个选项，用户是搞不清楚应该选哪个的。</li>
+<li>避免不必要的警告提示；提示信息可以用非模态的方式展现，参见Mail里面，更新邮件后下方的状态条</li>
+<li>以直接的动作描述，来命名警告提示的待选按钮。如(Close， View)</li>
+<li>把确定、确认的按钮放在右边，取消、中断的按钮放在左边</li>
+<li>使用ActionSheet或者Popover来确认危险的操作(destructive operation)。如删除操作。</li>
+</ul>
+<h4 id="误区六：使用易于用户理解的语言">误区六：使用易于用户理解的语言</h4>
+<p>举一个正面例子：iOS 6的Settings中，Do Not Disturb开关，如果把Label文本换成System Alerts，明显会变得对用户不友好。“说人话”。</p>
+<h4 id="误区七：过度的品牌宣传">误区七：过度的品牌宣传</h4>
+<p>想象一下，把一个应用的导航条标题，全部换成产品名或者公司名，会怎么样？</p>
+<h4 id="误区八：无意义的后退按钮">误区八：无意义的后退按钮</h4>
+<p>Windows过来的设计师的通病。要使用有意义的标题来命名按钮，如上一个导航层级的标题，就比“后退”描述了更多信息。</p>
+<h4 id="误区九：令人困惑的动画变换">误区九：令人困惑的动画变换</h4>
+<p>在视图切换，或者用户执行操作的时候，进行动画变换，可以增加逻辑感、沉浸感和“空间感”。但不要滥用。</p>
+<h4 id="误区十：应用的“风格”不恰当">误区十：应用的“风格”不恰当</h4>
+<ul>
+<li>应用主要两种类型：娱乐类和工具类。娱乐类的应用更强调乐趣、沉浸感，工具类的应用更强调稳定性和效率。不要搞反了，强调风格也要适度。</li>
+<li>苹果建议尽可能地使用“仿真”的思路去设计：比如温度计、指南针这样的app，用户在物理世界中已经习得如何使用，没有额外的学习成本。</li>
+</ul>
+<h4 id="总结：">总结：</h4>
+<ul>
+<li>专注用户体验</li>
+<li>熟读<a href="https://developer.apple.com/library/ios/#documentation/UserExperience/Conceptual/MobileHIG/Introduction/Introduction.html" target="_blank" rel="external">iOS Human Interface Guideline</a>（HIG）</li>
+</ul>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-6/">iOS 6</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/12/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="page-number current">13</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/14/">Next &raquo;</a>
+    </nav>
+  
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

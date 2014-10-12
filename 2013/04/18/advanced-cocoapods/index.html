@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>CocoaPods进阶：本地包管理 | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="粉笔网的iOS工程师唐巧曾经写过一篇blog《使用CocoaPods来做iOS程序的包依赖管理》介绍了基本的CocoaPods使用方法。本文将另外谈一谈如何使用CocoaPods进行本地的包管理。建议没有接触过CococaPods的朋友先阅读一下唐巧的blog。
+为什么要进行本地的包管理
+
+有的时候CocoaPods的spec版本过旧，pull request没有及时merge，导致我们无法利用C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CocoaPods进阶：本地包管理">
+<meta property="og:url" content="http://www.iwangke.me/2013/04/18/advanced-cocoapods/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="粉笔网的iOS工程师唐巧曾经写过一篇blog《使用CocoaPods来做iOS程序的包依赖管理》介绍了基本的CocoaPods使用方法。本文将另外谈一谈如何使用CocoaPods进行本地的包管理。建议没有接触过CococaPods的朋友先阅读一下唐巧的blog。
+为什么要进行本地的包管理
+
+有的时候CocoaPods的spec版本过旧，pull request没有及时merge，导致我们无法利用C">
+<meta property="og:image" content="https://pbs.twimg.com/media/BIGmipnCMAAt7gZ.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CocoaPods进阶：本地包管理">
+<meta name="twitter:description" content="粉笔网的iOS工程师唐巧曾经写过一篇blog《使用CocoaPods来做iOS程序的包依赖管理》介绍了基本的CocoaPods使用方法。本文将另外谈一谈如何使用CocoaPods进行本地的包管理。建议没有接触过CococaPods的朋友先阅读一下唐巧的blog。
+为什么要进行本地的包管理
+
+有的时候CocoaPods的spec版本过旧，pull request没有及时merge，导致我们无法利用C">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-advanced-cocoapods" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2013/04/18/advanced-cocoapods/" class="article-date">
+  <time datetime="2013-04-18T07:30:00.000Z" itemprop="datePublished">Apr 18 2013</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2013/04/18/advanced-cocoapods/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      CocoaPods进阶：本地包管理
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>粉笔网的iOS工程师<a href="http://weibo.com/tangqiaoboy" target="_blank" rel="external">唐巧</a>曾经写过一篇blog<a href="http://blog.devtang.com/blog/2012/12/02/use-cocoapod-to-manage-ios-lib-dependency/" target="_blank" rel="external">《使用CocoaPods来做iOS程序的包依赖管理》</a>介绍了基本的CocoaPods使用方法。本文将另外谈一谈如何使用CocoaPods进行本地的包管理。建议没有接触过CococaPods的朋友先阅读一下唐巧的blog。</p>
+<h3 id="为什么要进行本地的包管理">为什么要进行本地的包管理</h3>
+<ul>
+<li>有的时候CocoaPods的spec版本过旧，pull request没有及时merge，导致我们无法利用CocoaPods使用较新的代码版本；</li>
+<li>有的时候我们的一些代码不是开源的，或者暂时不想放到Github上。我们更想使用CocoaPods引用本地的代码；</li>
+</ul>
+<h3 id="使用CocoaPods里没有的第三方库新版本">使用CocoaPods里没有的第三方库新版本</h3>
+<p>这里我们以PlayHavenSDK为例介绍一下。我们在<a href="https://github.com/CocoaPods/Specs/tree/master/PlayHavenSDK" target="_blank" rel="external">CocoaPods / Spec</a>这个repository里面可以看到，PlayHavenSDK的版本是1.11.0。而<a href="https://github.com/playhaven/sdk-ios" target="_blank" rel="external">playhaven / sdk-ios</a>里面的tag，已经有了1.12.1这个版本。CocoaPods的Spec repository已经落后了两个版本。这时我们想使用最新版，需要的就是一个更新的spec。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="constant">Pod::Spec</span>.new <span class="keyword">do</span> |s|</div><div class="line">    s.name = <span class="string">'PlayHavenSDK'</span></div><div class="line">    s.version = <span class="string">'1.12.1'</span></div><div class="line">    s.license = <span class="string">'MIT'</span></div><div class="line">    s.summary = <span class="string">'PlayHaven is a real-time mobile game marketing platform to help you take control of the business of your games.'</span></div><div class="line">    s.homepage = <span class="string">'http://playhaven.com'</span></div><div class="line">    s.author = { <span class="string">'Sam Stewart'</span> =&gt; <span class="string">'sam@playhaven.com'</span> }</div><div class="line">    s.source = { <span class="symbol">:git</span> =&gt; <span class="string">'https://github.com/playhaven/sdk-ios.git'</span>, <span class="symbol">:tag</span> =&gt; <span class="string">'1.12.1'</span> }</div><div class="line">    s.description = <span class="string">"PlayHaven is a real-time mobile game marketing platform to help you take control of the business of your games. Acquire, retain, re-engage, and monetize your players with the help of PlayHaven's powerful marketing platform. Integrate once and embrace the flexibility of the web as you build, schedule, deploy, and analyze your in-game promotions and monetization in real-time through PlayHaven's easy-to-use, web-based dashboard. An API token and secret is required to use this SDK. These tokens uniquely identify your app to PlayHaven and prevent others from making requests to the API on your behalf. To get a token and secret, please visit the PlayHaven developer dashboard at https://dashboard.playhaven.com."</span></div><div class="line">    s.platform = <span class="symbol">:ios</span></div><div class="line">    <span class="comment"># PlayHaven includes prefixed versions of SBJson and OpenUDID</span></div><div class="line">    s.source_files = <span class="string">'Cache'</span>, <span class="string">'src'</span>, <span class="string">'WaterWorks'</span>, <span class="string">'JSON'</span>, <span class="string">'OpenUDID'</span></div><div class="line">    s.frameworks = <span class="string">'SystemConfiguration'</span>, <span class="string">'CFNetwork'</span>, <span class="string">'StoreKit'</span>, <span class="string">'CoreGraphics'</span>, <span class="string">'QuartzCore'</span></div><div class="line">    s.weak_frameworks = <span class="string">'AdSupport'</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>这里我们注意到s.source这一行配置，指向了playhaven/sdk-ios.git仓库的1.12.1这个tag，表示这个spec将使用这个tag的代码。我们将它保存到本地的一个目录中，如<code>~/Desktop/PlayHavenSDK/PlayHavenSDK.podspec</code>。</p>
+<p>我们回到Xcode project目录中，打开Podfile，添加<code>pod &#39;PlayHavenSDK&#39;, :podspec =&gt; &#39;~/Desktop/PlayHavenSDK/PlayHavenSDK.podspec&#39;</code>，接着运行<code>pod update</code>即可。</p>
+<p>PS: 当然这个podspec也可以不放在本地，比如放在gist上。</p>
+<h3 id="使用CocoaPods管理本地代码">使用CocoaPods管理本地代码</h3>
+<p>这种情况稍微复杂一步，除了指定podspec，还需要准备一个本地要使用的git repository。我们以Chartboost为例来进行说明。</p>
+<p>首先我们新建一个名为<code>~/Desktop/ChartboostSDK/</code>的目录，然后执行<code>git init</code>初始化这个git repository。</p>
+<p>接着我们去Chartboost官方网站下载最早新的SDK。将它放进这个目录中，然后执行<code>git add . &amp;&amp; git commit -m&quot;Add new SDK&quot;</code>。</p>
+<p>这样我们这个目录已经成为一个git repository，里面是最新的Chartboost SDK。</p>
+<p>这时我们仍然需要一个podspec文件，来说明我们从哪个仓库来获取代码：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="constant">Pod::Spec</span>.new <span class="keyword">do</span> |s|</div><div class="line">	s.name = <span class="string">'ChartboostSDK'</span></div><div class="line">	s.version = <span class="string">'3.1.1'</span></div><div class="line">	s.license = <span class="string">'Commercial'</span></div><div class="line">	s.summary = <span class="string">'ChartboostSDK for showing ads and more apps pages, and tracking analytics and in-app purchase revenue.'</span></div><div class="line">	s.homepage = <span class="string">'https://chartboost.com/'</span></div><div class="line">	s.author = { <span class="string">'Chartboost'</span> =&gt; <span class="string">'https://chartboost.com/'</span> }</div><div class="line">	s.source = { <span class="symbol">:git</span> =&gt; <span class="string">'~/Desktop/ChartboostSDK'</span> }</div><div class="line">	s.platform = <span class="symbol">:ios</span></div><div class="line">	s.source_files = <span class="string">'**/*.h'</span></div><div class="line">	s.preserve_paths = <span class="string">'**/*.a'</span></div><div class="line">	s.library = <span class="string">'Chartboost'</span></div><div class="line">	s.xcconfig = { <span class="string">'LIBRARY_SEARCH_PATHS'</span> =&gt; <span class="string">'"$(PODS_ROOT)/ChartboostSDK/Chartboost"'</span> }</div><div class="line">	s.weak_frameworks = <span class="string">'AdSupport'</span>, <span class="string">'StoreKit'</span></div><div class="line">	s.frameworks = <span class="string">'QuartzCore'</span>, <span class="string">'SystemConfiguration'</span>, <span class="string">'CoreGraphics'</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>我们运行<code>ls -lh | awk &#39;{print $9}&#39;</code>，ChartboostSDK目录的结构显示如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">CBAnalytics.h</div><div class="line">Chartboost.h</div><div class="line">ChartboostSDK.podspec</div><div class="line">libChartboost.<span class="operator">a</span></div></pre></td></tr></table></figure>
+
+<p>除了两个.h，一个.a，还有一个podspec文件。</p>
+<p>接着我们回到Xcode proj所在的文件夹中，编辑Podfile，添加<code>pod &#39;ChartboostSDK&#39;, :local =&gt; &#39;~/Desktop/ChartboostSDK&#39;</code>。这里的local表明从本地的git仓库里获取代码。</p>
+<p>最后我们运行<code>pod update</code>，大功告成。</p>
+<h3 id="CocoaPods小结">CocoaPods小结</h3>
+<p>上面的两种情况，简单来说：</p>
+<ul>
+<li>需要使用最新的开源代码/库，但没最新的spec</li>
+<li>需要使用私有代码/库，需要对应的私有的spec</li>
+</ul>
+<p>对于第一种情况，建议大家可以给<a href="https://github.com/CocoaPods/Specs" target="_blank" rel="external">CocoaPods / Specs</a>提交一个pull request。</p>
+<p>使用CocoaPods只需要知道两件事情：</p>
+<ul>
+<li>podspec：一个pod的配置是什么，pod的代码放在哪里</li>
+<li>Podfile：项目依赖哪个pod，以何种方式依赖，它的podspec放在哪里</li>
+</ul>
+<p>这里podspec和git repository都非常灵活，可以放在本地，也可以放到github/gist上。代码仓库甚至可以不使用git而直接使用一个zip压缩包。</p>
+<p>使用CocoaPods可以把多们从繁重的配置和代码管理中解脱出来，而且可以少犯错误。比如Deployment Target设置为5.0，但App中需要使用AdSupport.framework，如果忘记设置为optional则所有5.x的设备运行时都会crash。对于这种情况CocoaPods在spec提供了<code>weak_frameworks</code>的配置选项。同时CocoaPods能够保证库的依赖关系，而不会出现几个项目依赖版本不一致的情况。</p>
+<p>PS: 最近为了UDID更新的同学们可别犯AdSupport.framework这个错误，后果很严重。</p>
+<p>希望这个blog对大家使用CocoaPods有所帮助。</p>
+<p>赶个时髦，祝大家<em>一帆风顺</em>。</p>
+<p><img src="https://pbs.twimg.com/media/BIGmipnCMAAt7gZ.jpg" alt="一帆风顺"></p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/iOS/">iOS</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+    <a href="/2013/04/28/free-apps-and-free-games/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          免费应用和免费游戏
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/04/17/fuck-you-weibo/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          新浪微博的反人类注册体验
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2013/04/18/advanced-cocoapods/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

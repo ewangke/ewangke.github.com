@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS 7中UITableViewCell的变化 | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="iOS 7的UITableViewCell内部与iOS 6有些不同，cell与contentView之间多了一层UITableViewCellScrollView。
+估计很多人的代码要作些修改了，下面简单作个比较：
+iOS 6中UITableViewCell的View层级
+123(lldb) po [cell recursiveDescription]&lt;UITableViewCell: 0x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 7中UITableViewCell的变化">
+<meta property="og:url" content="http://www.iwangke.me/2013/09/21/the-change-of-uitableviewcell-for-ios-7/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="iOS 7的UITableViewCell内部与iOS 6有些不同，cell与contentView之间多了一层UITableViewCellScrollView。
+估计很多人的代码要作些修改了，下面简单作个比较：
+iOS 6中UITableViewCell的View层级
+123(lldb) po [cell recursiveDescription]&lt;UITableViewCell: 0x">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 7中UITableViewCell的变化">
+<meta name="twitter:description" content="iOS 7的UITableViewCell内部与iOS 6有些不同，cell与contentView之间多了一层UITableViewCellScrollView。
+估计很多人的代码要作些修改了，下面简单作个比较：
+iOS 6中UITableViewCell的View层级
+123(lldb) po [cell recursiveDescription]&lt;UITableViewCell: 0x">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-the-change-of-uitableviewcell-for-ios-7" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2013/09/21/the-change-of-uitableviewcell-for-ios-7/" class="article-date">
+  <time datetime="2013-09-21T14:46:57.000Z" itemprop="datePublished">Sep 21 2013</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2013/09/21/the-change-of-uitableviewcell-for-ios-7/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      iOS 7中UITableViewCell的变化
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>iOS 7的UITableViewCell内部与iOS 6有些不同，cell与contentView之间多了一层<code>UITableViewCellScrollView</code>。</p>
+<p>估计很多人的代码要作些修改了，下面简单作个比较：</p>
+<h3 id="iOS_6中UITableViewCell的View层级">iOS 6中UITableViewCell的View层级</h3>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">(lldb) po [cell recursiveDescription]</div><div class="line">&lt;UITableViewCell: <span class="number">0</span>xba72e50; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xba72fd0&gt;&gt;</div><div class="line">   | &lt;UITableViewCellContentView: <span class="number">0</span>xba6f980; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">gestureRecognizers =</span> &lt;NSArray: <span class="number">0</span>xba70960&gt;; <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xba6fb70&gt;&gt;</div></pre></td></tr></table></figure>
+
+<h3 id="iOS_7中UITableViewCell的View层级">iOS 7中UITableViewCell的View层级</h3>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">(lldb) po [cell recursiveDescription]</div><div class="line">&lt;UITableViewCell: <span class="number">0</span>xd984fc0; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xd982750&gt;&gt;</div><div class="line">   | &lt;UITableViewCellScrollView: <span class="number">0</span>xcca9790; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">clipsToBounds =</span> YES; <span class="variable">autoresize =</span> W+H; <span class="variable">gestureRecognizers =</span> &lt;NSArray: <span class="number">0</span>xcc54ec0&gt;; <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xccac430&gt;; contentOffset: {<span class="number">0</span>, <span class="number">0</span>}&gt;</div><div class="line">   |    | &lt;UITableViewCellContentView: <span class="number">0</span>xdb582a0; <span class="variable">frame =</span> (<span class="number">0</span> <span class="number">0</span>; <span class="number">320</span> <span class="number">44</span>); <span class="variable">gestureRecognizers =</span> &lt;NSArray: <span class="number">0</span>xdb49c40&gt;; <span class="variable">layer =</span> &lt;CALayer: <span class="number">0</span>xdb54050&gt;&gt;</div></pre></td></tr></table></figure>
+
+<p>大家遇到了哪些问题？如何解决的？欢迎留言讨论。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-7/">iOS 7</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+    <a href="/2013/10/09/delta-update-difference-between-ios-6-and-ios-7/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          iOS 6与iOS 7的增量更新的区别
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/09/09/clean-xcode-to-free-up-disk-space/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Xcode磁盘空间大清理
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2013/09/21/the-change-of-uitableviewcell-for-ios-7/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

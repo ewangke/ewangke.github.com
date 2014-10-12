@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="iWangKe.me">
+<meta property="og:url" content="http://www.iwangke.me/page/8/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iWangKe.me">
+<meta name="twitter:description">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      
+  
+    <article id="post-instancetype-vs-id-for-objective-c" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2013/01/06/instancetype-vs-id-for-objective-c/" class="article-date">
+  <time datetime="2013-01-05T19:23:00.000Z" itemprop="datePublished">Jan 6 2013</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2013/01/06/instancetype-vs-id-for-objective-c/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2013/01/06/instancetype-vs-id-for-objective-c/">instancetype vs id for Objective-C</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>新的LLVM编译器为我们带来了ARC, Object Literal and Scripting, Auto Synthesis等特性，同时也引入了instancetype关键字。instancetype用来表示Related Result Types(相关返回类型)，那么它与id有什么不同呢？</p>
+<p>根据Cocoa的命名惯例，init, alloc这类的方法，如果以id作为返回类型，会返回类本身的类型。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Person</span></span></div><div class="line">- (<span class="keyword">id</span>)initWithName:(<span class="built_in">NSString</span> *)name;</div><div class="line">+ (<span class="keyword">id</span>)personWithName:(<span class="built_in">NSString</span> *)name;</div></pre></td></tr></table></figure>
+
+<p>但类方法的返回类型，LLVM(或者说Clang)却无法判断，我们来看一段代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// You may get two warnings if you're using MRC rather than ARC</span></div><div class="line">[[[<span class="built_in">NSArray</span> alloc] init] mediaPlaybackAllowsAirPlay]; <span class="comment">// ❗ "No visible @interface for `NSArray` declares the selector `mediaPlaybackAllowsAirPlay`"</span></div><div class="line">[[<span class="built_in">NSArray</span> array] mediaPlaybackAllowsAirPlay]; <span class="comment">// It's OK. But You'll get a runtime error instead of a compile time one</span></div></pre></td></tr></table></figure>
+
+<p><code>[NSArray array]</code>除非显式转换为(NSArray *)，否则编译器不会有错误提示。如果使用instancetype就不会有这样的问题：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Person</span></span></div><div class="line">- (instancetype)initWithName:(<span class="built_in">NSString</span> *)name;</div><div class="line">+ (instancetype)personWithName:(<span class="built_in">NSString</span> *)name;</div></pre></td></tr></table></figure>
+
+<p>简单来说，instancetype关键字，保证了编译器能够正确推断方法返回值的类型。这种技术基本从iOS 5的<a href="http://developer.apple.com/library/ios/#documentation/UIKit/Reference/UINavigationController_Class/Reference/Reference.html" target="_blank" rel="external">UINavigationController</a>里就开始应用了。</p>
+<p><a href="http://clang.llvm.org/docs/LanguageExtensions.html#objective-c-features" target="_blank" rel="external">Clang</a>的文档里提到<code>instancetype is a contextual keyword that is only permitted in the result type of an Objective-C method.</code> 也就是说，instancetype只能作为返回值，不能像id那样作为参数。</p>
+<p>最后留个问题：Objective-C 3.0的时候，会不会出现泛型呢？</p>
+<p>Reference:</p>
+<ul>
+<li><a href="http://clang.llvm.org/docs/LanguageExtensions.html#objective-c-features" target="_blank" rel="external">ClangClang Language Extensions</a></li>
+<li><a href="http://nshipster.com/instancetype/" target="_blank" rel="external">NSHipster</a></li>
+<li><a href="http://www.jonmsterling.com/posts/2012-02-05-typed-collections-with-self-types-in-objective-c.html" target="_blank" rel="external">Typed Collections With Self Types in Objective-C</a></li>
+</ul>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Objective-C/">Objective-C</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-review-for-my-2012" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2013/01/04/review-for-my-2012/" class="article-date">
+  <time datetime="2013-01-04T07:05:00.000Z" itemprop="datePublished">Jan 4 2013</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2013/01/04/review-for-my-2012/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2013/01/04/review-for-my-2012/">Review for My 2012</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<h3 id="工作篇">工作篇</h3>
+<p>2012过去了，玛雅人又开始了一个新的纪元。2012全年我都在App Store做独立开发者，受内外因的影响，成绩只能算一般般。这段时间yan和我家庭方面的事情比较多，花在产品上的精力不够多；App Store刷榜现象、iOS 6的改版都对我们这种小发行商有很大的影响。</p>
+<p>今年我们在全球大概收获了700万的免费下载量，制作了5个新app。与去年相比，分类榜单的竞争都开始白热化了，几个大区分类榜长期排名前20、甚至前50已经很困难了。随着App Store应用数量破7位数以及iOS 6应用商店的改版，ASO越来越重要，给独立开发者、小发行商，尤其是新团队的机会越来越少。总之是红海一片，当然这是对大多数缺乏经验和资源的初始小团队来说的。</p>
+<p>今年还是不打算有什么大动作，顺其自然吧，至少再做一年的独立开发者。IndieBros要是死了，国内95成的团队也基本半死不活甚至干脆挂掉。虽然越来越艰难，但至少不能输给自己。</p>
+<h3 id="家庭篇">家庭篇</h3>
+<p>我的合伙人yan，在十一期间结了婚；与此同时，老婆和我也有了第一个小孩，所以以后是三个人了:) 感谢老婆十月怀胎的辛苦，虽然最近半年我基本寸步不离，但也真的帮不上什么忙。</p>
+<p>yan在年底在北京闪电买了房子，又闪电装修- -! 今年年中我也要开始忙装修了，我倾向极简的风格。</p>
+<p>我的宝宝出世了，我希望多留在家里与小家伙相处，陪他玩并做些早期教育。</p>
+<p>另外还学会了游泳、考了驾照、拔了智齿。</p>
+<p>这是我的2012。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Misc/">Misc</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-interview-from-csdn" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/12/10/interview-from-csdn/" class="article-date">
+  <time datetime="2012-12-09T16:00:00.000Z" itemprop="datePublished">Dec 10 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/12/10/interview-from-csdn/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/12/10/interview-from-csdn/">CSDN访谈</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>写在前面：感谢CSDN对我们这个群体的关注，感谢<a href="http://weibo.com/agoodb" target="_blank" rel="external">@Agoodb</a>的采访。</p>
+<p><strong>CSDN：很高兴王轲接受我们的采访，你们的2+18+200的励志贴在网上广为流传，我们很想知道一些200万背后的故事。坦率的说，我本人十分钦佩。请先介绍下您的团队吧？</strong></p>
+<p>感谢CSDN对我们这个群体的关注和报道，过誉了。媒体喜欢这些数字。那贴我写得很水，我又是个很土的人。所以继续写一篇水的和稀泥:)我们团队只有2个人。张岩是个艺术家，精通2D/3D游戏和应用的艺术设计与制作；我负责其它方面。我们做独立开发者很大一部分原因是因为可以验证自己的想法。有点像小学生摆地摊一样，如果不亏本，其实很有意思。</p>
+<p><strong>CSDN：前段时间我采访了一个游戏团队，他们只有一款产品，也是两个人，也用了18个月，我很惊讶的一点是你们的30多款应用是如何开发出来的？</strong></p>
+<p>你说的是Flying Dagger的ziming和liyuan吧，很佩服他们做的这件事情。我们其实没有那么多的应用，客户端一共40多个，是分免费版和收费版分别进行发行的。想一想其实很少，我们至少一半以上的时间是不做事情的。</p>
+<p><strong>CSDN：在团队协作方面您最大的感触是什么？</strong></p>
+<p>沟通、信任和包容。保持团队在一个节奏上，节奏比速度更重要，但很难衡量。我相信很多同行对此深有体会，团队情况怎么样，完全感觉得到。</p>
+<p><strong>CSDN：产品从定向、设计到开发、测试，整个流程如何做到高效，而又保证其质量的？</strong></p>
+<p>关于产品：不要做错的事情。最重要的一点是多看榜单和用户的评论，真正地去除噪音并理解用户的需要。App Store中国区榜单尤其需要去伪存真。空中网iPhone项目负责人洪亮fwish有一个著名的”每周Top Grossing Top 200新上榜游戏分析”，换成是你，也要写得出来。</p>
+<p>关于设计：每天都体验十个app，设计能力自然有所提升。关注排名前20-前50的相似产品，了解他们的发行商的背景、资源，对所有产品的设计都有客观的判断。当然有的app是没有竞争对手的，根据自己的直觉做，但要保持简单，就可以了。</p>
+<p>关于制作：一两个人搞定所有事情的时候，效率自然高很多。</p>
+<p><strong>CSDN：这30多款客户端都是些什么应用呢？产品的选题您有什么心得？</strong></p>
+<p>我们制作的app不是给专业用户使用的，这样就保证了较广的受众和较小的文化差异。App Store是全球市场，只靠中国区很难活下来。我们的产品涉及相机、铃声制作、壁纸设计等工具。用我接触过的一位投资人的话讲，就是“系统补丁”。这些不起眼的小东西，带给了我们近千万的用户和对产品细节的理解。我们擅长做“补丁”，没有点子，不会讲故事，让大家失望了。</p>
+<p><strong>CSDN：你们的团队有一个很明显的特点就是只做应用，不做游戏。在国内市场如此浮躁的今天，大家都说不做游戏就赚不到钱，你们为什么偏偏只做应用呢？</strong></p>
+<p>其实张岩和我是做社交游戏出身。我们原来供职的Everywhere Inc.的产品Fantastic Fishies（后来卖给俄罗斯人了）曾经在美国区iPhone/iPad双榜Top Free前2名。之所以做应用还是因为应用的制作周期会短很多。App Store足够大，2个人做利基市场就很好。做游戏是很赚钱，但任何行业都是5%的人赚走95%的钱。做应用我们可能挤进前5%，而做游戏不能。另外从长期来看，做游戏（尤其现在流行的F2P类游戏）有道德包袱，同质化严重，估值低，敲钟难….扯远了。</p>
+<p><strong>CSDN：连续有三款产品拿到过免费总榜的第一，这很不容易！也绝非偶然，说说里面的奥秘吧？</strong></p>
+<p>其实运气成份很大的，我们没在推广上花过一分钱，所以很难复制。这不像F2P类的游戏，可以盯着渠道数据作推广并改进产品。真正免费版拿第一（中国区）是圣诞档期的产品，其它是限免。在最适当的时机推出适当题材的产品，再加上一些运气。多数App的生命周期很短，所以产品上线的时机更重要。必须说明的一点，今天的app store，跟昨天的不一样。</p>
+<p><strong>CSDN：有网友说了，在看到您的帖子之后发现移动应用开发还是很有潜力的，无疑给大家注入了强心剂，您是怎么看移动应用开发的前景的？</strong></p>
+<p>当你看到贴子和媒体报道的时候，就已经晚太多了。中国的企业尤其是民营企业就像癌症早期患者，平均寿命大概在2年半，而移动互联网泡沫很大，明年又很冷。后天很美好，所以要争取活下来。</p>
+<p><strong>CSDN：为什么会以iPhone为主？您是否认同iPhone和iPad两个平台的差异，不仅是使用上的，更是用户群的不同？</strong></p>
+<p>这是完全两种不同的设备，用户群会有一些交集。iPad已经与iPhone同等重要，我们在逐步赶上。</p>
+<p><strong>CSDN：在国内有个不可回避的话题，就是刷榜。您怎么看？你不选择这种方式是因为对自己产品的信心吗？</strong></p>
+<p>开担保公司放高利贷比刷榜赚得多。相信对于我们及很多开发者，这不是一个值得讨论的选择。我们首先是个开发者，之后才是商人。</p>
+<p>从纯商业的角度，对于我们是个亏本生意，很多小团队和独立开发者都是这种情况，没得选。对于有得选的大团队和发行商，其实就是舍弃长期利益换取眼前利益。真正的傻瓜永远是那些认为别人是“傻瓜”的人。“创业者”和“投资人”往往是天生一对，喜欢帮别人“洗钱”的大有人在。存在即有合理性，时间会解决一切问题。</p>
+<p><strong>CSDN：对移动应用的盈利，能否透露一些您的诀窍？给同样在做或准备做移动应用的同行们一些建议吧。</strong></p>
+<p>不要做错的事情。关心用户，关注细节，重视数据。盈利翻倍甚至提升一个数量级都是可能的，同一个产品、产品与下一个产品间要有延续性。这是我们的切身体会，与行业发展有关，也因为我们开始做得不够好。</p>
+<p>拒绝浮躁，人弃我取。很多人在浪费生命，拿着锤子找钉子。没有最合适的钉子时，不如磨练一下锤子。</p>
+<p>关注长期价值，无论是企业、团队还是个人发展都是依托以往的经历一步一步走过来的。底子越厚，“跨界”越容易；步子越大，越容易….</p>
+<p>像打德州扑克一样，短期看成败比，长期看牌风和资金管理。我现在经常想的事情是，5年、10年甚至20年后，应该做什么事情。可能没有清晰的答案，但至少不会偏离很多。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Misc/">Misc</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/App-Store/">App Store</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CSDN/">CSDN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IndieBros/">IndieBros</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-thinking-from-a-father-to-be" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/10/12/thinking-from-a-father-to-be/" class="article-date">
+  <time datetime="2012-10-11T16:00:00.000Z" itemprop="datePublished">Oct 12 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/10/12/thinking-from-a-father-to-be/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/10/12/thinking-from-a-father-to-be/">准爸爸的思考</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>看完之后，有些人一定会说我“不负责任”，欢迎拍砖。</p>
+<h3 id="喜忧参半">喜忧参半</h3>
+<p>马上要迎接一个新生命了，老婆问我有什么感觉。我的回答是没感觉，其实非常开心，但也有些忧虑。<br>忧从何来？跟很多家长一样，都希望把孩子的未来安排得妥妥当当。我知道这是不对的，也在调整这个心态。<code>其实很多父母自己这辈子都没有活明白</code>，所以也就没有资格帮小孩子设计它的生活？其实我自己，很多事情还根本不明白。</p>
+<h3 id="个人选择">个人选择</h3>
+<p>我很小的时候，父亲跟我说<code>人生有两件事情没得选，一是所处的社会，二是你的亲生父母</code>。当时我从字面很理解这番话，后来发现不同的人的理解是不太一样的。<br>亲生父母自然是没得选的，但所处的社会其实是有得选的。很多朋友劝我如果有机会一定要移民，离开这个国家。也有几个朋友在海外过上了幸福生活。我很理解他们的选择，但我还是希望把这个选择权利留给孩子。我一直认为，任何人(包括亲生父母）都没有权利来设计另外一个人的人生。</p>
+<h3 id="一定要教给孩子的">一定要教给孩子的</h3>
+<p>唯一的就是独立思考能力，没有它就不是一个有独立人格的人。思维方式、价值观这些都是在独立思考和生活中逐渐形成的。过去对的事情，将来可能是错的。我认为对的事情，孩子可能认为是错的。即使是一个人的想法，也会随着时代和年龄而变化。做它自己就足够了，我需要做的就是包容和支持。</p>
+<p>鼓励它尝试，自己没做过，永远不知道。不管是好的、坏的、对的还是错的。是的，就这么简单。我不会送小孩子去任何培训班。没有任何的爱好是在工厂式的培训班里加工出来的。我唯一担心的就是不得不去的学校，国内的教育真的太操蛋了，从小抹杀孩子的天性。但我更相信父母作为榜样的力量。所以很多家长报怨学校的同时，也要从自己身上多找原因。</p>
+<h3 id="人生规划">人生规划</h3>
+<p>谁的人生，谁去规划。我只希望它健康快乐。除些之外的其它诉求，它会自发追求。如果可能的话，它自己给自己起名字好啦，为起名头疼了好久，还没想好。 </p>
+<p><code>还是要先把自己活明白</code>，这样才能做个合格的父亲。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Misc/">Misc</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/7/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/9/">Next &raquo;</a>
+    </nav>
+  
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

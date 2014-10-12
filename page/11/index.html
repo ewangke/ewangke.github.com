@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="iWangKe.me">
+<meta property="og:url" content="http://www.iwangke.me/page/11/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iWangKe.me">
+<meta name="twitter:description">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      
+  
+    <article id="post-install_vanilla_on_appfog" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/08/14/install_vanilla_on_appfog/" class="article-date">
+  <time datetime="2012-08-13T16:00:00.000Z" itemprop="datePublished">Aug 14 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/08/14/install_vanilla_on_appfog/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/08/14/install_vanilla_on_appfog/">在AppFog上安装Vanilla</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>前一段写了篇Blog介绍Vanilla这个平台，以及在Ubuntu上的安装方法。也介绍过AppFog这个PaaS平台。在尝试在AppFog上安装Vanilla成功之后，把一些心得写在这里。</p>
+<p>AppFog只能在运行时获取数据库的连接，因此修改`conf/config.php’，添加下面几行：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$services<span class="emphasis">_json = json_</span>decode(getenv("VCAP_SERVICES"),true);</div><div class="line">$mysql<span class="emphasis">_config = $services_</span>json[<span class="link_label">"mysql-5.1"</span>][<span class="link_reference">0</span>][<span class="link_label">"credentials"</span>];</div><div class="line">$Configuration[<span class="link_label">'Database'</span>][<span class="link_reference">'Host'</span>]                             = $mysql_config["hostname"]</div><div class="line">$Configuration[<span class="link_label">'Database'</span>][<span class="link_reference">'Name'</span>]                             = $mysql_config["name"];</div><div class="line">$Configuration[<span class="link_label">'Database'</span>][<span class="link_reference">'User'</span>]                             = $mysql_config["username"];</div><div class="line">$Configuration[<span class="link_label">'Database'</span>][<span class="link_reference">'Password'</span>]                         = $mysql_config["password"];</div></pre></td></tr></table></figure>
+
+<p>通过<code>find . -name &quot;*.php&quot; -exec grep &quot;&#39;localhost&#39;&quot; &#39;{}&#39; -nH \;</code>，可以发现applications/dashboard/controllers/class.setupcontroller.php文件中，对Database.Host设定了默认值为localhost，注释掉即可：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">./applications/dashboard/controllers/class.setupcontroller.php:<span class="number">124</span>:         <span class="regexp">//</span> <span class="variable">$ConfigurationModel</span>-&gt;Data[<span class="string">'Database.Host'</span>] = <span class="string">'localhost'</span>;</div><div class="line">./library/core/class.statistics.php:<span class="number">183</span>:      <span class="keyword">if</span> (<span class="variable">$ServerHostname</span> == <span class="string">'localhost'</span> || <span class="keyword">substr</span>(<span class="variable">$ServerHostname</span>,-<span class="number">6</span>) == <span class="string">'.local'</span>) <span class="keyword">return</span> TRUE;</div><div class="line">./library/core/functions.general.php:<span class="number">1076</span>:   function GetConnectionString(<span class="variable">$DatabaseName</span>, <span class="variable">$HostName</span> = <span class="string">'localhost'</span>, <span class="variable">$ServerType</span> = <span class="string">'mysql'</span>) {</div><div class="line">./library/vendors/Auth/OpenID/TrustRoot.php:<span class="number">210</span>:        <span class="keyword">if</span> (<span class="variable">$parts</span>[<span class="string">'host'</span>] == <span class="string">'localhost'</span>) {</div><div class="line">./library/vendors/phpmailer/class.phpmailer.php:<span class="number">180</span>:  public <span class="variable">$Host</span>          = <span class="string">'localhost'</span>;</div><div class="line">./plugins/Minify/min/lib/Minify/Cache/Memcache.php:<span class="number">13</span>: * <span class="keyword">if</span> (<span class="variable">$memcache</span>-&gt;<span class="keyword">connect</span>(<span class="string">'localhost'</span>, <span class="number">11211</span>)) {</div></pre></td></tr></table></figure>
+
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AppFog/">AppFog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vanilla/">Vanilla</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-run-startup-vs-playing-texas-holdem" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/08/03/run-startup-vs-playing-texas-holdem/" class="article-date">
+  <time datetime="2012-08-02T16:00:00.000Z" itemprop="datePublished">Aug 3 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/08/03/run-startup-vs-playing-texas-holdem/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/08/03/run-startup-vs-playing-texas-holdem/">德州扑克 vs 创业</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p><code>&quot;中国互联网的创业者们，是一群最富理想但又最为悲观、最有希望但又最为绝望、最贫穷但又最富有、最幸福但又最催悲、最有耐心但又最急躁、最无奈但又最能折腾的的家伙。没有他们，整个社会会沉闷无趣很多，最为努力的群体却得不到应有的回报，无法分享这个社会那一点点进步带来的财富，这是不公平的。&quot;</code> by <a href="http://weibo.com/fenng" target="_blank" rel="external">Fenng</a></p>
+<h3 id="写在前面">写在前面</h3>
+<p>今天看到了这条微博，结合最近的近况，感慨良多。由于自己以前喜欢玩德州扑克，所以试图以德州扑克策略的角度来看创业和生活。</p>
+<h3 id="德州扑克">德州扑克</h3>
+<p>一个风靡世界的零和游戏。算上抽水，只有好的玩家才能盈利。德州扑克有三个变种：线下赌场、线上赌场还有游戏平台。大多数国人对德州扑克的理解，可能就是QQ游戏大厅里面的游戏吧。很多国人对德州扑克没有太多的概念，很多棋牌平台都是all-in选手。德州不是这么玩的。</p>
+<p>玩德州的第一课就是资金管理。德州在翻牌前，是绝对没有100%赢率的，即使你拿AA，面对一个对手任意两张底处于，也只有81%的赢率。<code>不要在一局赌上全部</code>，即使你是最强的德州选手，用这种玩法一天之内也会输到一无所有。好的玩家一般都玩大筹码甚至深筹码，即每局带上100-200盲注。资金管理角度上，至少要有25-40个买入：你手里有10000，最多玩250-400一局的游戏。盈利短期靠运气、长期靠技术。在线扑克平台NL 100以上的级别，正常可以盈利的选手的赢率在1-2盲注/100手牌，好的选手甚至可以有3BB/100以上的表现。由于是零和游戏，肯定不足半数的玩家是赢利的。如果要靠玩职业德州扑克来生活，甚至只有5%的玩家可以有较理想的收益。</p>
+<p>德州第二课是情绪控制。玩德州的朋友都知道上风期和下风期的说法，下风期玩得越多，盈利可能也不怎么样，即使是好的德州选手。上风期多打牌，下风期多学习。我一个朋友玩了半年多职业，据说摔坏了将近十个鼠标。压力可想而知。</p>
+<h3 id="像玩德州扑克一样创业">像玩德州扑克一样创业</h3>
+<ul>
+<li>别总想着玩牌，你还有生活</li>
+<li>清楚自己什么要玩这局游戏; 你不是VC，没有时间和金钱可以同时赞助不同选手玩多局游戏</li>
+<li>调整好心态，不是每个人都有机会拿WSOP冠军</li>
+<li>玩现金桌，有的人从NL200升级到NL400要七年；要有耐心，别盲目升级</li>
+<li>好的牌手只玩10%左右的牌；放弃掉90%的牌</li>
+<li>不玩牌的时候，别忘了提升自己</li>
+<li>拿到好牌的时候，要敢于下注</li>
+<li>没有100%的赢率，有的话也没人跟</li>
+<li>别盲目跟风，选好时机和对手；即使你拿AA，全桌人都all-in，你的赢率也就20%</li>
+<li>关注决策和执行，别太在意结果</li>
+<li>投资人眼里你只是一副牌，顶多是一副好牌(概率)</li>
+<li>多复盘，多提升；成为好的选手比拿到好牌更重要</li>
+<li>不断积累牌局经验和手里的筹码</li>
+<li>积累足够经验之后，去玩奥马哈可能也条出路</li>
+<li>40岁时也可以报名WSOP的，没人管你；谁说只有小孩才能玩</li>
+<li>拿WSOP要靠运气，参考2010年WSOP Final Table前Dohamel的<a href="http://www.youtube.com/watch?v=PMHwtN_wD0Q" target="_blank" rel="external">Crying Call</a>（小胖子好悲剧）</li>
+<li>WSOP不是天天有的；不管别人怎么看，即使没在Final Table也是在玩牌</li>
+<li>别出千，迟早出事；不要接受指使你出千的人的钱</li>
+</ul>
+<p>在黑心抽水庄家的Hard模式下，在游戏平台玩家们的无脑all-in中，在不计后果的老千们(及其背后的钱)面前，请保持理智吧。最后吐槽几句：</p>
+<ul>
+<li>我现在就会玩NL10</li>
+<li>我悟性差，升级慢</li>
+<li>我不愿意一天玩16小时牌，我还有生活</li>
+<li>别问我你能拿冠军么，冠军跟你玩怎么办；直接找冠军去吧</li>
+<li>我更倾向积小胜为大胜，别逼我带上所有筹码all-in，我直接离桌</li>
+</ul>
+<p>最后向所有觉得不知所云的朋友表示歉意。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Misc/">Misc</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Startup/">Startup</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Texas-Hold-em/">Texas Hold'em</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-install_vanilla_on_ubuntu" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/08/02/install_vanilla_on_ubuntu/" class="article-date">
+  <time datetime="2012-08-01T16:00:00.000Z" itemprop="datePublished">Aug 2 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/08/02/install_vanilla_on_ubuntu/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/08/02/install_vanilla_on_ubuntu/">Vanilla安装指南</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<h3 id="Vanilla介绍">Vanilla介绍</h3>
+<p>[Vanilla]是一款轻量级的开源论坛，主题简洁。<a href="http://www.lowendtalk.com/" target="_blank" rel="external">LowEndTalk</a>就是用这款开源论坛提供讨论功能。</p>
+<h3 id="安装教程">安装教程</h3>
+<p>首先安装LAMP，有很多一键安装脚本。本文会一步一步说明安装的步骤。</p>
+<p>安装Apache 2</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">sudo</span> apt-get install apache2</div></pre></td></tr></table></figure>
+
+<p>安装PHP</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-get <span class="operator"><span class="keyword">install</span> php5</span></div><div class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> libapache2-<span class="keyword">mod</span>-php5</div></pre></td></tr></table></figure>
+
+<p>安装MySQL，要记住admin的密码</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-get <span class="operator"><span class="keyword">install</span> mysql-<span class="keyword">server</span></span></div></pre></td></tr></table></figure>
+
+<p>安装Apache, php对MySQL的支持</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-get <span class="operator"><span class="keyword">install</span> libapache2-<span class="keyword">mod</span>-auth-mysql</span></div><div class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> php5-mysql</div></pre></td></tr></table></figure>
+
+<p>创建一个新的db</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysqladmin create <span class="tag">&lt;<span class="title">vanilla_mysql</span>&gt;</span></div></pre></td></tr></table></figure>
+
+<p>安装vanilla的最新版本</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">cd /<span class="keyword">var</span>/www</div><div class="line">wget http:<span class="comment">//static-cl1.vanilladev.com/www.vanillaforums.org/uploads/addons/RQSIVV7WTV4P.zip</span></div><div class="line">unzip RQSIVV7WTV4P.zip</div><div class="line">rm RQSIVV7WTV4P.zip</div></pre></td></tr></table></figure>
+
+<p>重启Apache服务器</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">service</span> <span class="title">apache2</span> restart</span></div></pre></td></tr></table></figure>
+
+<p>Vanilla安装向导：在浏览器中打开 <www.example.com>/vanilla/ 并填写db及管理员的账号密码</www.example.com></p>
+<p>大功告成，体验一下吧</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vanilla/">Vanilla</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-bottle-with-mongodb-on-appfog" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/07/28/bottle-with-mongodb-on-appfog/" class="article-date">
+  <time datetime="2012-07-27T16:00:00.000Z" itemprop="datePublished">Jul 28 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/07/28/bottle-with-mongodb-on-appfog/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/07/28/bottle-with-mongodb-on-appfog/">AppFog介绍:在AppFog上使用bottle和mongodb</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<h3 id="AppFog介绍">AppFog介绍</h3>
+<p><a href="http://www.appfog.com/" target="_blank" rel="external">AppFog</a>是一个基于<a href="http://www.cloudfoundry.com/" target="_blank" rel="external">Cloud Foundry</a>的PaaS平台。最底层是基于AWS, HP OpenStack, MS Azure, RackSpace等流行的IaaS平台，中间层使用Cloud Foundry，最上层是AppFog。</p>
+<p>AppFog的口号是”Work on code, not management”，加之2G RAM, 50G流量的无需绑定信用卡的免费配额，任何Plan（包括免费）都支持自定义域名。此外，AppFog宣传使用的都是m2.4xlarge这些的最快的实例，很有诱惑力。</p>
+<p>AppFog目前支持：</p>
+<ul>
+<li>Java, Java Grails, Java Spring Mysql</li>
+<li>Node, Node Chat, Node Express</li>
+<li>PHP, PHP Drupal, PHP Wordpress</li>
+<li>Python, Python Django, Python Flask</li>
+<li>Ruby on Rails, Ruby Sinatra</li>
+</ul>
+<p>由于PaaS平台都没有root权限和ssh，所以想翻的同学不用考虑啦，但做个小的web app还是很靠谱的。目前AppFog的文档还不是很完善，所以我以bottle/mongodb写了一个小demo。</p>
+<h3 id="Bottle+MongoDB_on_AppFog">Bottle+MongoDB on AppFog</h3>
+<p>首先注册一个免费的AppFog账号，无需信用卡，10秒搞定。</p>
+<p>接着新建一个app，先选择app，这里选Python。接着选择Infrastructure，我选择的是新加坡结点的AWS。然后需要绑定一个Service，这里选择MongoDB，随便起个名字就好。</p>
+<p>下载我分享的<a href="https://gist.github.com/3192772" target="_blank" rel="external">Gist</a>，保存到一个文件夹中。</p>
+<p>进入该文件夹，安装AppFog的命令行工具，并将代码部署到AppFog上:</p>
+<pre>
+    sudo gem install af
+    af login
+    af update <your app="" name="">
+</your></pre>
+
+<p>最后访问yourapp/test，测试一下，大功告成。</p>
+<h3 id="AppFog的价格">AppFog的价格</h3>
+<p>具体的价格在<a href="https://console.appfog.com/pricing" target="_blank" rel="external">这里</a>。跟黑心的Google App Engine相比，价格绝对不算贵，付费模型也没有那么复杂。AppFog的CEO <a href="http://www.linkedin.com/in/lucascarlson" target="_blank" rel="external">Lucas</a>写了一篇<a href="http://blog.appfog.com/if-paas-is-expensive-and-slow-why-not-use-a-vps/" target="_blank" rel="external">blog</a>，来详细解释为什么使用这种定价模型，如何支撑免费的配额。</p>
+<h3 id="部署体验">部署体验</h3>
+<p>AppFog的部署挺快的，除了上面提到的python app（我的app比gist中要复杂一些，原来部署在EC2上，为我的App Store产品而设计）需要花一些时间，Wordpress/Drupal的部署都在30秒内完成。另外AppFog的Dashboard做得很不错，我很喜欢他们的UI。</p>
+<h3 id="AppFog的劣势">AppFog的劣势</h3>
+<p>文档真的还很不完善，对新手不太友好。此外，可供选择的部署结点还比较少。另外，不同Plan的跨度比较大，过渡不够平滑。最后就是流量比较贵了，超过50G，0.15$/G。</p>
+<p>总的来说，AppFog是个很有希望的PaaS平台，欢迎留言与我讨论使用的经验和心得。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AppFog/">AppFog</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MongoDB/">MongoDB</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PaaS/">PaaS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/bottle/">bottle</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/10/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/12/">Next &raquo;</a>
+    </nav>
+  
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

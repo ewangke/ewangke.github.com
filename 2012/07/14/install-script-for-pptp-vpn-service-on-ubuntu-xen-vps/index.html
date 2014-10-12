@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>PPTP一键安装脚本 for Ubuntu Xen VPS | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="最近avantehosting促销，推出了半年付6刀的Xen 128 VPS。正好手头缺个VPS折腾点小东西，就入手了。
+首先的需求是弄个VPN，于是根据别人的脚本改了个适合Xen VPS的一键安装脚本。使用方法：
+
+wget https://gist.github.com/raw/3110375/70544548700d82e527fa716f28319940964c8a30/pptpinsta">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PPTP一键安装脚本 for Ubuntu Xen VPS">
+<meta property="og:url" content="http://www.iwangke.me/2012/07/14/install-script-for-pptp-vpn-service-on-ubuntu-xen-vps/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="最近avantehosting促销，推出了半年付6刀的Xen 128 VPS。正好手头缺个VPS折腾点小东西，就入手了。
+首先的需求是弄个VPN，于是根据别人的脚本改了个适合Xen VPS的一键安装脚本。使用方法：
+
+wget https://gist.github.com/raw/3110375/70544548700d82e527fa716f28319940964c8a30/pptpinsta">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PPTP一键安装脚本 for Ubuntu Xen VPS">
+<meta name="twitter:description" content="最近avantehosting促销，推出了半年付6刀的Xen 128 VPS。正好手头缺个VPS折腾点小东西，就入手了。
+首先的需求是弄个VPN，于是根据别人的脚本改了个适合Xen VPS的一键安装脚本。使用方法：
+
+wget https://gist.github.com/raw/3110375/70544548700d82e527fa716f28319940964c8a30/pptpinsta">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-install-script-for-pptp-vpn-service-on-ubuntu-xen-vps" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/07/14/install-script-for-pptp-vpn-service-on-ubuntu-xen-vps/" class="article-date">
+  <time datetime="2012-07-13T16:00:00.000Z" itemprop="datePublished">Jul 14 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/07/14/install-script-for-pptp-vpn-service-on-ubuntu-xen-vps/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      PPTP一键安装脚本 for Ubuntu Xen VPS
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>最近<a href="http://www.avantehosting.net/" target="_blank" rel="external">avantehosting</a>促销，推出了半年付6刀的Xen 128 VPS。<br>正好手头缺个VPS折腾点小东西，就入手了。</p>
+<p>首先的需求是弄个VPN，于是根据别人的脚本改了个<a href="https://gist.github.com/3110375" target="_blank" rel="external">适合Xen VPS的一键安装脚本</a>。<br>使用方法：</p>
+<pre>
+wget https://gist.github.com/raw/3110375/70544548700d82e527fa716f28319940964c8a30/pptpinstall.sh -O pptpinstall.sh
+chmod +x pptpinstall.sh
+./pptpinstall.sh
+</pre>
+
+<p>多谈一下avantehosting的vps，如果图便宜，可以考虑买一个。<br>机房在佛罗里达，ping值在300左右。62G的月流量不算大，但也够用。<br>开通的时候，遇到些小问题。发ticket后大概12小时解决了。</p>
+<p>附UnixBench跑分结果：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">========================================================================</div><div class="line">   BYTE UNIX Benchmarks (Version <span class="number">5.1</span><span class="number">.3</span>)</div><div class="line"></div><div class="line">   System: GNU/Linux</div><div class="line">   OS: GNU/Linux <span class="comment">-- 3.0.0-12-server -- #20-Ubuntu SMP Fri Oct 7 16:36:30 UTC 2011</span></div><div class="line">   Machine: x86_64 (x86_64)</div><div class="line">   Language: en_US.utf8 (charmap=<span class="string">"UTF-8"</span>, collate=<span class="string">"UTF-8"</span>)</div><div class="line">   CPU <span class="number">0</span>: Intel(R) Xeon(R) CPU E31230 @ <span class="number">3.20</span>GHz (<span class="number">6385.5</span> bogomips)</div><div class="line">          Hyper-Threading, x86-<span class="number">64</span>, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET</div><div class="line">   <span class="number">05</span>:<span class="number">02</span>:<span class="number">08</span> up  <span class="number">1</span>:<span class="number">13</span>,  <span class="number">1</span> user,  load average: <span class="number">0.74</span>, <span class="number">0.39</span>, <span class="number">0.47</span>; runlevel <span class="number">2</span></div><div class="line"></div><div class="line"><span class="comment">------------------------------------------------------------------------</span></div><div class="line">Benchmark Run: Sat Jul <span class="number">14</span> <span class="number">2012</span> <span class="number">05</span>:<span class="number">02</span>:<span class="number">08</span> - <span class="number">05</span>:<span class="number">30</span>:<span class="number">20</span></div><div class="line"><span class="number">1</span> CPU <span class="keyword">in</span> system; running <span class="number">1</span> parallel copy <span class="keyword">of</span> tests</div><div class="line"></div><div class="line">Dhrystone <span class="number">2</span> using <span class="keyword">register</span> variables       <span class="number">23631847.0</span> lps   (<span class="number">10.0</span> s, <span class="number">7</span> samples)</div><div class="line">Double-Precision Whetstone                     <span class="number">2683.8</span> MWIPS (<span class="number">9.9</span> s, <span class="number">7</span> samples)</div><div class="line">Execl Throughput                               <span class="number">1202.5</span> lps   (<span class="number">29.8</span> s, <span class="number">2</span> samples)</div><div class="line"><span class="keyword">File</span> Copy <span class="number">1024</span> bufsize <span class="number">2000</span> maxblocks        <span class="number">264524.8</span> KBps  (<span class="number">30.1</span> s, <span class="number">2</span> samples)</div><div class="line"><span class="keyword">File</span> Copy <span class="number">256</span> bufsize <span class="number">500</span> maxblocks           <span class="number">53671.6</span> KBps  (<span class="number">30.1</span> s, <span class="number">2</span> samples)</div><div class="line"><span class="keyword">File</span> Copy <span class="number">4096</span> bufsize <span class="number">8000</span> maxblocks        <span class="number">908392.9</span> KBps  (<span class="number">30.1</span> s, <span class="number">2</span> samples)</div><div class="line">Pipe Throughput                              <span class="number">455343.1</span> lps   (<span class="number">10.0</span> s, <span class="number">7</span> samples)</div><div class="line">Pipe-based <span class="keyword">Context</span> Switching                  <span class="number">59319.0</span> lps   (<span class="number">10.0</span> s, <span class="number">7</span> samples)</div><div class="line"><span class="keyword">Process</span> Creation                               <span class="number">2945.3</span> lps   (<span class="number">30.0</span> s, <span class="number">2</span> samples)</div><div class="line">Shell Scripts (<span class="number">1</span> concurrent)                   <span class="number">2367.5</span> lpm   (<span class="number">60.0</span> s, <span class="number">2</span> samples)</div><div class="line">Shell Scripts (<span class="number">8</span> concurrent)                    <span class="number">333.9</span> lpm   (<span class="number">60.1</span> s, <span class="number">2</span> samples)</div><div class="line">System Call Overhead                         <span class="number">429520.5</span> lps   (<span class="number">10.0</span> s, <span class="number">7</span> samples)</div><div class="line"></div><div class="line">System Benchmarks Index Values               BASELINE       RESULT    INDEX</div><div class="line">Dhrystone <span class="number">2</span> using <span class="keyword">register</span> variables         <span class="number">116700.0</span>   <span class="number">23631847.0</span>   <span class="number">2025.0</span></div><div class="line">Double-Precision Whetstone                       <span class="number">55.0</span>       <span class="number">2683.8</span>    <span class="number">488.0</span></div><div class="line">Execl Throughput                                 <span class="number">43.0</span>       <span class="number">1202.5</span>    <span class="number">279.6</span></div><div class="line"><span class="keyword">File</span> Copy <span class="number">1024</span> bufsize <span class="number">2000</span> maxblocks          <span class="number">3960.0</span>     <span class="number">264524.8</span>    <span class="number">668.0</span></div><div class="line"><span class="keyword">File</span> Copy <span class="number">256</span> bufsize <span class="number">500</span> maxblocks            <span class="number">1655.0</span>      <span class="number">53671.6</span>    <span class="number">324.3</span></div><div class="line"><span class="keyword">File</span> Copy <span class="number">4096</span> bufsize <span class="number">8000</span> maxblocks          <span class="number">5800.0</span>     <span class="number">908392.9</span>   <span class="number">1566.2</span></div><div class="line">Pipe Throughput                               <span class="number">12440.0</span>     <span class="number">455343.1</span>    <span class="number">366.0</span></div><div class="line">Pipe-based <span class="keyword">Context</span> Switching                   <span class="number">4000.0</span>      <span class="number">59319.0</span>    <span class="number">148.3</span></div><div class="line"><span class="keyword">Process</span> Creation                                <span class="number">126.0</span>       <span class="number">2945.3</span>    <span class="number">233.8</span></div><div class="line">Shell Scripts (<span class="number">1</span> concurrent)                     <span class="number">42.4</span>       <span class="number">2367.5</span>    <span class="number">558.4</span></div><div class="line">Shell Scripts (<span class="number">8</span> concurrent)                      <span class="number">6.0</span>        <span class="number">333.9</span>    <span class="number">556.5</span></div><div class="line">System Call Overhead                          <span class="number">15000.0</span>     <span class="number">429520.5</span>    <span class="number">286.3</span></div><div class="line">                                                                   ========</div><div class="line">System Benchmarks Index Score                                         <span class="number">466.4</span></div></pre></td></tr></table></figure>
+
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PPTP/">PPTP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VPN/">VPN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VPS/">VPS</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+    <a href="/2012/07/15/install_wordpress_on_128mb_vps/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          一键安装脚本：在128MB的VPS上安装LNMP和WordPress
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/06/21/the_new_objc_syntax/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          了解iOS 6开发第一篇：新的Objective-C语法
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2012/07/14/install-script-for-pptp-vpn-service-on-ubuntu-xen-vps/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

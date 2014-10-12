@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="iWangKe.me">
+<meta property="og:url" content="http://www.iwangke.me/page/10/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iWangKe.me">
+<meta name="twitter:description">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      
+  
+    <article id="post-caveat-for-uibutton" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/09/05/caveat-for-uibutton/" class="article-date">
+  <time datetime="2012-09-04T16:00:00.000Z" itemprop="datePublished">Sep 5 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/09/05/caveat-for-uibutton/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/09/05/caveat-for-uibutton/">UIButton的一个小陷阱</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>在使用UIButton的时候，有时需要在运行时动态改变按钮的文字、样式。但iOS SDK的文档说得不是很清楚，使用错误的API经常会产生诡异的结果，如点击UIButton后，text变回默认值。</p>
+<p>这问题我遇到过三回了，每回都要重新google一下才解决。以前觉得这些不起眼的小问题，不值得单独写一篇文章，但往往这些问题现常见。以后会持续把遇到的一些小问题作为Tips的形式分享出来，希望也可以帮助到其它的开发者。</p>
+<h3 id="错误的方式">错误的方式</h3>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Wrong way */</span></div><div class="line">yourButton<span class="variable">.titleLabel</span><span class="variable">.text</span> = <span class="string">@"SampleText"</span>;</div></pre></td></tr></table></figure>
+
+<p>这里titleLabel是readonly的，但我们可以改变titleLabel的property。问题出在UIButton是有<code>Default, Highlighted, Selected, Disabled</code>几种状态的。这种方式会改变当前状态的text，但一旦状态改变（如tap一下）,则会变成默认的设置。</p>
+<h3 id="正确的方式">正确的方式</h3>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Right way */</span></div><div class="line">[yourButton setTitle:<span class="string">@"SampleText"</span> forState:UIControlStateNormal];</div></pre></td></tr></table></figure>
+
+<p>如果其它状态没有特别设置的话，设置<code>UIControlStateNormal</code>这个状态，会自动设置其它状态。</p>
+<p>最后附上<a href="http://stackoverflow.com/questions/4910446/ios-uibutton-titlelabel-does-it-do-anything-at-all" target="_blank" rel="external">SO上的关于本话题的讨论</a>。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tips/">Tips</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/UIButton/">UIButton</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-ios-app-launch-time-optimization" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/08/20/ios-app-launch-time-optimization/" class="article-date">
+  <time datetime="2012-08-19T16:00:00.000Z" itemprop="datePublished">Aug 20 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/08/20/ios-app-launch-time-optimization/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/08/20/ios-app-launch-time-optimization/">iOS性能优化系列二：iOS应用启动速度优化</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>很多app的开发者都不重视app的启动速度，这对于碎片化使用情景的用户来说，简直是灾难。</p>
+<h3 id="iOS应用的启动速度">iOS应用的启动速度</h3>
+<p>应用启动时，会播放一个放大的动画。iPhone上是400ms，iPad上是500ms。最理想的启动速度是，在播放完动画后，用户就可以使用。</p>
+<p>如果应用启动过慢，用户就会放弃使用，甚至永远都不再回来。抛开代码不谈，如果抱着PC端游和单机游戏的思维，在游戏启动时强加公司Logo，启动动画，并且用户不可跳过，也会使用户的成功使用率大大降低。</p>
+<h3 id="iOS系统的“看门狗”">iOS系统的“看门狗”</h3>
+<p>为了防止一个应用占用过多的系统资源，开发iOS的苹果工程师门设计了一个“看门狗”的机制。在不同的场景下，“看门狗”会监测应用的性能。如果超出了该场景所规定的运行时间，“看门狗”就会强制终结这个应用的进程。开发者们在crashlog里面，会看到诸如<code>0x8badf00d</code>这样的错误代码(“看门狗”吃了坏的食物，它很不高兴)。</p>
+<table class="table table-striped table-condensed"><br>    <thead><br>        <th>场景</th><br>        <th>“看门狗”超时时间</th><br>    </thead><br>    <tbody><br>        <tr><br>        <td>启动</td><br>        <td>20秒</td><br>        </tr><br>        <tr><br>            <td>恢复运行</td><br>            <td>10秒</td><br>        </tr><br>        <tr><br>            <td>悬挂进程</td><br>            <td>10秒</td><br>        </tr><br>        <tr><br>            <td>退出应用</td><br>            <td>6秒</td><br>        </tr><br>        <tr><br>            <td>后台运行</td><br>            <td>10分钟</td><br>        </tr><br>    </tbody><br></table>
+
+<p>值得注意的是，Xcode在Debug的时候，会禁止“看门狗”。</p>
+<h3 id="如何测试启动时间">如何测试启动时间</h3>
+<p>两种方法：一种使用NSLog，另外一种使用Time Profiler。</p>
+<ul>
+<li>使用NSLog</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">CFAbsoluteTime StartTime;</div><div class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv) {</div><div class="line">     StartTime = CFAbsoluteTimeGetCurrent();</div><div class="line">     <span class="comment">// ...</span></div><div class="line">}</div><div class="line"></div><div class="line">- (<span class="keyword">void</span>)applicationDidFinishLaunching:(<span class="built_in">UIApplication</span> *)app {</div><div class="line">     <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^{</div><div class="line">        <span class="built_in">NSLog</span>(<span class="string">@"Launched in %f sec"</span>, CFAbsoluteTimeGetCurrent() - StartTime);</div><div class="line">     });</div><div class="line">     <span class="comment">// ...</span></div><div class="line"> }</div></pre></td></tr></table></figure>
+
+<ul>
+<li>使用Time Profiler<ul>
+<li>Instruments-&gt;Time Profiler</li>
+<li>Profile你的app</li>
+<li>切换到CPU strategy view，找到你的app启动的第一帧</li>
+<li>搜索<code>-[UIApplication _reportAppLaunchFinished]</code></li>
+<li>找到包含<code>-[UIApplication _reportAppLaunchFinished]</code>的最后一帧，即可计算出启动时间</li>
+</ul>
+</li>
+</ul>
+<h3 id="iOS_App启动过程">iOS App启动过程</h3>
+<ul>
+<li>链接并加载Framework和static lib</li>
+<li>UIKit初始化</li>
+<li>应用程序callback</li>
+<li>第一个Core Animation transaction</li>
+</ul>
+<p>链接并加载Framework及static lib时需要注意：</p>
+<ul>
+<li>每个Framework都会增加启动时间和占用的内存</li>
+<li>不必要的Framework，不要链接</li>
+<li>必要的Framework，不要标记为Optional</li>
+<li>只在使用在Deployment Target之后发布的Framework时，才使用Optional（比如你的Deployment Target是iOS 3.0，需要链接StoreKit的时候）</li>
+<li>避免创建全局的C++对象</li>
+</ul>
+<p>初始化UIKit时需要注意：</p>
+<ul>
+<li>字体、状态栏、user defaults、main nib会被初始化</li>
+<li>保持main nib尽可能的小</li>
+<li>User defaults本质上是一个plist文件，保存的数据是同时被反序列化的，不要在user defaults里面保存图片等大数据</li>
+</ul>
+<p>应用程序的回调：</p>
+<ul>
+<li><code>application:willFinishLaunchingWithOptions:</code></li>
+<li>恢复应用程序的状态</li>
+<li><code>application:didFinishLaunchingWithOptions:</code></li>
+</ul>
+<p>我一直认为设计的本质是折衷。当你为了100ms的启动速度优化欢欣不已，而无视那长达10秒的启动动画时，应该想想究竟什么是应该做的。<code>做正确的事情比把事情做好更重要。</code></p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Performance/">Performance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-rescue-the-main-thread-of-ios-app" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/08/20/rescue-the-main-thread-of-ios-app/" class="article-date">
+  <time datetime="2012-08-19T16:00:00.000Z" itemprop="datePublished">Aug 20 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/08/20/rescue-the-main-thread-of-ios-app/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/08/20/rescue-the-main-thread-of-ios-app/">iOS性能优化系列三：事件处理-拯救主线程</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>用户经常评论app的一个用词是“卡顿”，很大的因素是因为主线程被占用了。用户的事件是在主线程被处理的，包括点击、滚动、加速计、Proximity Sensor。</p>
+<p>为了保证事件的平滑处理，需要进行如下优化：</p>
+<ul>
+<li>最小化主线程的CPU占用</li>
+<li>将工作“搬离”主线程</li>
+<li>不要阻塞主线程</li>
+</ul>
+<h3 id="最小化主线程的CPU占用">最小化主线程的CPU占用</h3>
+<p>前面两篇文章，我们接触到了Time Profiler。使用它可以剖析不同线程的CPU使用情况，并给出调用堆栈的CPU时间占用百分比。如果app“卡顿”，并且在Time Profiler的结果可以找到明确的高占用堆栈，你需要把它优化掉。</p>
+<h3 id="将工作“搬离”主线程_-_隐式并发">将工作“搬离”主线程 - 隐式并发</h3>
+<p>为了得到更流畅的交互体验，iOS已经帮我们做了<a href="http://bit.ly/NAmi8p" target="_blank" rel="external">很多事情</a>，Android就没有这么好运了。iOS将以下这些事情搬离了主线程：</p>
+<ul>
+<li>View和layer的动画（动画绘制前的计算，而不是drawing过程）</li>
+<li>Layer的组合计算（drawing后的叠加）</li>
+<li>PNG的解码（是的，你没看错；而且利用了CPU的多核心）</li>
+</ul>
+<p>注意滚动（Scrolling）不是一个动画，而是在Main Run Loop中不断接收事件并且处理。</p>
+<h3 id="将工作“搬离”主线程_-_显式并发">将工作“搬离”主线程 - 显式并发</h3>
+<p>这里是需要开发者们搞定的部分。磁盘、网络等I/O会阻塞线程，不要把它们放到主线程里。常用的技术有：</p>
+<ul>
+<li>Grand Central Dispatch(GCD)</li>
+<li>NSOperationQueue</li>
+<li>NSThread</li>
+</ul>
+<p>iOS 4.0后，易用的GCD技术被广泛使用。例如：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>),</div><div class="line">^{</div><div class="line">    <span class="comment">// do something in background</span></div><div class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^{</div><div class="line">        <span class="comment">// do something on main thread</span></div><div class="line">    });</div><div class="line">});</div></pre></td></tr></table></figure>
+
+<h3 id="GCD的陷阱">GCD的陷阱</h3>
+<p>GCD其实就是线程，只不过提供了一个更高层次的抽象。过多的线程一定会带来性能损失，因此GCD设计了一个最高允许的线程值（对开发者透明，不用管到底有多少）。那么如何解决这个问题呢？</p>
+<ul>
+<li>将队列串行化</li>
+<li>使用Dispatch sources</li>
+<li>使用带有限制的NSOperationQueue</li>
+<li>使用Cocoa Touch提供的异步方法</li>
+</ul>
+<p>另外一个陷阱是线程安全：</p>
+<ul>
+<li>UIKit必须要在主线程使用，除了UIGraphics，UIBezierPath，UIImage</li>
+<li>大多数CG、CA、Foundation的类，不是线程安全的</li>
+<li>如果你使用了ojbc runtime来进行introspection，由于它是thread safe的，可能会导致竞争</li>
+</ul>
+<p>此外，iOS 4.3添加了<code>DISPATCH_QUEUE_PRIORITY_BACKGROUND</code>，它拥有非常低的优先级。这个优先级只用于不太关心完成时间的真正的后台任务，如果要表示较低的优先级，你通常需要的是<code>DISPATCH_QUEUE_PRIORITY_LOW</code>。</p>
+<h3 id="不要阻塞主线程">不要阻塞主线程</h3>
+<p>即使占用了很少的CPU时间（如果你在Time Profiler中看到这些的数据），也可能会阻塞主线程。磁盘、网络、Lock、dispatch_sync以及向其它进程/线程发送消息都会阻塞主线程。Time Profiler只能检测出占用CPU过多的堆栈，但检测不了这些IO的问题。</p>
+<p>大多数的阻塞事件，都会伴随着一个系统调用，如：</p>
+<ul>
+<li><code>read/write</code> - 读写文件</li>
+<li><code>send/recv</code> - 收发网络数据</li>
+<li><code>psynch_mutex_wait</code> - 获得锁</li>
+<li><code>mach_msg</code> - IPC</li>
+</ul>
+<p><code>System Trace</code>这个Instrumentor，记录了所有的系统调用，以及每次调用的等待时间。如果你在System Trace里面发现了CPU Time很低，但Wait Time很高的调用，说明在主线程处理I/O已经严重损害了app的性能。</p>
+<p>保证主线程的低CPU占用，将I/O移至其它线程，可以大大地提高主线程对交互事件的处理能力。我建议开发者朋友们写代码的时候，除非是以前遇到过的问题，都没有必要假设问题存在。<code>80%的优化都是不必要的。</code></p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Performance/">Performance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-ios-app-performance-strategy" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/08/20/ios-app-performance-strategy/" class="article-date">
+  <time datetime="2012-08-19T16:00:00.000Z" itemprop="datePublished">Aug 20 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/08/20/ios-app-performance-strategy/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2012/08/20/ios-app-performance-strategy/">iOS性能优化系列一：性能优化策略</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>这一系列文章是我的读书笔记，整理一下，也算是温故而知新。</p>
+<h3 id="性能问题的处理流程">性能问题的处理流程</h3>
+<ul>
+<li>发现/重现问题</li>
+<li>利用工具剖析</li>
+<li>形成假设</li>
+<li>改进代码和设计</li>
+</ul>
+<p><img src="http://d.pr/i/gRG3+" alt="iOS应用性能问题处理流程"></p>
+<p>在以上的四个步骤中循环反复，直到问题解决。</p>
+<h3 id="Profile!不要猜!">Profile!不要猜!</h3>
+<p>性能优化的主要策略：</p>
+<ul>
+<li>不要做无用功：不要在启动时花几百ms来做logging，不要为同样的数据做多次查询</li>
+<li>试图重用：对于创建过程昂贵的对象，要重用而不是重新创建<ul>
+<li>Table View的cell</li>
+<li>Date/Number的formatter</li>
+<li>正则表达式</li>
+<li>SQLite语句</li>
+</ul>
+</li>
+<li>使用更快的方式设计、编程：选择正确的集合对象和算法来进行编程、选择适合的数据存储格式（plist、SQLite）、优化SQLite查询语句</li>
+<li>事先做优化<ul>
+<li>对于昂贵的计算，要进行事先计算。iCal中的重复事件，是预先计算出来的，并保存到数据库中。</li>
+<li>事先计算并缓存一些对象，可能会占用大量的内存。注意不要将这些对象声明为static并常驻内存。</li>
+</ul>
+</li>
+<li>事后做优化：异步加载、懒加载</li>
+<li>为伸缩性而做优化：当数据有10条、100条、1000条甚至更多的时候，应用程序的性能不应该对应的呈数量级式的增长，否则无法使用。</li>
+</ul>
+<p>说起来惭愧，我真的很少遇到性能问题。以前假设中的性能问题，很多是根本不存在的。事前计划也杜绝了不了性能问题的产生，所以不如暂时忘记它吧。当然对于一些常识性的提高性能的设计，仍然是必须的。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Performance/">Performance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/9/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/">11</a><a class="page-number" href="/page/12/">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/11/">Next &raquo;</a>
+    </nav>
+  
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

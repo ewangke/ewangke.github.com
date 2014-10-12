@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>instancetype vs id for Objective-C | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="新的LLVM编译器为我们带来了ARC, Object Literal and Scripting, Auto Synthesis等特性，同时也引入了instancetype关键字。instancetype用来表示Related Result Types(相关返回类型)，那么它与id有什么不同呢？
+根据Cocoa的命名惯例，init, alloc这类的方法，如果以id作为返回类型，会返回类本身的类型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="instancetype vs id for Objective-C">
+<meta property="og:url" content="http://www.iwangke.me/2013/01/06/instancetype-vs-id-for-objective-c/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="新的LLVM编译器为我们带来了ARC, Object Literal and Scripting, Auto Synthesis等特性，同时也引入了instancetype关键字。instancetype用来表示Related Result Types(相关返回类型)，那么它与id有什么不同呢？
+根据Cocoa的命名惯例，init, alloc这类的方法，如果以id作为返回类型，会返回类本身的类型">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="instancetype vs id for Objective-C">
+<meta name="twitter:description" content="新的LLVM编译器为我们带来了ARC, Object Literal and Scripting, Auto Synthesis等特性，同时也引入了instancetype关键字。instancetype用来表示Related Result Types(相关返回类型)，那么它与id有什么不同呢？
+根据Cocoa的命名惯例，init, alloc这类的方法，如果以id作为返回类型，会返回类本身的类型">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-instancetype-vs-id-for-objective-c" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2013/01/06/instancetype-vs-id-for-objective-c/" class="article-date">
+  <time datetime="2013-01-05T19:23:00.000Z" itemprop="datePublished">Jan 6 2013</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2013/01/06/instancetype-vs-id-for-objective-c/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      instancetype vs id for Objective-C
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>新的LLVM编译器为我们带来了ARC, Object Literal and Scripting, Auto Synthesis等特性，同时也引入了instancetype关键字。instancetype用来表示Related Result Types(相关返回类型)，那么它与id有什么不同呢？</p>
+<p>根据Cocoa的命名惯例，init, alloc这类的方法，如果以id作为返回类型，会返回类本身的类型。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Person</span></span></div><div class="line">- (<span class="keyword">id</span>)initWithName:(<span class="built_in">NSString</span> *)name;</div><div class="line">+ (<span class="keyword">id</span>)personWithName:(<span class="built_in">NSString</span> *)name;</div></pre></td></tr></table></figure>
+
+<p>但类方法的返回类型，LLVM(或者说Clang)却无法判断，我们来看一段代码：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// You may get two warnings if you're using MRC rather than ARC</span></div><div class="line">[[[<span class="built_in">NSArray</span> alloc] init] mediaPlaybackAllowsAirPlay]; <span class="comment">// ❗ "No visible @interface for `NSArray` declares the selector `mediaPlaybackAllowsAirPlay`"</span></div><div class="line">[[<span class="built_in">NSArray</span> array] mediaPlaybackAllowsAirPlay]; <span class="comment">// It's OK. But You'll get a runtime error instead of a compile time one</span></div></pre></td></tr></table></figure>
+
+<p><code>[NSArray array]</code>除非显式转换为(NSArray *)，否则编译器不会有错误提示。如果使用instancetype就不会有这样的问题：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Person</span></span></div><div class="line">- (instancetype)initWithName:(<span class="built_in">NSString</span> *)name;</div><div class="line">+ (instancetype)personWithName:(<span class="built_in">NSString</span> *)name;</div></pre></td></tr></table></figure>
+
+<p>简单来说，instancetype关键字，保证了编译器能够正确推断方法返回值的类型。这种技术基本从iOS 5的<a href="http://developer.apple.com/library/ios/#documentation/UIKit/Reference/UINavigationController_Class/Reference/Reference.html" target="_blank" rel="external">UINavigationController</a>里就开始应用了。</p>
+<p><a href="http://clang.llvm.org/docs/LanguageExtensions.html#objective-c-features" target="_blank" rel="external">Clang</a>的文档里提到<code>instancetype is a contextual keyword that is only permitted in the result type of an Objective-C method.</code> 也就是说，instancetype只能作为返回值，不能像id那样作为参数。</p>
+<p>最后留个问题：Objective-C 3.0的时候，会不会出现泛型呢？</p>
+<p>Reference:</p>
+<ul>
+<li><a href="http://clang.llvm.org/docs/LanguageExtensions.html#objective-c-features" target="_blank" rel="external">ClangClang Language Extensions</a></li>
+<li><a href="http://nshipster.com/instancetype/" target="_blank" rel="external">NSHipster</a></li>
+<li><a href="http://www.jonmsterling.com/posts/2012-02-05-typed-collections-with-self-types-in-objective-c.html" target="_blank" rel="external">Typed Collections With Self Types in Objective-C</a></li>
+</ul>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Objective-C/">Objective-C</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+    <a href="/2013/01/15/xcode-debugging-tips/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Xcode调试技巧
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/01/04/review-for-my-2012/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Review for My 2012
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2013/01/06/instancetype-vs-id-for-objective-c/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

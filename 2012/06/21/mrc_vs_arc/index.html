@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>了解iOS 6开发第三篇：内存管理 - 手动引用计数与自动引用计数 | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="本文不会举例介绍MRC，如果不了解MRC，最好先简单了解一下，再回来读这篇文章。
+从iOS 5开始，iOS开发就可以使用自动引用计数（Automatic Reference Counting）了。一直想写一篇详细的笔记，来整理这方面的信息，但一直拖到现在。这篇文章是WWDC 2012 Session 406 - Adopting Automatic Reference Counting的笔记，如果">
+<meta property="og:type" content="article">
+<meta property="og:title" content="了解iOS 6开发第三篇：内存管理 - 手动引用计数与自动引用计数">
+<meta property="og:url" content="http://www.iwangke.me/2012/06/21/mrc_vs_arc/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="本文不会举例介绍MRC，如果不了解MRC，最好先简单了解一下，再回来读这篇文章。
+从iOS 5开始，iOS开发就可以使用自动引用计数（Automatic Reference Counting）了。一直想写一篇详细的笔记，来整理这方面的信息，但一直拖到现在。这篇文章是WWDC 2012 Session 406 - Adopting Automatic Reference Counting的笔记，如果">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="了解iOS 6开发第三篇：内存管理 - 手动引用计数与自动引用计数">
+<meta name="twitter:description" content="本文不会举例介绍MRC，如果不了解MRC，最好先简单了解一下，再回来读这篇文章。
+从iOS 5开始，iOS开发就可以使用自动引用计数（Automatic Reference Counting）了。一直想写一篇详细的笔记，来整理这方面的信息，但一直拖到现在。这篇文章是WWDC 2012 Session 406 - Adopting Automatic Reference Counting的笔记，如果">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-mrc_vs_arc" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/06/21/mrc_vs_arc/" class="article-date">
+  <time datetime="2012-06-20T16:00:00.000Z" itemprop="datePublished">Jun 21 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/06/21/mrc_vs_arc/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      了解iOS 6开发第三篇：内存管理 - 手动引用计数与自动引用计数
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p><em>本文不会举例介绍MRC，如果不了解MRC，最好先简单了解一下，再回来读这篇文章。</em></p>
+<p><strong>从iOS 5开始，iOS开发就可以使用自动引用计数（Automatic Reference Counting）了。一直想写一篇详细的笔记，来整理这方面的信息，但一直拖到现在。这篇文章是<br><a href="http://developer.apple.com/devcenter/download.action?path=/wwdc_2012/wwdc_2012_session_pdfs/session_406__adopting_automatic_reference_counting.pdf" target="_blank" rel="external">WWDC 2012 Session 406 - Adopting Automatic Reference Counting</a>的笔记，如果对LLVM感兴趣，可以去<a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html" target="_blank" rel="external">llvm.org</a>深入了解一下。</strong></p>
+<h4 id="关于自动引用计数(Automatic_Reference_Counting,_aka_ARC)">关于自动引用计数(Automatic Reference Counting, aka ARC)</h4>
+<p>很多工程师都是最近一、两年才开始接触iOS开发的。但大多数工程师都接触过Java/C#这样的静态编译语言，或者python/ruby这样的动态脚本语言。这些“现代”语言的都提供Garbage Collection的机制，由GC来负责内存的回收。我先强调一点：<em>ARC是编译器提供的机制，而不是GC这种运行时提供的机制。</em>要了解ARC，必须明白什么是引用计数，必须从MRC开始。此外，你会遇到很多旧的开源代码和静态库（比如广告平台）。这些很可能不支持ARC，所以还是要理解MRC。</p>
+<h4 id="关于手动引用计数(Manully_Reference_Counting,_aka_MRC)">关于手动引用计数(Manully Reference Counting, aka MRC)</h4>
+<p>Objective-C的MRC，简单来说就是一句话：<em>谁创建，谁释放</em>。复杂一点的解释如下：</p>
+<ul>
+<li>所有由alloc、copy(mutablecopy)、retain、new创建的object，必须手动release(或autorelease)</li>
+<li>反之，则不需要也不可以</li>
+<li>autorelease不是自动释放，是AutoreleasePool的实例，在runloop中被”稍后“释放。</li>
+</ul>
+<h4 id="MRC有什么问题">MRC有什么问题</h4>
+<p>常犯的错误：</p>
+<ul>
+<li>Crash! Reject! 内存管理是导致app crash的最主要原因。也是App Store审核时拒审的最多的原因；</li>
+<li>规则简单，但细节太多，依赖于工程师的清醒头脑和良好习惯，依赖于命名规范</li>
+<li>Dangling Pointer，delegate需要手动设置为nil</li>
+<li>触发NSError、或者有复杂的条件分支逻辑时，忘记释放内存</li>
+</ul>
+<p>需要使用一堆工具，帮助你检测代码：</p>
+<ul>
+<li>Instruments: Allocations, Leaks, Zombies</li>
+<li>Static Analyzer</li>
+<li>Heap</li>
+<li>ObjectAlloc</li>
+<li>vmmap</li>
+<li>Debugger</li>
+</ul>
+<p>工程师需要做的事情：</p>
+<ul>
+<li>理解MRC，写正确的代码</li>
+<li>正确的命名规范</li>
+<li>使用五花八门的辅助工具，来保证代码没问题</li>
+<li>保持清醒的头脑，不犯低级错误</li>
+</ul>
+<p>这不是工程师所擅长的事情，这个工作应该由<em>编译器</em>来做才对—<strong>LLVM 3.1</strong></p>
+<h4 id="什么是ARC">什么是ARC</h4>
+<ul>
+<li>Objective-C对象的自动管理机制</li>
+<li>由LLVM编译器来保证</li>
+<li>与MRC完全兼容</li>
+<li>引入新的运行时特性：弱指针、性能优化</li>
+</ul>
+<h4 id="ARC不是">ARC不是</h4>
+<ul>
+<li>新的运行时模型</li>
+<li>自动malloc/free, CF等等（不负责纯C代码的内存管理）</li>
+<li>不是GC。不扫描堆、不暂停进程运行、没有不确定的内存释放</li>
+</ul>
+<h4 id="ARC如何工作">ARC如何工作</h4>
+<ul>
+<li>编译器在编译期，帮你动态添加retain/release/autorelease</li>
+<li>返回同样结果的不同API，在内存方面，没有区别（把alloc/init模式与convenient method当成一样就可以了）</li>
+</ul>
+<h4 id="ARC有什么好处">ARC有什么好处</h4>
+<ul>
+<li>不用写retain/release/autorelease这样的代码，甚至连dealloc方法都不需要（前提是类不需要管理C指针）</li>
+<li>更好的性能，ARC智能地在”适当“的地方插入retain/release</li>
+<li>Block just work</li>
+<li>Less code, less bug</li>
+<li>少浪费脑细胞和脑时钟周期</li>
+</ul>
+<h4 id="如何打开ARC">如何打开ARC</h4>
+<ul>
+<li>Xcode的Project Setting中，设置Objective-C Automatic Reference Counting为YES</li>
+<li>Xcode 4.2+，新的Project默认为ARC</li>
+</ul>
+<h4 id="为了实现ARC，LLVM编译器必须保证4条规则">为了实现ARC，LLVM编译器必须保证4条规则</h4>
+<ul>
+<li>不能调用或实现跟引用计数相关的方法（retain/release/autorelease/retaincount等），否则产生编译错误</li>
+<li>C的结构体里面，不能有Object指针；如果必须使用，那么可以用Objective-C的类代替</li>
+<li>编译器必须清楚void*是否被retained。引入新的API来转换Objective-C和Core Foundation类型的对象</li>
+<li>编译器必须清楚自动释放的对象，因此AutoreleasePool不能是对象，而只是语义上的符号。@autoreleasepool directive甚至可能在MRC中使用</li>
+</ul>
+<h4 id="如何理解ARC">如何理解ARC</h4>
+<ul>
+<li>从对象的从属关系角度考虑：强引用(retain)保证对象的存在，或没有强引用，则对象被自动销毁</li>
+<li>想清楚程序的对象图</li>
+<li>不要再考虑retain, release, autorelease了</li>
+</ul>
+<h4 id="弱引用(必须在iOS_5中使用)">弱引用(必须在iOS 5中使用)</h4>
+<ul>
+<li>安全的”弱指针“，引用的对象被销毁时，自动变成nil；避免了Dangling Pointer</li>
+<li>在property中使用weak关键字声明，ivar中使用_weak声明</li>
+</ul>
+<h4 id="循环引用">循环引用</h4>
+<ul>
+<li>ARC依然存在循环引用的可能</li>
+<li>手动设置某一个引用为nil，破坏循环引用</li>
+<li>使用弱引用来避免</li>
+</ul>
+<h4 id="性能">性能</h4>
+<ul>
+<li>与MRC没有实质的性能区别，甚至更好（有时候好得多），内存峰值比MRC低</li>
+<li>没有GC的开销；没有延迟的销毁，没有进程暂停，没有不能确定的释放</li>
+</ul>
+<h4 id="ARC的优点">ARC的优点</h4>
+<ul>
+<li>更容易理解</li>
+<li>写更少的代码，更少的bug</li>
+<li>更容易维护，甚至更好的性能</li>
+<li>安全、稳定</li>
+</ul>
+<h4 id="iOS的什么版本才能支持ARC">iOS的什么版本才能支持ARC</h4>
+<ul>
+<li>iOS 6发布后，以iOS 5.0作为Deployment Target完全没问题。所以都可以使用ARC。如果你必须支持5.0以下的设备，那么看后两条。</li>
+<li>ARC由LLVM 3.1保证，LLVM 3.1在安装Xcode 4.2自动安装；也就是说只要Xcode 4.2以上的版本，可以设置的Deployment Target的最低版本，都支持ARC。笔者在4.0+的app中使用ARC。</li>
+<li>弱引用（Weak Reference）必须在iOS 5以上的设备才支持</li>
+</ul>
+<h4 id="总结">总结</h4>
+<p>笔者其实觉得MRC很容易掌握，profile的工具也容易掌握。但ARC实实在在的从安全、可维护性、代码量、性能上有全面的提升。所以除非维护旧的代码，笔者都建议使用ARC。不用担心app依赖第三方的MRC代码，可以通过编译器设置文件的编译属性来混合使用ARC和MRC。</p>
+<p>如果想更多地了解LLVM是如何智能地保证ARC，请阅读文章头部引用的两篇文章，里面有详细的解释和代码例子。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ARC/">ARC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MRC/">MRC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-6/">iOS 6</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+    <a href="/2012/06/21/the_new_objc_syntax/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          了解iOS 6开发第一篇：新的Objective-C语法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/06/21/ios_common_design_pitfalls/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          了解iOS 6开发第二篇：iOS常见设计误区
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2012/06/21/mrc_vs_arc/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

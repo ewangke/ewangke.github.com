@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS 7多任务概要 - 产品经理/工程师版本 | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="产品经理版本
+后台获取
+
+App进入后台后，可以主动发起获取数据请求，时长30秒
+频率和时机受iOS调度，不能做到完全确定
+常与后台传输服务结合使用
+用例：社交网络应用，每隔一段时间获取最新文本内容、缩略图
+
+远程(推送)通知
+
+由server发起，可以远程唤醒App执行后台任务，时长30秒
+技术上是一种静默的远程推送，用户不知情
+频率受苹果控制，不能滥用
+常与后台传输服务、本地推送结合使用
+用例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 7多任务概要 - 产品经理/工程师版本">
+<meta property="og:url" content="http://www.iwangke.me/2013/11/14/ios-7-multitask-in-a-nut-shell/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="产品经理版本
+后台获取
+
+App进入后台后，可以主动发起获取数据请求，时长30秒
+频率和时机受iOS调度，不能做到完全确定
+常与后台传输服务结合使用
+用例：社交网络应用，每隔一段时间获取最新文本内容、缩略图
+
+远程(推送)通知
+
+由server发起，可以远程唤醒App执行后台任务，时长30秒
+技术上是一种静默的远程推送，用户不知情
+频率受苹果控制，不能滥用
+常与后台传输服务、本地推送结合使用
+用例">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 7多任务概要 - 产品经理/工程师版本">
+<meta name="twitter:description" content="产品经理版本
+后台获取
+
+App进入后台后，可以主动发起获取数据请求，时长30秒
+频率和时机受iOS调度，不能做到完全确定
+常与后台传输服务结合使用
+用例：社交网络应用，每隔一段时间获取最新文本内容、缩略图
+
+远程(推送)通知
+
+由server发起，可以远程唤醒App执行后台任务，时长30秒
+技术上是一种静默的远程推送，用户不知情
+频率受苹果控制，不能滥用
+常与后台传输服务、本地推送结合使用
+用例">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-ios-7-multitask-in-a-nut-shell" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2013/11/14/ios-7-multitask-in-a-nut-shell/" class="article-date">
+  <time datetime="2013-11-14T15:52:42.000Z" itemprop="datePublished">Nov 14 2013</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2013/11/14/ios-7-multitask-in-a-nut-shell/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      iOS 7多任务概要 - 产品经理/工程师版本
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<h3 id="产品经理版本">产品经理版本</h3>
+<h4 id="后台获取">后台获取</h4>
+<ul>
+<li>App进入后台后，可以主动发起获取数据请求，时长30秒</li>
+<li>频率和时机受iOS调度，不能做到完全确定</li>
+<li>常与后台传输服务结合使用</li>
+<li>用例：社交网络应用，每隔一段时间获取最新文本内容、缩略图</li>
+</ul>
+<h4 id="远程(推送)通知">远程(推送)通知</h4>
+<ul>
+<li>由server发起，可以远程唤醒App执行后台任务，时长30秒</li>
+<li>技术上是一种静默的远程推送，用户不知情</li>
+<li>频率受苹果控制，不能滥用</li>
+<li>常与后台传输服务、本地推送结合使用</li>
+<li>用例：服务器向视频、杂志应用订阅用户发送通知，后台静默下载，用户打开应用时即显示最新内容</li>
+</ul>
+<h4 id="后台传输">后台传输</h4>
+<ul>
+<li>常与前两种结合使用，也可单独使用</li>
+<li>传输时机受iOS调度，不能做到完全确定；iOS设备电量较好(高电量或接入电源)，并连接WiFi时运行的可能性较高</li>
+<li>适用大文件传输，没有运行时长限制</li>
+<li>用例：云存储同步、视频订阅后后台下载</li>
+</ul>
+<h3 id="工程师版本">工程师版本</h3>
+<h4 id="Background_Fetch">Background Fetch</h4>
+<ul>
+<li>Info.plist, Required background modes key添加fetch value</li>
+<li>设置最短fetch间隔：默认是<code>UIApplicationBackgroundFetchIntervalNever</code>，如果改变此值将永远不会fetch；<code>UIApplicationBackgroundFetchIntervalMinimum</code>是可以设置的最短间隔；另外可以设置一个NSTimeInterval类型的值。无论作何设置，都只是建议，不作保证，最终的fetch间隔由OS决定。</li>
+<li>实现<code>application:performFetchWithCompletionHandler:</code>。completionHandler需要一个<code>UIBackgroundFetchResult</code>类型的参数，告知OS三种情况：NewData/NoData/Failed。BackgroundFetch的超时限制是30秒，如果需要超出此限制，需要使用<em>Background Transfer Service API</em>。</li>
+<li>两种模拟Background Fetch的方法：一种通过Simulator菜单；另一种通过Xcode-&gt;Scheme，选中<em>Launch due to a background fetch event</em>选项。</li>
+<li>限时30秒</li>
+</ul>
+<h4 id="Remote_Notifications">Remote Notifications</h4>
+<ul>
+<li>Info.plist, Required background modes key添加remote-notification value</li>
+<li>Notification Payload: 添加<code>{content-available: 1}</code>键值对</li>
+<li>实际上是<em>Silent Push Notifications</em>，可以远程唤醒应用来处理远程推送通知，用户并不知情。</li>
+<li>典型的use case: Remote Notifications静默通知app有新的内容，app初始化一个<em>Background Download Task</em>，完成后以<em>Local Notifications</em>的形式通知用户有新的内容。</li>
+<li>与Background Fetch的区别：Background Fetch由客户端主动发起，由OS调度，适合高频率请求；Remote Notifications由server发起，受apns server控制，适合并不频繁的内容更新。</li>
+<li>实现<code>application:didReceiveRemoteNotification:fetchCompletionHandler:</code>。之后的处理与Background Fetch类似。</li>
+<li>限时30秒</li>
+</ul>
+<h4 id="Background_Transfer_Service">Background Transfer Service</h4>
+<ul>
+<li>基于NSURLSession，支持HTTP/HTTPS，由OS调度</li>
+<li>实现<code>application:handleEventsForBackgroundURLSession:completionHandler:</code>方法。</li>
+<li>discretionary/non-discretionary: 如果<code>discretionary==YES</code>，则更可能在设备电量良好且有WiFi连接时被执行，后台运行的NSURLTask此值必须为YES。</li>
+<li>不限传输时长</li>
+</ul>
+<h3 id="Reference">Reference</h3>
+<ul>
+<li><a href="http://www.objc.io/issue-5/multitasking.html" target="_blank" rel="external">Multitasking in iOS 7</a></li>
+<li><a href="http://mobile.tutsplus.com/tutorials/iphone/ios-7-sdk-mutlitasking-enhancements/" target="_blank" rel="external">iOS 7 SDK: Multitasking Enhancements</a></li>
+</ul>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-7/">iOS 7</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+    <a href="/2014/01/01/three-years-in-app-store-as-indie-developer/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          我在App Store这三年
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/10/15/the-future-of-cocoa-networking-nsurlsession/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Cocoa网络框架的未来:NSURLSession
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2013/11/14/ios-7-multitask-in-a-nut-shell/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>我遇到的一些国内开发者的毛病 | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="最近一些文章被转载了，谢谢各位编辑。有些同行看到我的blog，也过来找我聊了聊。真的让我获得了一些有价值的想法，同时也有很多重复的问题，不吐不快。可能以前我在别人眼中也是这样，可能你以前或者现在也是这样，所以今天聊一聊，咱想到哪说到哪。
+不会问问题
+小事问SO，大事问Google。别围着同事问来问去。问问题之前，要先准备好，术语都说不出来，怎么沟通？功课是一定要做的，keyword都不知道怎么行？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我遇到的一些国内开发者的毛病">
+<meta property="og:url" content="http://www.iwangke.me/2013/03/02/chinese-developers-have-some-bugs/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="最近一些文章被转载了，谢谢各位编辑。有些同行看到我的blog，也过来找我聊了聊。真的让我获得了一些有价值的想法，同时也有很多重复的问题，不吐不快。可能以前我在别人眼中也是这样，可能你以前或者现在也是这样，所以今天聊一聊，咱想到哪说到哪。
+不会问问题
+小事问SO，大事问Google。别围着同事问来问去。问问题之前，要先准备好，术语都说不出来，怎么沟通？功课是一定要做的，keyword都不知道怎么行？">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="我遇到的一些国内开发者的毛病">
+<meta name="twitter:description" content="最近一些文章被转载了，谢谢各位编辑。有些同行看到我的blog，也过来找我聊了聊。真的让我获得了一些有价值的想法，同时也有很多重复的问题，不吐不快。可能以前我在别人眼中也是这样，可能你以前或者现在也是这样，所以今天聊一聊，咱想到哪说到哪。
+不会问问题
+小事问SO，大事问Google。别围着同事问来问去。问问题之前，要先准备好，术语都说不出来，怎么沟通？功课是一定要做的，keyword都不知道怎么行？">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-chinese-developers-have-some-bugs" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2013/03/02/chinese-developers-have-some-bugs/" class="article-date">
+  <time datetime="2013-03-02T12:51:00.000Z" itemprop="datePublished">Mar 2 2013</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2013/03/02/chinese-developers-have-some-bugs/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      我遇到的一些国内开发者的毛病
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>最近一些文章被转载了，谢谢各位编辑。有些同行看到我的blog，也过来找我聊了聊。真的让我获得了一些有价值的想法，同时也有很多重复的问题，不吐不快。可能以前我在别人眼中也是这样，可能你以前或者现在也是这样，所以今天聊一聊，咱想到哪说到哪。</p>
+<h3 id="不会问问题">不会问问题</h3>
+<p>小事问SO，大事问Google。别围着同事问来问去。问问题之前，要先准备好，术语都说不出来，怎么沟通？功课是一定要做的，keyword都不知道怎么行？我也遇到过这种情况，真的一无所知，不知道从哪下手。索性我就说“真的一点不了解，给我一个keyword”吧，至少表明我还是愿意自己先把一些事情搞清楚的。不要做伸手党。</p>
+<h3 id="缺失获取信息的能力">缺失获取信息的能力</h3>
+<p>外行看热闹，内行看门道。既然吃这口饭，就得专业点。“我应该看看哪些技术文章？”这话就根本不应该问。Web 2.0大家人肉总会吧？去微博，搜iOS/App Store，排在前面的人，点进去看他个人资料，挖博客订阅Feed。除些之外，去Linkedin/Douban/CocoaChina/CSDN这些地方人肉他，主要网络ID在一定时间段内往往是一致的。把你欣赏的技术牛人挖出来，看得精光。</p>
+<p>看到一个产品，觉得牛逼。去看他们主页，whois查一下看看注册多久了，谁注册的，公司叫啥名。接着去Google一下前10页，看看都有什么新闻。人肉域名的注册人，把他扒光。甚至给他投资人打个电话说你是某某的朋友套套话。或者直接给他写邮件。社会工程不难吧？</p>
+<p>偷偷说下，国内社会工程最牛逼的黑客就是“民企老板”，尤其是传统行业。只调情，不上床，难啊。</p>
+<h3 id="缺乏知识体系">缺乏知识体系</h3>
+<p>很多人过于依赖Google，这不是坏事。但有时也反应了一个问题：缺乏对技术的系统性了解。两种原因，没意识或是懒惰，都很可怕。赶快努力吧，过两年连印度阿三的外包都抢不到了。</p>
+<h3 id="盲目跟风">盲目跟风</h3>
+<p>你创业了，没点子没钱没人没产品没目标没方向。创哪门子业？前天团购，昨天呕吐呕，今天移动游戏明天虚拟现实啥的。赶快回家洗洗睡吧。保持冷静。</p>
+<h3 id="缺乏责任感">缺乏责任感</h3>
+<p>项目没做完就辞职了；两年换了六份工作；创业忽悠老子老婆一帮兄弟盲目瞎搞最后人财两空，都是不负责任。跳出去再跳回来薪水翻了一番，觉得牛逼吧。过了用人难的阶段第一个开的就是你。</p>
+<h3 id="不独立思考">不独立思考</h3>
+<p>我应该学什么？我适合做什么？我应该怎么做？肯问这些问题说明很有潜力，是想进步的。别问别人，问自己。被问问题的人会很苦的，会被你搞得一头雾水。还是自己多想想，毕竟自己最了解自己。多逗逗上帝老爷子开心，以后上去了路好走。不思则惘。</p>
+<h3 id="不切实际">不切实际</h3>
+<p>整天谈性能优化(日PV1000的网站往往是典型)，vim/emacs哪个好(其实哪个也不会)。亲，去当销售吧，别干这行。这行用代码说话的，不是用嘴。要么你就是拖延症加选择综合症，赶快治。行胜于言。</p>
+<h3 id="不阅读">不阅读</h3>
+<p>喜欢逛论坛，喜欢泡微信，喜欢泡妹纸。整天扯东扯西，有生产力么？订几个Feed回去读吧，从本博开始赶紧地:) （无耻啊，无耻）开卷有益。</p>
+<h3 id="太把技术当回事">太把技术当回事</h3>
+<p>多数人不会自己当老板，是为别人工作获得薪水。你技术强，一个顶5个觉得自己不可一世了。看不起销售看不起设计看不起财务看不起人事，觉得别人说得都是错的。代码能卖钱么？代码能改变世界么？断了电你啥都没有。多站在整个团队、整个产品的角度想一想吧。几行简单的代码的提升可能比你苦逼写了半年的框架实际地多。摆正心态。</p>
+<h3 id="不思进取">不思进取</h3>
+<p>这条最可怕。每天无忧无虑心宽体胖，今天不会明天不会明年还不会。从四线城市奔到北上广一个月税后就剩3k还整天妹纸Dota星巴克，咱别这么折腾行么？有钱有势的赶快回老家混个村长当，没钱没势的赶快多赚点钱娶个媳妇指望下一代逆袭才是王道。穷则思变。</p>
+<p>写字的时候有点怒，加上最近手哥微博看多了有点入戏，请见谅。扯了这么多，其实大家都是这样过来的。与君共勉。</p>
+<p>PS：以后blog都会全文输出RSS，不会添加“继续阅读”的链接。抱歉以前浪费了大家时间和一次额外点击。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Misc/">Misc</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+    <a href="/2013/03/03/xcode-ios-project-missing-destination/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Xcode iOS Scheme Missing Destination
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/02/27/selling-apps/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          Selling apps
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2013/03/02/chinese-developers-have-some-bugs/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

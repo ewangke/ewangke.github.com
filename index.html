@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="iWangKe.me">
+<meta property="og:url" content="http://www.iwangke.me/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iWangKe.me">
+<meta name="twitter:description">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      
+  
+    <article id="post-how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/" class="article-date">
+  <time datetime="2014-10-06T15:34:56.000Z" itemprop="datePublished">Oct 6 2014</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2014/10/06/how-to-implement-a-core-animation-based-60-fps-ktv-lyrics-view/">基于Core Animation的KTV歌词视图的平滑实现</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>KTV歌词视图，只要去过KTV的的朋友一定不会陌生。我们先来看一下最终的效果，再一步步说明唱吧歌词视图的演进。想把事件事情说得清清楚楚的确很难，有很多tricky的地方；另外毕竟不是open source的，只能给大家挑重点分享一下实现的过程和思路。</p>
+<p><img src="/img/lyrics_changba_6.png" alt="唱吧6.0歌词视图"></p>
+<h3 id="歌词视图剖析">歌词视图剖析</h3>
+<p>一个体验良好的歌词视图，由以下方面组成，这也是我们的设计目标：</p>
+<ul>
+<li>有倒计时功能，歌者可以提前作演唱的准备</li>
+<li>根据场景的不同，支持多行或者双行显示，为歌者提供演唱的上下文</li>
+<li>歌者清晰的了解当前在唱哪一句歌词，我称之为焦点行</li>
+<li>焦点行需要染色，并需要精准地作逐字渲染</li>
+<li>两句之前使用适当的动画换行过渡</li>
+<li>歌词动画平滑不突兀，适应不同节奏的歌曲</li>
+<li>根据产品和设计师的要求，灵活地对歌词视图进行字体、颜色调整（1/3/5是绿色，2/4/6是红色，阴历节日是黄色，I’m serious and it’s safe to forget Sunday! Cheers!）</li>
+</ul>
+<p>此外我们还需要了解一下歌词信息的结构，大致如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Line</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSArray</span> *words;</div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *text;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> start;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> length;</div><div class="line"><span class="keyword">@end</span></div><div class="line">    </div><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">Word</span> : <span class="title">NSObject</span></span></div><div class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *text;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> start;</div><div class="line"><span class="keyword">@property</span> <span class="built_in">CGFloat</span> length;</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+
+<ul>
+<li>一首歌的歌词我们称之为Lyrics</li>
+<li>Lyrics包含多行，每行我们称之为Line; Line有它的start及length，分别代表时间戳以及长度</li>
+<li>Line包含多个字，每个字我们称之为Word; Word也有它的start以及length，分别代表时间戳以及长度</li>
+</ul>
+<p>了解完这些我们看看如何来渲染焦点行歌词，先看简单直接的方式。</p>
+<h3 id="基于Core_Graphics的实现">基于Core Graphics的实现</h3>
+<p>我们知道歌曲的开始时间，也有歌词数据提供时间支持，那么就可以计算出当前歌词视图的状态。对于歌词的焦点行，有两部分状态：</p>
+<ul>
+<li>歌者已经演唱的部分，渲染成绿色</li>
+<li>歌者待演唱的部分，渲染成白色</li>
+</ul>
+<p>我们省略计算的过程，假设已经得出绿色、白色歌词的rect及point，就可以直接渲染了：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">LyricsView</span></span></div><div class="line">- (<span class="keyword">void</span>)drawRect:(<span class="built_in">CGRect</span>)rect {</div><div class="line">    <span class="comment">// Assume we calcuated them before</span></div><div class="line">    <span class="built_in">CGRect</span> greenRect;</div><div class="line">    <span class="built_in">CGRect</span> whiteRect</div><div class="line">    <span class="built_in">CGPoint</span> greenPoint;</div><div class="line">    <span class="built_in">CGPoint</span> whitePoint;</div><div class="line">    </div><div class="line">    <span class="comment">// We have the focus line and font</span></div><div class="line">    Line *line;</div><div class="line">    <span class="built_in">UIFont</span> *font;</div><div class="line">    </div><div class="line">    <span class="comment">// Render focus line text</span></div><div class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</div><div class="line">    </div><div class="line">    CGContextSaveGState(context);</div><div class="line">    CGContextClipToRect(context, greenRect);</div><div class="line">    [[<span class="built_in">UIColor</span> greenColor] set];</div><div class="line">    [line<span class="variable">.text</span> drawAtPoint:greenPoint withFont:font];</div><div class="line">    CGContextRestoreGState(context);</div><div class="line">    </div><div class="line">    CGContextSaveGState(context);</div><div class="line">    CGContextClipToRect(context, whiteRect);</div><div class="line">    [[<span class="built_in">UIColor</span> whiteColor] set];</div><div class="line">    [line<span class="variable">.text</span> drawAtPoint:whitePoint withFont:font];</div><div class="line">    CGContextRestoreGState(context);</div><div class="line">}</div><div class="line"><span class="keyword">@end</span></div></pre></td></tr></table></figure>
+
+<p>本质上我们使用了NSString的UIStringDrawing Category搞定了这个事情。既然我们解决了任一时间点的状态，那么把它动起来也很容易：</p>
+<ul>
+<li>将这段code snippet放到LyricsView的drawRect中</li>
+<li>以60 FPS的频率调用[lyricsView setNeedsDisplay]</li>
+</ul>
+<p>一切看起来很直观，但问题来了，这个歌词视图根本跑不到60 FPS（我保证这个效果看起来像癫痫一样儿，v4.9之前就是一直这么癫过来的），即使在目前性能最强的iPhone 5S上。我们来分析一下原因：</p>
+<ul>
+<li>Core Graphics使用CPU作渲染</li>
+<li>这个界面是CPU intensive，需要播放伴奏，还需要录制歌者的声音，甚至需要给声音加“滤镜”</li>
+<li>还有对歌者进行实时打分的task及动画</li>
+<li>回望过去5年iPhone的硬件发展，GPU的提升也远高于CPU，不能指望短期设备升级解决这个问题</li>
+</ul>
+<p>5S上毕竟还可以跑到50FPS，但低端设备的FPS对我来讲是实在是没法接受的。唱吧是线上KTV的应用的用户体验标准，不解决这个问题是说不过去的。既然CPU不给力，那么我们让GPU来做这件事情。</p>
+<h3 id="基于Core_Animation的实现">基于Core Animation的实现</h3>
+<p>14年初的时候，Facebook open source了惊艳的<a href="https://github.com/facebook/Shimmer" target="_blank" rel="external">Shimmer</a>。由于跟我设想的实现机制是相同的，直接拖了几百个shimmer view作了一下profile，在4S上都可以达到完美的60FPS。</p>
+<p>让我们先理一下思路，看看基于Core Animation的焦点行的视图结构：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby"> <span class="constant">GreenLineLabel</span><span class="symbol">:</span> <span class="constant">UILabel</span></span></div><div class="line">-<span class="ruby"> <span class="constant">WhiteLineLabel</span><span class="symbol">:</span> <span class="constant">UILabel</span></span></div></pre></td></tr></table></figure>
+
+<p>没错，就是简单的把绿色的UILabel置于白色的之上，剩下的问题就是如何控制绿色的UILabel按我们的时间控制进行部分渲染。</p>
+<p>部分渲染就是加一个mask，我们来看一下CALayer的mask property:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@<span class="keyword">interface</span> <span class="type">CALayer</span> : <span class="type">NSObject</span> &lt;<span class="type">NSCoding</span>, <span class="type">CAMediaTiming</span>&gt;</div><div class="line">/* A layer whose alpha channel <span class="keyword">is</span> used <span class="keyword">as</span> a mask to select between the</div><div class="line"> * layer's background <span class="keyword">and</span> the <span class="literal">result</span> <span class="keyword">of</span> compositing the layer's</div><div class="line"> * contents <span class="keyword">with</span> its filtered background. <span class="type">Defaults</span> to <span class="keyword">nil</span>. <span class="type">When</span> used <span class="keyword">as</span></div><div class="line"> * a mask the layer's `compositingFilter' <span class="keyword">and</span> `backgroundFilters'</div><div class="line"> * properties are ignored. <span class="type">When</span> setting the mask to a new layer, the</div><div class="line"> * new layer must have a <span class="keyword">nil</span> superlayer, otherwise the behavior <span class="keyword">is</span></div><div class="line"> * undefined. <span class="type">Nested</span> masks (mask layers <span class="keyword">with</span> their own masks) are</div><div class="line"> * unsupported. */</div><div class="line">@property(strong) <span class="type">CALayer</span> *mask;</div><div class="line">@<span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>我们可以知道，mask layer的alpha用来与CALayer的content进行alpha blending，如果alpha为1则content显示，反之不显示。受Shimmer的启发，我们可以对mask作动画，让它从左到右移动到绿色歌词的layer上，并最终与之重合。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">GreenLineLabel</span>: <span class="title">UILabel</span></span></div><div class="line"><span class="keyword">@end</span></div><div class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">GreenLineLabel</span> </span>{</div><div class="line">    CALayer *_maskLayer;</div><div class="line">}</div><div class="line">- (instance)initWithFrame:(<span class="built_in">CGRect</span>)frame {</div><div class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> initWithFrame:frame];</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) {</div><div class="line">        _maskLayer = [CALayer layer];</div><div class="line">        _maskLayer<span class="variable">.backgroundColor</span> = [[<span class="built_in">UIColor</span> whiteColor] CGColor];    <span class="comment">// Any color, only alpha channel matters</span></div><div class="line">        _maskLayer<span class="variable">.anchorPoint</span> = CGPointZero;</div><div class="line">        _maskLayer<span class="variable">.frame</span> = CGRectOffset(<span class="keyword">self</span><span class="variable">.frame</span>, -CGRectGetWidth(<span class="keyword">self</span><span class="variable">.frame</span>), <span class="number">0</span>);</div><div class="line">        <span class="keyword">self</span><span class="variable">.layer</span><span class="variable">.mask</span> = _maskLayer;</div><div class="line">        <span class="keyword">self</span><span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> clearColor];</div><div class="line">    }</div><div class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>上面这段代码我们将_maskLayer的anchorPoint设置为CGPointZero，便于后面的动画计算坐标。</p>
+<p>下面我们对_maskLayer的position作CAKeyframeAnimation动画，根据歌词数据我们可以算出每个字渲染的时间(keyTimes)和动画总时长(duration)。假设每个字是等宽的，我们可以算出_maskLayer在每一个keyTime的position，也就是values。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">- (void)startAnimation {</div><div class="line">    // Assume we calculated keyTimes <span class="constant">and</span> values</div><div class="line">    NSMutableArray *keyTimes;</div><div class="line">    NSMutableArray *values;</div><div class="line">    CGFloat duration;</div><div class="line"></div><div class="line">    CAKeyframeAnimation *<span class="variable">animation =</span> [CAKeyframeAnimation animationWithKeyPath:@<span class="string">"position"</span>];</div><div class="line">    animation.<span class="variable">keyTimes =</span> keyTimes;</div><div class="line">    animation.<span class="variable">values =</span> values;</div><div class="line">    animation.<span class="variable">duration =</span> duration;</div><div class="line">    animation.<span class="variable">calculationMode =</span> kCAAnimationLinear;</div><div class="line">    animation.<span class="variable">fillMode =</span> kCAFillModeForwards;</div><div class="line">    animation.<span class="variable">removedOnCompletion =</span> NO;</div><div class="line">    [_maskLayer addAnimation:animation forKey:@<span class="string">"MaskAnimation"</span>];</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>至此我们完成了基于Core Animation的歌词焦点行染色动画。</p>
+<h3 id="写在后面">写在后面</h3>
+<p>很抱歉我提供的code snippet不是production ready，歌词动画是一个非常复杂的系统，很难单独抽离出来介绍给大家，所以只能管窥一豹地介绍下。</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-changba-is-hiring" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2014/10/06/changba-is-hiring/" class="article-date">
+  <time datetime="2014-10-06T13:42:42.000Z" itemprop="datePublished">Oct 6 2014</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2014/10/06/changba-is-hiring/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2014/10/06/changba-is-hiring/">唱吧诚聘iOS开发工程师</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<h3 id="公司简介">公司简介</h3>
+<p>唱吧（最淘科技有限公司）由<a href="http://weibo.com/dawnli" target="_blank" rel="external">陈华Tony</a>创立于2011年。在经历数次pivot，终于找准了手机KTV方向，是国内为数不多的用户过亿的移动互联网公司之一。<br>Tony作为互联网老兵(酷迅创始人，前阿里高管，搜索专家)，有丰富的管理、产品和技术经验，公司高管层来自酷迅、BAT、苹果等一流公司。<br>唱吧在2011年曾先后获得蓝驰创投和红杉资本的A、B轮数千万美金风险投资。公司发展迅速，业务稳健，财务健康。</p>
+<p><img src="/img/changba.png" alt="唱吧"></p>
+<h3 id="团队介绍">团队介绍</h3>
+<p>唱吧团队有着浓厚的产品和技术氛围，无996加班文化。<br>作为唱吧员工，每年享受10天带薪病假，5天带薪年假，五险一金齐全。 若有紧急加班可以调休，无考勤，弹性工作制。 自带设备(Macbook)公司给予补贴。<br>公司员工男女比例为1:1，平均年龄不到30岁，富有朝气。 每年至少两次的全体出游，每月一次的小组TB，每周的幸运饭团。 公司有钢琴房和K歌房，午休或者下班后可以去玩，每周有免费瑜伽课程和篮球比赛。<br>公司目前在三元桥第三置业大厦办公，临近地铁交通方便。</p>
+<p><img src="/img/第三置业.png" alt="第三置业"></p>
+<h3 id="由于公司业务拓展、产品研发的需要，诚聘iOS研发人才">由于公司业务拓展、产品研发的需要，诚聘iOS研发人才</h3>
+<ul>
+<li>精通iOS SDK，熟练掌握Xcode/Instrument相关开发工具</li>
+<li>熟悉常用的算法和数据结构，对设计模式有一定理解</li>
+<li>熟练掌握SVN/Git之一的SCM工具</li>
+<li>聪明严谨，有良好的编码风格和工作习惯</li>
+<li>无障碍阅读英文文档，有独立解决未知复杂技术问题的能力</li>
+<li>懂折衷，擅沟通，有团队精神</li>
+</ul>
+<p>加分项：</p>
+<ul>
+<li>技术经验丰富，有服务器/Web开发经验，掌握任意一种脚本语言</li>
+<li>擅长音视频、图形图像处理</li>
+<li>有创业经历或有App Store上架App</li>
+<li>Github开源项目(不局限于Objective-C)</li>
+<li>熟读iOS Human Interface Guideline，有PM/UED等工作经验，或对产品、交互、用户体验有深刻理解</li>
+<li>热爱音乐，喜欢K歌或者会演奏乐器</li>
+</ul>
+<h3 id="薪酬范围">薪酬范围</h3>
+<p>唱吧提供不低于一线互联网公司如BAT的薪酬待遇，根据具体职位面议，诚邀感兴趣的朋友随时来公司坐坐。</p>
+<h3 id="联系方式：">联系方式：</h3>
+<p>请发送PDF/Docx格式简历至ewangke#gmail.com，或者<a href="http://weibo.com/indiebros" target="_blank" rel="external">微博私信我</a>。此招聘长期有效，欢迎推荐及自荐。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+			</span>
+			<span class="tags">
+				
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-fuck-your-ios-teamates" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2014/09/04/fuck-your-ios-teamates/" class="article-date">
+  <time datetime="2014-09-04T15:50:24.000Z" itemprop="datePublished">Sep 4 2014</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2014/09/04/fuck-your-ios-teamates/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2014/09/04/fuck-your-ios-teamates/">iOS应用开发之十大坑队友</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>之前做Indie Dev都是自己坑自己，两三年也没坑出来多少花样深感惭愧。最近功力大增但不敢独享，给大家带来天下码农之《iOS应用开发之十大坑队友》。博主最近不太会说人话，找到点《大腕》中疯人院的状态。小朋友请在家长指导下选择性观看，看完了别忘记微博at我分享心得。</p>
+<p><script type="text/javascript" src="http://www.xiami.com/widget/player-single?uid=7307607&sid=1769297967&mode=js"></script><br>PS: 建议播放音乐以达到最佳阅读效果。</p>
+<h3 id="第十名：SCM_Attack">第十名：SCM Attack</h3>
+<p>适用于使用各种类型的SCM，或者干脆不用。以git举例。只提交编译错误的代码，或者保证App一打开就crash，不帮忙改了bug别想绕过去；不正确设置gitignore文件，彰显个性；每个commit至少几十个文件，突显代码量；Log永远是潇洒的bug fix或者fix bug，只可意会不可言传；别人用rebase咱就用merge或者反过来，总之要有自己的特色；喜欢code reivew的速来接招。</p>
+<p>难度指数：6          杀伤指数：6          综合评定：6</p>
+<h3 id="第九名：Coding_Style_Attack">第九名：Coding Style Attack</h3>
+<p>此类型攻击覆盖范围之广，无人出其右。头文件不写注释，保留一堆永远不会完成的TODO/FIXME，再穿插着保留600行间歇注释掉的有模有样儿的代码；咱是.NET背景所有property一律get/set整齐划一；偶尔再来个downloadFile/downloadFile2这样写意的命名，一细看还真的不一样儿；每行代码都写几个magic number除了你没人懂什么意思；代码风格的辨识度高，以至于blame view都是多余的。</p>
+<p>难度指数：6          杀伤指数：7          综合评定：6.5</p>
+<h3 id="第八名：Multi_Threading_Attack">第八名：Multi Threading Attack</h3>
+<p>本着不过度优化的原则将运算塞满主线程，反正负责优化的多数不是自己；各种Mutable对象线程间传来传去，for循环中改改更健康；sleep/dispatch_after活学活用问题搞不定全靠它；单件就有5种写法完爆茴字（老板来壶黄酒）。</p>
+<p>难度指数：6          杀伤指数：8          综合评定：7</p>
+<h3 id="第七名：Header_Attack">第七名：Header Attack</h3>
+<p>Coding Style Attack的进化；500行的header如家常便饭，管它private还是public的直接往这里扔；除了没注释还不提供初始化方法，暴露几十个property，其中的5个要是特定值某个无参方法就没法工作；最后再把一堆有关无关的header都往Prefix.pch里扔，编译时咱就拼硬件。</p>
+<p>难度指数：7          杀伤指数：8          综合评定：7.5</p>
+<h3 id="第六名：OO_Attack">第六名：OO Attack</h3>
+<p>此门技艺博大精深，属无招胜有招的范畴；能继承就不用组合，继承层次小于3层出门不好意思跟人打招呼，基类永远只有一个唯一子类。if/else嵌套个六、七层不嫌多，一对大括号保证你一屏看不完，让鼓吹多态的学院派一边凉快去；调用super咱就随机位置随机call，姿势随心情而定。</p>
+<p>难度指数：7          杀伤指数：9          综合评定：8</p>
+<h3 id="第五名：View_Hierarchy_Attack">第五名：View Hierarchy Attack</h3>
+<p>此类适用于使用自定义的“容器类”那票朋友。甭管View Controller的生命周期，App启动时一并创建并称之为预加载，然后每个VC贴几十上百个视图上去，使用Reveal/Xcode View Debugging时给人一种小朋友看火车的感觉，感叹自己的屏幕不够宽；再对View hierarchy各种深度广度遍历，对第n层某个view来个强制转换。图片一定要拉伸，所有视图全透明，像素一定不能对齐；种种招数保证了iPhone 5S最多跑到30FPS，瞬间充满对iPhone 6的期待。</p>
+<p>难度指数：7          杀伤指数：10          综合评定：8.5</p>
+<h3 id="第四名：Massive_Attack">第四名：Massive Attack</h3>
+<p>此招集六大门派之精华，单一使出来都不够带感。Massive VC打头阵，View Controller 5000行起；基类有什么塞什么，方法的caller count为1最好；再来几十个singleton或者工具类，头文件塞上几百个类方法，最好还都没有参数和返回值；有一种恢弘大气的感觉就对了。</p>
+<p>难度指数：9          杀伤指数：9          综合评定：9</p>
+<h3 id="第三名：Dynamic/Typeless_Attack">第三名：Dynamic/Typeless Attack</h3>
+<p>充分利用Objective-C的动态性，能用id咱就不用具体类型；API response/NSNotification/db里面数以百计的key/value飞来飞去；同一个东西在不同的地方类型和名字一定要有差异；诸如此类我们称之为了解代码熟悉业务，需要挂debugger说明代码不熟或者你太弱了；重构工具就是摆设，因为你根本用不了。</p>
+<p>难度指数：9          杀伤指数：10          综合评定：9.5</p>
+<h3 id="第二名：Runtime_Attack">第二名：Runtime Attack</h3>
+<p>+Load里面各种黑魔法，黑得小伙伴没人敢动；Catetory中搞些同名方法再加诡异的method swizzling。这类招数杀伤力极强，很可能数小时也定位不了问题所在，又能提升逼格，强烈推荐。</p>
+<p>难度指数：10          杀伤指数：10          综合评定：10</p>
+<h3 id="第一名：Cross_Demension_Attack">第一名：Cross Demension Attack</h3>
+<p>最能坑你的永远不是队友这种同一维度的生物，你懂的</p>
+<p>难度指数：???          杀伤指数：???          综合评定：???</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+    <article id="post-wwdc-2014-download-script" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2014/06/07/wwdc-2014-download-script/" class="article-date">
+  <time datetime="2014-06-07T11:38:17.000Z" itemprop="datePublished">Jun 7 2014</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2014/06/07/wwdc-2014-download-script/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 itemprop="name" class="entry-title">
+      <a class="article-title" href="/2014/06/07/wwdc-2014-download-script/">WWDC 2014 PDF 及session 视频下载脚本</a>
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p>Long time no C. 今天为大家带来WWDC 2014 sessoin PDFs &amp; Videos的下载脚本。</p>
+<p>多线程下载请安装axel (<code>brew install axel</code>)</p>
+<p>PDFs: </p>
+<p><code>curl https://developer.apple.com/videos/wwdc/2014/ | grep -ioI &#39;http.*pdf?dl=1&#39; | sed &#39;s/\?dl=1//g&#39; | xargs -n1 axel -a -n 4</code></p>
+<p>Videos:</p>
+<p><code>curl https://developer.apple.com/videos/wwdc/2014/ | grep -ioI &#39;http.*._hd_.*dl=1&quot;&gt;HD&#39; | sed -e &#39;s/\?dl=1&quot;&gt;HD//g&#39;| xargs -n1 axel -a -n 8</code></p>
+<p>单线程下载请替换最后的piping section为 <code>xargs -n1 curl --remote-name</code></p>
+<p>Enjoy:)</p>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+			</span>
+			<span class="tags">
+				
+			</span>
+		</div>
+	</footer>
+	
+</article>
+
+
+	<hr class="article-devider">
+
+
+
+  
+  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
+  
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>

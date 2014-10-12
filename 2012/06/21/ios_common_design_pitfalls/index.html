@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>了解iOS 6开发第二篇：iOS常见设计误区 | iWangKe.me</title>
+  <meta name="viewport" content="width=device-width">
+  <meta name="description" content="在iOS应用的设计上，存在一些常见的误区。WWDC 2012 Session 221 - iOS User Interface Design，指出了以下十种常见的误区。
+误区一：糟糕的图标设计
+iOS 4添加了文件夹功能，iOS 6的App Store中，用户可以进行批量下载。App Store发展的这四年，已经有了60多万的iPhone应用。制作一个App，周期一般从1个多月到半年、甚至一年不等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="了解iOS 6开发第二篇：iOS常见设计误区">
+<meta property="og:url" content="http://www.iwangke.me/2012/06/21/ios_common_design_pitfalls/">
+<meta property="og:site_name" content="iWangKe.me">
+<meta property="og:description" content="在iOS应用的设计上，存在一些常见的误区。WWDC 2012 Session 221 - iOS User Interface Design，指出了以下十种常见的误区。
+误区一：糟糕的图标设计
+iOS 4添加了文件夹功能，iOS 6的App Store中，用户可以进行批量下载。App Store发展的这四年，已经有了60多万的iPhone应用。制作一个App，周期一般从1个多月到半年、甚至一年不等">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="了解iOS 6开发第二篇：iOS常见设计误区">
+<meta name="twitter:description" content="在iOS应用的设计上，存在一些常见的误区。WWDC 2012 Session 221 - iOS User Interface Design，指出了以下十种常见的误区。
+误区一：糟糕的图标设计
+iOS 4添加了文件夹功能，iOS 6的App Store中，用户可以进行批量下载。App Store发展的这四年，已经有了60多万的iPhone应用。制作一个App，周期一般从1个多月到半年、甚至一年不等">
+
+  
+    <link rel="alternative" href="/atom.xml" title="iWangKe.me" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-30140802-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="mobile-nav-panel">
+	<i class="icon-reorder icon-large"></i>
+</div>
+<header id="header">
+	<h1 class="blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<nav class="nav">
+		<ul>
+			<li><a href="/">Home</a></li><li><a href="/archives">Archives</a></li><li><a href="/objc-style-guide">ObjC风格指南</a></li><li><a href="/app-store-essentials-for-chinese-developers">App Store杂谈</a></li><li><a href="/about">About</a></li>
+			<li><a id="nav-search-btn" class="nav-icon" title="Search"></a></li>
+			<li><a href="/atom.xml" id="nav-rss-link" class="nav-icon" title="RSS Feed"></a></li>
+		</ul>
+	</nav>
+	<div id="search-form-wrap">
+		<form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://www.iwangke.me"></form>
+	</div>
+</header>
+    <div id="main">
+      <article id="post-ios_common_design_pitfalls" class="post">
+	<footer class="entry-meta-header">
+		<span class="meta-elements date">
+			<a href="/2012/06/21/ios_common_design_pitfalls/" class="article-date">
+  <time datetime="2012-06-20T16:00:00.000Z" itemprop="datePublished">Jun 21 2012</time>
+</a>
+		</span>
+		<span class="meta-elements author">iWangKe.me</span>
+		<div class="commentscount">
+			
+				<a href="http://www.iwangke.me/2012/06/21/ios_common_design_pitfalls/#disqus_thread" class="article-comment-link">Comments</a>
+			
+		</div>
+	</footer>
+	
+	<header class="entry-header">
+		
+  
+    <h1 class="article-title entry-title" itemprop="name">
+      了解iOS 6开发第二篇：iOS常见设计误区
+    </h1>
+  
+
+	</header>
+	<div class="entry-content">
+		
+    	<p><strong>在iOS应用的设计上，存在一些常见的误区。<a href="http://developer.apple.com/devcenter/download.action?path=/wwdc_2012/wwdc_2012_session_pdfs/session_221__ios_user_interface_design.pdf" target="_blank" rel="external">WWDC 2012 Session 221 - iOS User Interface Design</a>，指出了以下十种常见的误区。</strong></p>
+<h4 id="误区一：糟糕的图标设计">误区一：糟糕的图标设计</h4>
+<p>iOS 4添加了文件夹功能，iOS 6的App Store中，用户可以进行批量下载。App Store发展的这四年，已经有了60多万的iPhone应用。制作一个App，周期一般从1个多月到半年、甚至一年不等，做几个、甚至十几个版本的图标，反复推敲，是完全值得的。<em>优秀的图标设计，是每个优秀App的标配，也是每个设计师的必修课。</em></p>
+<p>如何设计优秀的图标呢？苹果给的建议只有两条：美观漂亮；可以一眼识别。第一条是设计师取决于设计师的修养和风格。这里说下第二条。</p>
+<p>如何设计“可以一眼识别的图标”：</p>
+<ul>
+<li>专注于一个独特的轮廓。如Music, iBooks, Instapaper。</li>
+<li>慎重地选择色系及颜色搭配。如Day One, Instagram。</li>
+<li>避免使用照片。</li>
+<li>避免图标上出现一堆文字。比较一下Vimeo、Pinterest、Tumblr的Logo和App图标。</li>
+<li>正确使用材质。如iCal、Notes、Camera应用。</li>
+<li>保持创新。这里要赞一下Evernote Food的图标设计（Sushi放在一个方形的碟子上）。</li>
+<li>在不同色系的主屏壁纸下，测试你的图标是否清晰。</li>
+<li>把App放进文件夹中，测试图标是否清晰。</li>
+</ul>
+<h4 id="误区二：强制用户注册">误区二：强制用户注册</h4>
+<p>一些app是有账号系统的，比如社交网络类型的应用，或者Readability类型的应用。不要强制用户注册才可以使用，至少允许用户在不注册的情况下，使用app的一大部分功能。承受着用户获取成本的提高，这种粗暴的直接把用户拦在门外的做法，越来越不可取。</p>
+<h4 id="误区三：过小的控件">误区三：过小的控件</h4>
+<p>保证每个控件以及任何可点击的区域，不小于44 * 44的尺寸。大概是导航条的高度，也是内置Calculator应用的按钮高度。如果设计上为了突出一些功能，可以把最主要的功能的按钮变大，但要保证其它按钮不能小于最小范围。Instagram就是这样做的，拍照按钮在下方的UITabBar的最小间，但比其它按钮要大一些。</p>
+<h4 id="误区四：难以阅读的文本">误区四：难以阅读的文本</h4>
+<p>正面代表是Mail，在列表界面和邮件正文界面，通过字体的阴影、大小、对齐等变化，达到最佳的阅读体验。</p>
+<p>一些原则：</p>
+<ul>
+<li>使用阴影和字体大小，来区分不同层级的内容</li>
+<li>保证文字的主体清晰，易于阅读</li>
+<li>对齐文本，以便用户快速浏览</li>
+<li>右对齐Label，左对齐文本内容</li>
+<li>在iPhone和iPad上，分别测试你的应用</li>
+</ul>
+<h4 id="误区五：令人摸不着头脑的警告信息">误区五：令人摸不着头脑的警告信息</h4>
+<ul>
+<li>作为程序员和曾经的Windows用户，我只知道Error: 0xc000007b这样的信息可能是内存泄露；而普通用户甚至认为显示屏是PC的运算核心。不要把这些糟糕的提示风格带到Mac和iOS应用中。对用户要“说人话”。</li>
+<li>有歧义的提示：您想要取消交易吗？（OK, Cancel）两个选项，用户是搞不清楚应该选哪个的。</li>
+<li>避免不必要的警告提示；提示信息可以用非模态的方式展现，参见Mail里面，更新邮件后下方的状态条</li>
+<li>以直接的动作描述，来命名警告提示的待选按钮。如(Close， View)</li>
+<li>把确定、确认的按钮放在右边，取消、中断的按钮放在左边</li>
+<li>使用ActionSheet或者Popover来确认危险的操作(destructive operation)。如删除操作。</li>
+</ul>
+<h4 id="误区六：使用易于用户理解的语言">误区六：使用易于用户理解的语言</h4>
+<p>举一个正面例子：iOS 6的Settings中，Do Not Disturb开关，如果把Label文本换成System Alerts，明显会变得对用户不友好。“说人话”。</p>
+<h4 id="误区七：过度的品牌宣传">误区七：过度的品牌宣传</h4>
+<p>想象一下，把一个应用的导航条标题，全部换成产品名或者公司名，会怎么样？</p>
+<h4 id="误区八：无意义的后退按钮">误区八：无意义的后退按钮</h4>
+<p>Windows过来的设计师的通病。要使用有意义的标题来命名按钮，如上一个导航层级的标题，就比“后退”描述了更多信息。</p>
+<h4 id="误区九：令人困惑的动画变换">误区九：令人困惑的动画变换</h4>
+<p>在视图切换，或者用户执行操作的时候，进行动画变换，可以增加逻辑感、沉浸感和“空间感”。但不要滥用。</p>
+<h4 id="误区十：应用的“风格”不恰当">误区十：应用的“风格”不恰当</h4>
+<ul>
+<li>应用主要两种类型：娱乐类和工具类。娱乐类的应用更强调乐趣、沉浸感，工具类的应用更强调稳定性和效率。不要搞反了，强调风格也要适度。</li>
+<li>苹果建议尽可能地使用“仿真”的思路去设计：比如温度计、指南针这样的app，用户在物理世界中已经习得如何使用，没有额外的学习成本。</li>
+</ul>
+<h4 id="总结：">总结：</h4>
+<ul>
+<li>专注用户体验</li>
+<li>熟读<a href="https://developer.apple.com/library/ios/#documentation/UserExperience/Conceptual/MobileHIG/Introduction/Introduction.html" target="_blank" rel="external">iOS Human Interface Guideline</a>（HIG）</li>
+</ul>
+<p>附小广告一则：唱吧iOS团队诚招iOS工程师，详见<a href="/2014/10/06/changba-is-hiring/">这篇blog</a>。</p>
+
+    
+	</div>
+	<footer class="entry-footer">
+		<div class="entry-meta-footer">
+			<span class="category">
+				
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Tutorial/">Tutorial</a>
+  </div>
+
+			</span>
+			<span class="tags">
+				
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-6/">iOS 6</a></li></ul>
+
+			</span>
+		</div>
+	</footer>
+	
+    
+<nav id="article-nav">
+  
+    <a href="/2012/06/21/mrc_vs_arc/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          了解iOS 6开发第三篇：内存管理 - 手动引用计数与自动引用计数
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/06/17/python_simple_http_server/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">
+        
+          程序员的方法：从Mac上快速将pdf文件转移到iPad/iPhone上阅读
+        
+      </div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+    </div>
+    <div class="mb-search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:www.iwangke.me">
+  </form>
+</div>
+<footer id="footer">
+	<h1 class="footer-blog-title">
+		<a href="/">iWangKe.me</a>
+	</h1>
+	<span class="copyright">
+		&copy; 2014 iWangKe.me<br>
+		Modify from <a href="http://sanographix.github.io/tumblr/apollo/" target="_blank">Apollo</a> theme, designed by <a href="http://www.sanographix.net/" target="_blank">SANOGRAPHIX.NET</a><br>
+		Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+	</span>
+</footer>
+    
+<script>
+  var disqus_shortname = 'wangkesblog';
+  
+  var disqus_url = 'http://www.iwangke.me/2012/06/21/ios_common_design_pitfalls/';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//go.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<!-- >
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<-->
+<script src="//cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+</body>
+</html>
